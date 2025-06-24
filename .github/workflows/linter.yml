@@ -45,3 +45,4 @@ jobs:
           LINTER_RULES_PATH: /
           VALIDATE_GO: false
           VALIDATE_GO_MODULES: false
+          KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
