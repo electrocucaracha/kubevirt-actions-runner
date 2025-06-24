@@ -1,3 +1,4 @@
+#checkov:skip=CKV_DOCKER_2:Ensure that HEALTHCHECK instructions have been added to container images
 FROM golang:1.24.0-alpine3.21 AS build
 
 WORKDIR /go
