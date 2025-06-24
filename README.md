@@ -11,34 +11,47 @@
 [![Scc Code Badge](https://sloc.xyz/github/electrocucaracha/kubevirt-actions-runner?category=code)](https://github.com/boyter/scc/)
 [![Scc COCOMO Badge](https://sloc.xyz/github/electrocucaracha/kubevirt-actions-runner?category=cocomo)](https://github.com/boyter/scc/)
 
-## Summary
+## Overview
 
-`kubevirt-actions-runner` is a runner image for [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller) that spawns ephemeral virtual machines for jobs using [KubeVirt](https://kubevirt.io).
+`kubevirt-actions-runner` is a custom GitHub Actions runner image designed for use with the [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller).
+This runner provisions ephemeral virtual machines (VMs) using [KubeVirt](https://kubevirt.io), extending the flexibility and security of your CI/CD workflows.
 
-## Use cases
+This is particularly useful for validating scenarios that are not supported by default GitHub-hosted runners, such as:
 
-- Windows and macOS jobs
-- Jobs that require configuring system services
-- Jobs that require stronger isolation
+- Running Windows or macOS jobs
+- Custom environments that require specific kernel modules or system services
+- Jobs requiring strong isolation from the host system
 
-## Usage
+## Key Features
 
-You need a Kubernetes cluster with [Actions Runner Controller](https://github.com/actions/actions-runner-controller/blob/master/docs/quickstart.md) and [KubeVirt](https://kubevirt.io/quickstart_cloud) installed.
+- _Ephemeral VM creation_: Launch a fresh VM for every job and destroy it after completion
+- _Increased isolation_: Ideal for untrusted code or complex system configurations
+- Custom system-level configuration support
+- Easily integrates with ARC and Kubernetes-native tooling
+
+## Prerequisites
+
+To use this project, ensure you have the following installed:
+
+- A working Kubernetes cluster
+- [Actions Runner Controller](https://github.com/actions/actions-runner-controller/blob/master/docs/quickstart.md)
+- [KubeVirt](https://kubevirt.io/quickstart_cloud)
+
+## Quick Start Guide
 
 ### 1. Create VirtualMachine template
 
-First, we need to create a VirtualMachine to act as a template for the runner VMs.
-`kubevirt-actions-runner` will create VirtualMachineInstances from it, and the VirtualMachine itself will never be started.
-
-Create a namespace and apply the sample template:
+This template will be used to spawn VMs on-demand for each GitHub job. The base `VirtualMachine` will never be started; instead, clones of it will be launched as `VirtualMachineInstances`.
 
 ```bash
-! kubectl get namespaces "${namespace}" && kubectl create namespace "${namespace}"
+# Create namespace if it doesn't exist
+! kubectl get namespace "${namespace}" && kubectl create namespace "${namespace}"
+
+# Apply the VM template
 kubectl apply -f scripts/vm_template.yml -n "${namespace}"
 ```
 
-Let's take a deeper look at this sample VirtualMachine.
-Inside we mount the `runner-info` volume:
+Example snippet from `vm_template.yml`:
 
 ```yaml
 apiVersion: kubevirt.io/v1
@@ -56,7 +69,7 @@ spec:
               virtiofs: {}
 ```
 
-This `runner-info` volume will be injected by `kubevirt-actions-runner`, containing `runner-info.json` that looks like the following:
+The `runner-info` volume is mounted at runtime and contains metadata required by the GitHub Actions runner, e.g.:
 
 ```json
 {
@@ -69,10 +82,9 @@ This `runner-info` volume will be injected by `kubevirt-actions-runner`, contain
 }
 ```
 
-### 2. Set up RBAC
+### 2. Configure RBAC for KubeVirt Access
 
-The service account of the runner pod needs to be able to create `VirtualMachineInstance`s.
-An example is as follows:
+The service account used by the runner pods must be granted permissions to manage KubeVirt VMs.
 
 ```yaml
 apiVersion: v1
@@ -105,14 +117,16 @@ rules:
     verbs: ["create"]
 ```
 
-### 3. Create runner scale set
+### 3. Deploy the Runner scale set
 
-You can configure the runner scale set using Helm.
-Use the following `values.yaml`:
+Use Helm to install the GitHub Actions runner scale set.
+
+Create a values.yml file:
 
 ```yaml
 githubConfigUrl: https://github.com/<your_enterprise/org/repo>
-githubConfigSecret: ...
+githubConfigSecret: <your_github_secret>
+
 template:
   spec:
     serviceAccountName: kubevirt-actions-runner
@@ -129,11 +143,65 @@ template:
                 fieldPath: metadata.name
 ```
 
+Install using Helm:
+
 ```bash
 helm upgrade --create-namespace --namespace "${namespace}" \
     --wait --install --values values.yml vm-self-hosted \
     oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ```
 
-The lifecycle of the spawned VMI is bound to the runner pod.
-If one of them exits, the other will be terminated as well.
+## Architecture Diagram
+
+```mermaid
+flowchart TD
+  subgraph GitHub
+    A[GitHub Job Triggered]
+  end
+
+  subgraph Kubernetes Cluster
+    B[Actions Runner Controller]
+    C[Create kubevirt-actions-runner Pod]
+    E[Mount runner-info.json]
+    F[Create VirtualMachineInstance from Template]
+    G[Boot VirtualMachineInstance]
+  end
+
+  subgraph Virtual Machine
+    H[Runner fetches GitHub job metadata]
+    I[Execute Job Steps]
+    J[Job Completion]
+  end
+
+  subgraph Teardown
+    K[Cleanup: Terminate VMI & Runner Pod]
+  end
+
+  A --> B --> C --> E --> F --> G --> H --> I --> J --> K
+```
+
+## Limitations
+
+- _macOS support_: macOS virtualization is not supported via KubeVirt due to licensing constraints.
+- _Long job durations_: Boot time of VMs may increase total runtime.
+- _Persistent state_: Not designed for workflows requiring persisted state between jobs.
+
+## Contributing
+
+Contributions are welcome! Please open issues or submit PRs to help improve this project.
+
+## Presentations
+
+### KCD Guadalajara 2025 – Migrating GitHub Actions with Nested Virtualization to the Cloud-Native Ecosystem
+
+This project was presented at [Kubernetes Community Days (KCD) Guadalajara 2025](https://community.cncf.io/events/details/cncf-kcd-guadalajara-presents-kcd-guadalajara-2025/cohost-kcd-guadalajara), showcasing how to extend GitHub Actions with KubeVirt and nested virtualization to support custom and complex CI/CD workflows in Kubernetes.
+
+- [Video (Spanish)](https://www.youtube.com/watch?v=ccb8y_Ij30k)
+- [Slides](https://www.slideshare.net/slideshow/migrating-github-actions-with-nested-virtualization-to-cloud-native-ecosystem-pptx/277448656)
+
+The presentation walks through:
+
+- Challenges with standard GitHub-hosted runners
+- Benefits of using KubeVirt for GitHub Actions runners
+- Live demo deploying and running jobs inside ephemeral VMs
+- Lessons learned and architectural considerations
