@@ -6,32 +6,63 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+version: "2"
 linters:
-  enable-all: true
+  default: all
   disable:
-    - exportloopref # Deprecated (since v1.60.2) due to: Since Go1.22 (loopvar) this linter is no longer relevant. Replaced by copyloopvar.
     - exhaustruct
-linters-settings:
-  depguard:
+  settings:
+    depguard:
+      rules:
+        prevent_unmaintained_packages:
+          allow:
+            - $gostd
+            - github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app
+            - github.com/electrocucaracha/kubevirt-actions-runner/internal
+            - github.com/golang/mock/gomock
+            - github.com/pkg/errors
+            - github.com/spf13/cobra
+            - github.com/spf13/pflag
+            - github.com/spf13/viper
+            - k8s.io/api/core/v1
+            - k8s.io/apimachinery/pkg/api/errors
+            - k8s.io/apimachinery/pkg/apis/meta/v1
+            - k8s.io/utils/ptr
+            - kubevirt.io/api/core/v1
+            - kubevirt.io/client-go/containerizeddataimporter/fake
+            - kubevirt.io/client-go/kubecli
+            - kubevirt.io/client-go/kubevirt/fake
+            - kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
+            - github.com/onsi/ginkgo/v2
+            - github.com/onsi/gomega
+    gomoddirectives:
+      replace-allow-list:
+        - k8s.io/kube-openapi
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
     rules:
-      prevent_unmaintained_packages:
-        allow:
-          - $gostd
-          - github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app
-          - github.com/electrocucaracha/kubevirt-actions-runner/internal
-          - github.com/golang/mock/gomock
-          - github.com/pkg/errors
-          - github.com/spf13/cobra
-          - github.com/spf13/pflag
-          - github.com/spf13/viper
-          - k8s.io/api/core/v1
-          - k8s.io/apimachinery/pkg/apis/meta/v1
-          - k8s.io/utils/ptr
-          - kubevirt.io/api/core/v1
-          - kubevirt.io/client-go/containerizeddataimporter/fake
-          - kubevirt.io/client-go/kubecli
-          - kubevirt.io/client-go/kubevirt/fake
-          - kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
-  gomoddirectives:
-    replace-allow-list:
-      - k8s.io/kube-openapi
+      - linters:
+          - revive
+        path: _test\.go
+        text: "dot-imports:"
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

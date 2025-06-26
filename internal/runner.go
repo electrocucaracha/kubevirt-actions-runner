@@ -57,63 +57,19 @@ type KubevirtRunner struct {
 
 var _ Runner = (*KubevirtRunner)(nil)
 
+func NewRunner(namespace string, virtClient kubecli.KubevirtClient) *KubevirtRunner {
+	return &KubevirtRunner{
+		namespace:  namespace,
+		virtClient: virtClient,
+	}
+}
+
 func (rc *KubevirtRunner) GetVMIName() string {
 	return rc.virtualMachineInstance
 }
 
 func (rc *KubevirtRunner) GetDataVolumeName() string {
 	return rc.dataVolume
-}
-
-func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerName, jitConfig string) (
-	*v1.VirtualMachineInstance, *v1beta1.DataVolume, error,
-) {
-	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
-		ctx, vmTemplate, k8smetav1.GetOptions{})
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot obtain KubeVirt vm list")
-	}
-
-	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)
-	virtualMachineInstance.Spec = virtualMachine.Spec.Template.Spec
-
-	if virtualMachineInstance.Annotations == nil {
-		virtualMachineInstance.Annotations = make(map[string]string)
-	}
-
-	jri := map[string]interface{}{
-		"jitconfig": jitConfig,
-	}
-
-	out, err := json.Marshal(jri)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot marshal jitConfig")
-	}
-
-	virtualMachineInstance.Annotations[runnerInfoAnnotation] = string(out)
-
-	var dataVolume *v1beta1.DataVolume
-
-	for _, dvt := range virtualMachine.Spec.DataVolumeTemplates {
-		for _, volume := range virtualMachineInstance.Spec.Volumes {
-			if volume.DataVolume != nil && volume.DataVolume.Name == dvt.Name {
-				dataVolume = &v1beta1.DataVolume{
-					ObjectMeta: k8smetav1.ObjectMeta{
-						Name: fmt.Sprintf("%s-%s", dvt.Name, runnerName),
-					},
-					Spec: dvt.Spec,
-				}
-
-				volume.DataVolume.Name = dataVolume.Name
-
-				break
-			}
-		}
-	}
-
-	virtualMachineInstance.Spec.Volumes = append(virtualMachineInstance.Spec.Volumes, generateRunnerInfoVolume())
-
-	return virtualMachineInstance, dataVolume, nil
 }
 
 func generateRunnerInfoVolume() v1.Volume {
@@ -217,7 +173,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, vir
 					log.Printf("%s has failed\n", virtualMachineInstance)
 
 					return ErrRunnerFailed
-				default:
+				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown:
 					log.Printf("%s has transitioned to %s phase \n", virtualMachineInstance, rc.currentStatus)
 				}
 			} else if time.Since(lastTimeChecked).Minutes() > reportingElapse {
@@ -254,9 +210,53 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context, virtualMachineIns
 	return nil
 }
 
-func NewRunner(namespace string, virtClient kubecli.KubevirtClient) *KubevirtRunner {
-	return &KubevirtRunner{
-		namespace:  namespace,
-		virtClient: virtClient,
+func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerName, jitConfig string) (
+	*v1.VirtualMachineInstance, *v1beta1.DataVolume, error,
+) {
+	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
+		ctx, vmTemplate, k8smetav1.GetOptions{})
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "cannot obtain KubeVirt vm list")
 	}
+
+	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)
+	virtualMachineInstance.Spec = virtualMachine.Spec.Template.Spec
+
+	if virtualMachineInstance.Annotations == nil {
+		virtualMachineInstance.Annotations = make(map[string]string)
+	}
+
+	jri := map[string]interface{}{
+		"jitconfig": jitConfig,
+	}
+
+	out, err := json.Marshal(jri)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "cannot marshal jitConfig")
+	}
+
+	virtualMachineInstance.Annotations[runnerInfoAnnotation] = string(out)
+
+	var dataVolume *v1beta1.DataVolume
+
+	for _, dvt := range virtualMachine.Spec.DataVolumeTemplates {
+		for _, volume := range virtualMachineInstance.Spec.Volumes {
+			if volume.DataVolume != nil && volume.DataVolume.Name == dvt.Name {
+				dataVolume = &v1beta1.DataVolume{
+					ObjectMeta: k8smetav1.ObjectMeta{
+						Name: fmt.Sprintf("%s-%s", dvt.Name, runnerName),
+					},
+					Spec: dvt.Spec,
+				}
+
+				volume.DataVolume.Name = dataVolume.Name
+
+				break
+			}
+		}
+	}
+
+	virtualMachineInstance.Spec.Volumes = append(virtualMachineInstance.Spec.Volumes, generateRunnerInfoVolume())
+
+	return virtualMachineInstance, dataVolume, nil
 }

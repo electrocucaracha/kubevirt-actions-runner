@@ -27,6 +27,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var errExpectedFailure = errors.New("failure")
+
 type mock struct {
 	createErr    error
 	deleteErr    error
@@ -95,15 +97,14 @@ var _ = Describe("Root Command", func() {
 
 	DescribeTable("initialization process", func(shouldSucceed bool, failure Failure, args ...string) {
 		cmd.SetArgs(args)
-		expectedFailure := errors.New("failure")
 		if HasOneOf(failure, Create) {
-			runner.createErr = expectedFailure
+			runner.createErr = errExpectedFailure
 		}
 		if HasOneOf(failure, Delete) {
-			runner.deleteErr = expectedFailure
+			runner.deleteErr = errExpectedFailure
 		}
 		if HasOneOf(failure, Wait) {
-			runner.waitErr = expectedFailure
+			runner.waitErr = errExpectedFailure
 		}
 
 		err := cmd.Execute()
