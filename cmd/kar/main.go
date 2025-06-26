@@ -22,6 +22,8 @@ import (
 	"os"
 	"os/signal"
 	"runtime/debug"
+	"syscall"
+	"time"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app"
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
@@ -29,6 +31,8 @@ import (
 	"github.com/spf13/pflag"
 	"kubevirt.io/client-go/kubecli"
 )
+
+const defaultCleanupTimeout = 30 * time.Minute
 
 type buildInfo struct {
 	gitCommit       string
@@ -58,6 +62,26 @@ func getBuildInfo() buildInfo {
 	return out
 }
 
+func getCleanupTimeout() time.Duration {
+	if val := os.Getenv("KAR_CLEANUP_TIMEOUT"); val != "" {
+		if d, err := time.ParseDuration(val); err == nil {
+			return d
+		}
+
+		log.Printf("Invalid KAR_CLEANUP_TIMEOUT value: %q, using default %s", val, defaultCleanupTimeout)
+	}
+
+	return defaultCleanupTimeout
+}
+
+func ensureValidCleanupContext(parent context.Context) (context.Context, context.CancelFunc) {
+	if parent.Err() != nil {
+		return context.WithTimeout(context.TODO(), getCleanupTimeout())
+	}
+
+	return context.WithTimeout(parent, getCleanupTimeout())
+}
+
 func main() {
 	var (
 		opts app.Opts
@@ -65,8 +89,8 @@ func main() {
 	)
 
 	buildInfo := getBuildInfo()
-	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified:%v\n",
-		buildInfo.gitCommit, buildInfo.gitTreeModified)
+	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
+		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
 	clientConfig := kubecli.DefaultClientConfig(&pflag.FlagSet{})
 
@@ -82,22 +106,25 @@ func main() {
 
 	runner := runner.NewRunner(namespace, virtClient)
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	log.Printf("cleanup timeout is set to: %s", getCleanupTimeout())
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
 	go func() {
 		<-ctx.Done()
 
-		if err := runner.DeleteResources(ctx, runner.GetVMIName(), runner.GetDataVolumeName()); err != nil {
-			log.Panicln(err.Error())
-		}
+		cleanupCtx, cancel := ensureValidCleanupContext(ctx)
+		defer cancel()
 
-		stop()
+		if err := runner.DeleteResources(cleanupCtx, runner.GetVMIName(), runner.GetDataVolumeName()); err != nil {
+			log.Println("cleanup failed:", err)
+		}
 	}()
 
 	rootCmd := app.NewRootCommand(ctx, runner, opts)
 
 	if err := rootCmd.Execute(); err != nil && !errors.Is(errors.Cause(err), context.Canceled) {
-		log.Panicln(err.Error())
+		log.Println("execute command failed:", err)
 	}
 }
