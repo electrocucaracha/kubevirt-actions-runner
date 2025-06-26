@@ -25,6 +25,7 @@ import (
 
 	"github.com/pkg/errors"
 	k8scorev1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/ptr"
 	v1 "kubevirt.io/api/core/v1"
@@ -236,13 +237,17 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context, virtualMachineIns
 
 	if err := rc.virtClient.VirtualMachineInstance(rc.namespace).Delete(
 		ctx, virtualMachineInstance, k8smetav1.DeleteOptions{}); err != nil {
-		return errors.Wrap(err, "fail to delete runner instance")
+		if !k8serrors.IsNotFound(err) {
+			log.Printf("fail to delete runner instance %s: %v", virtualMachineInstance, err)
+		}
 	}
 
 	if len(dataVolume) > 0 {
-		if err := rc.virtClient.CdiClient().CdiV1beta1().DataVolumes(rc.namespace).Delete(ctx, dataVolume,
-			k8smetav1.DeleteOptions{}); err != nil {
-			return errors.Wrap(err, "fail to delete runner data volume")
+		if err := rc.virtClient.CdiClient().CdiV1beta1().DataVolumes(rc.namespace).Delete(
+			ctx, dataVolume, k8smetav1.DeleteOptions{}); err != nil {
+			if !k8serrors.IsNotFound(err) {
+				log.Printf("fail to delete runner data volume %s: %v", dataVolume, err)
+			}
 		}
 	}
 

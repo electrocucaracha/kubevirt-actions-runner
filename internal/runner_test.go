@@ -87,23 +87,19 @@ var _ = Describe("Runner", func() {
 		Entry("when empty jit config is provided", false, vmTemplate, "runnerName", ""),
 	)
 
-	DescribeTable("delete resources", func(shouldSucceed bool, vmInstance, dataVolume string) {
+	DescribeTable("delete resources", func(vmInstance, dataVolume string) {
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
 			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
 		)
 
 		err := karRunner.DeleteResources(context.TODO(), vmInstance, dataVolume)
 
-		if shouldSucceed {
-			Expect(err).NotTo(HaveOccurred())
-		} else {
-			Expect(err).To(HaveOccurred())
-		}
+		Expect(err).NotTo(HaveOccurred())
 	},
-		Entry("when the runner has a data volume", true, vmInstance, dataVolume),
-		Entry("when the runner doesn't have data volumes", true, vmInstance, ""),
-		Entry("when the runner doesn't exist", false, "runner-abc098", ""),
-		Entry("when the data volume doesn't exist", false, vmInstance, "dv-abc098"),
+		Entry("when the runner has a data volume", vmInstance, dataVolume),
+		Entry("when the runner doesn't have data volumes", vmInstance, ""),
+		Entry("when the runner doesn't exist", "runner-abc098", ""),
+		Entry("when the data volume doesn't exist", vmInstance, "dv-abc098"),
 	)
 })
 
