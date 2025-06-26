@@ -18,6 +18,7 @@ package app
 
 import (
 	"context"
+	"log"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 	"github.com/pkg/errors"
@@ -46,13 +47,19 @@ func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 		return errors.Wrap(err, "fail to create resources")
 	}
 
+	log.Println("Virtual Machine runner resources cretead successfully")
+
 	if err := runner.WaitForVirtualMachineInstance(ctx, runner.GetVMIName()); err != nil {
 		return errors.Wrap(err, "fail to wait for resources")
 	}
 
+	log.Println("Virtual Machine runner completed successfully")
+
 	if err := runner.DeleteResources(ctx, runner.GetVMIName(), runner.GetDataVolumeName()); err != nil {
 		return errors.Wrap(err, "fail to delete resources")
 	}
+
+	log.Println("Virtual Machine runner deleted successfully")
 
 	return nil
 }
