@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/pkg/errors"
 	k8scorev1 "k8s.io/api/core/v1"
@@ -147,22 +146,17 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, virtualMachineInstance string) error {
 	log.Printf("Watching %s Virtual Machine Instance\n", virtualMachineInstance)
 
-	const reportingElapse = 5.0
-
 	watch, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Watch(ctx, k8smetav1.ListOptions{})
 	if err != nil {
 		return errors.Wrap(err, "failed to watch the virtual machine instance")
 	}
 	defer watch.Stop()
 
-	lastTimeChecked := time.Now()
-
 	for event := range watch.ResultChan() {
 		vmi, ok := event.Object.(*v1.VirtualMachineInstance)
 		if ok && vmi.Name == rc.virtualMachineInstance {
 			if vmi.Status.Phase != rc.currentStatus {
 				rc.currentStatus = vmi.Status.Phase
-				lastTimeChecked = time.Now()
 
 				switch rc.currentStatus {
 				case v1.Succeeded:
@@ -176,10 +170,6 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, vir
 				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown:
 					log.Printf("%s has transitioned to %s phase \n", virtualMachineInstance, rc.currentStatus)
 				}
-			} else if time.Since(lastTimeChecked).Minutes() > reportingElapse {
-				log.Printf("%s is in %s phase \n", virtualMachineInstance, rc.currentStatus)
-
-				lastTimeChecked = time.Now()
 			}
 		}
 	}
