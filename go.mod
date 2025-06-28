@@ -8,6 +8,7 @@ replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20250610211856-8b98d1e
 
 require (
 	github.com/golang/mock v1.6.0
+	github.com/matryer/resync v0.0.0-20161211202428-d39c09a11215
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/pkg/errors v0.9.1
@@ -23,6 +24,7 @@ require (
 )
 
 require (
+	github.com/cheekybits/is v0.0.0-20150225183255-68e9c0620927 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect

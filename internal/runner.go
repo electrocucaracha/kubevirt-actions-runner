@@ -147,9 +147,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 		vmi, ok := event.Object.(*v1.VirtualMachineInstance)
 		if ok && vmi.Name == appCtx.GetVMIName() {
 			if vmi.Status.Phase != currentStatus {
-				currentStatus = vmi.Status.Phase
-
-				switch currentStatus {
+				switch vmi.Status.Phase {
 				case v1.Succeeded:
 					log.Printf("%s has successfully completed\n", appCtx.GetVMIName())
 
@@ -159,7 +157,8 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 					return ErrRunnerFailed
 				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown:
-					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), currentStatus)
+					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), vmi.Status.Phase)
+					currentStatus = vmi.Status.Phase
 				}
 			}
 		}

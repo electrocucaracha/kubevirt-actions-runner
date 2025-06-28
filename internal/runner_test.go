@@ -18,6 +18,7 @@ package runner_test
 
 import (
 	"context"
+	"time"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 	"github.com/golang/mock/gomock"
@@ -25,6 +26,7 @@ import (
 	. "github.com/onsi/gomega"
 	k8sv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 	v1 "kubevirt.io/api/core/v1"
 	cdifake "kubevirt.io/client-go/containerizeddataimporter/fake"
 	"kubevirt.io/client-go/kubecli"
@@ -36,6 +38,7 @@ var _ = Describe("Runner", func() {
 	var virtClient *kubecli.MockKubevirtClient
 	var virtClientset *kubevirtfake.Clientset
 	var karRunner runner.Runner
+	var mockCtrl *gomock.Controller
 
 	const (
 		vmTemplate = "vm-template"
@@ -44,13 +47,19 @@ var _ = Describe("Runner", func() {
 	)
 
 	BeforeEach(func() {
-		virtClient = kubecli.NewMockKubevirtClient(gomock.NewController(GinkgoT()))
+		mockCtrl = gomock.NewController(GinkgoT())
+		virtClient = kubecli.NewMockKubevirtClient(mockCtrl)
 		virtClientset = kubevirtfake.NewSimpleClientset(NewVirtualMachineInstance(vmInstance), NewVirtualMachine(vmTemplate))
 		cdiClientset := cdifake.NewSimpleClientset(NewDataVolume(dataVolume))
 
 		virtClient.EXPECT().CdiClient().Return(cdiClientset).AnyTimes()
 
 		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient)
+	})
+
+	AfterEach(func() {
+		mockCtrl.Finish()
+		runner.CancelAppContext()
 	})
 
 	DescribeTable("create resources", func(shouldSucceed bool, vmTemplate, runnerName, jitConfig string) {
@@ -102,6 +111,38 @@ var _ = Describe("Runner", func() {
 		Entry("when the runner doesn't have data volumes", vmInstance, ""),
 		Entry("when the runner doesn't exist", "runner-abc098", ""),
 		Entry("when the data volume doesn't exist", vmInstance, "dv-abc098"),
+	)
+
+	DescribeTable("watch resources", func(shouldSucceed bool, lastPhase v1.VirtualMachineInstancePhase) {
+		const timeout = 1 * time.Second
+		fakeWatcher := watch.NewFake()
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		errChan := make(chan error, 1)
+		go func() {
+			errChan <- karRunner.WaitForVirtualMachineInstance(context.TODO())
+			close(errChan)
+		}()
+
+		phases := [5]v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, lastPhase}
+		vmi := NewVirtualMachineInstance(vmInstance)
+		for _, phase := range phases {
+			vmi.Status.Phase = phase
+			fakeWatcher.Add(vmi)
+			time.Sleep(10 * time.Millisecond)
+		}
+
+		if shouldSucceed {
+			Eventually(errChan, timeout).Should(Receive(BeNil()))
+		} else {
+			Eventually(errChan, timeout).Should(Receive(Equal(runner.ErrRunnerFailed)))
+		}
+	},
+		Entry("when the runner completes successfully", true, v1.Succeeded),
+		Entry("when the runner completes unsuccessfully", false, v1.Failed),
 	)
 })
 

@@ -27,6 +27,7 @@ linters:
             - k8s.io/api/core/v1
             - k8s.io/apimachinery/pkg/api/errors
             - k8s.io/apimachinery/pkg/apis/meta/v1
+            - k8s.io/apimachinery/pkg/watch
             - k8s.io/utils/ptr
             - kubevirt.io/api/core/v1
             - kubevirt.io/client-go/containerizeddataimporter/fake
@@ -35,6 +36,7 @@ linters:
             - kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
             - github.com/onsi/ginkgo/v2
             - github.com/onsi/gomega
+            - github.com/matryer/resync
     gomoddirectives:
       replace-allow-list:
         - k8s.io/kube-openapi

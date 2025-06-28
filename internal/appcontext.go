@@ -18,7 +18,8 @@ package runner
 
 import (
 	"log"
-	"sync"
+
+	sync "github.com/matryer/resync"
 )
 
 type AppContext struct {
@@ -55,6 +56,11 @@ func GetAppContext() *AppContext {
 	}
 
 	return instance
+}
+
+// CancelAppContext resets the AppContext to its initial state.
+func CancelAppContext() {
+	once.Reset()
 }
 
 // GetVMIName returns the Virtual Machine Instance Name created for the runner.
