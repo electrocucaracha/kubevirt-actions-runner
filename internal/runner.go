@@ -45,9 +45,8 @@ type Runner interface {
 }
 
 type KubevirtRunner struct {
-	virtClient    kubecli.KubevirtClient
-	namespace     string
-	currentStatus v1.VirtualMachineInstancePhase
+	virtClient kubecli.KubevirtClient
+	namespace  string
 }
 
 var _ Runner = (*KubevirtRunner)(nil)
@@ -142,13 +141,15 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	}
 	defer watch.Stop()
 
+	var currentStatus v1.VirtualMachineInstancePhase
+
 	for event := range watch.ResultChan() {
 		vmi, ok := event.Object.(*v1.VirtualMachineInstance)
 		if ok && vmi.Name == appCtx.GetVMIName() {
-			if vmi.Status.Phase != rc.currentStatus {
-				rc.currentStatus = vmi.Status.Phase
+			if vmi.Status.Phase != currentStatus {
+				currentStatus = vmi.Status.Phase
 
-				switch rc.currentStatus {
+				switch currentStatus {
 				case v1.Succeeded:
 					log.Printf("%s has successfully completed\n", appCtx.GetVMIName())
 
@@ -158,7 +159,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 					return ErrRunnerFailed
 				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown:
-					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), rc.currentStatus)
+					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), currentStatus)
 				}
 			}
 		}
