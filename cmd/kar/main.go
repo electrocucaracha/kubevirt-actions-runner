@@ -32,7 +32,7 @@ import (
 	"kubevirt.io/client-go/kubecli"
 )
 
-const defaultCleanupTimeout = 30 * time.Minute
+const defaultCleanupTimeout = 5 * time.Minute
 
 type buildInfo struct {
 	gitCommit       string
