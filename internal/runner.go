@@ -40,18 +40,14 @@ const (
 
 type Runner interface {
 	CreateResources(ctx context.Context, vmTemplate string, runnerName string, jitConfig string) error
-	WaitForVirtualMachineInstance(ctx context.Context, vmi string) error
-	DeleteResources(ctx context.Context, vmi string, dv string) error
-	GetVMIName() string
-	GetDataVolumeName() string
+	WaitForVirtualMachineInstance(ctx context.Context) error
+	DeleteResources(ctx context.Context) error
 }
 
 type KubevirtRunner struct {
-	virtClient             kubecli.KubevirtClient
-	namespace              string
-	dataVolume             string
-	virtualMachineInstance string
-	currentStatus          v1.VirtualMachineInstancePhase
+	virtClient    kubecli.KubevirtClient
+	namespace     string
+	currentStatus v1.VirtualMachineInstancePhase
 }
 
 var _ Runner = (*KubevirtRunner)(nil)
@@ -61,14 +57,6 @@ func NewRunner(namespace string, virtClient kubecli.KubevirtClient) *KubevirtRun
 		namespace:  namespace,
 		virtClient: virtClient,
 	}
-}
-
-func (rc *KubevirtRunner) GetVMIName() string {
-	return rc.virtualMachineInstance
-}
-
-func (rc *KubevirtRunner) GetDataVolumeName() string {
-	return rc.dataVolume
 }
 
 func generateRunnerInfoVolume() v1.Volume {
@@ -117,10 +105,10 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 		return errors.Wrap(err, "fail to create runner instance")
 	}
 
-	rc.virtualMachineInstance = virtualMachineInstance.Name
-
+	dataVolumeName := ""
 	if dataVolume != nil {
-		log.Printf("Creating %s Data Volume\n", dataVolume.Name)
+		dataVolumeName = dataVolume.Name
+		log.Printf("Creating %s Data Volume\n", dataVolumeName)
 
 		dataVolume.OwnerReferences = []k8smetav1.OwnerReference{
 			{
@@ -136,15 +124,17 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 			rc.namespace).Create(ctx, dataVolume, k8smetav1.CreateOptions{}); err != nil {
 			return errors.Wrap(err, "cannot create data volume")
 		}
-
-		rc.dataVolume = dataVolume.Name
 	}
+
+	NewAppContext(virtualMachineInstance.Name, dataVolumeName)
 
 	return nil
 }
 
-func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, virtualMachineInstance string) error {
-	log.Printf("Watching %s Virtual Machine Instance\n", virtualMachineInstance)
+func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) error {
+	appCtx := GetAppContext()
+
+	log.Printf("Watching %s Virtual Machine Instance\n", appCtx.GetVMIName())
 
 	watch, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Watch(ctx, k8smetav1.ListOptions{})
 	if err != nil {
@@ -154,21 +144,21 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, vir
 
 	for event := range watch.ResultChan() {
 		vmi, ok := event.Object.(*v1.VirtualMachineInstance)
-		if ok && vmi.Name == rc.virtualMachineInstance {
+		if ok && vmi.Name == appCtx.GetVMIName() {
 			if vmi.Status.Phase != rc.currentStatus {
 				rc.currentStatus = vmi.Status.Phase
 
 				switch rc.currentStatus {
 				case v1.Succeeded:
-					log.Printf("%s has successfully completed\n", virtualMachineInstance)
+					log.Printf("%s has successfully completed\n", appCtx.GetVMIName())
 
 					return nil
 				case v1.Failed:
-					log.Printf("%s has failed\n", virtualMachineInstance)
+					log.Printf("%s has failed\n", appCtx.GetVMIName())
 
 					return ErrRunnerFailed
 				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown:
-					log.Printf("%s has transitioned to %s phase \n", virtualMachineInstance, rc.currentStatus)
+					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), rc.currentStatus)
 				}
 			}
 		}
@@ -177,22 +167,24 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context, vir
 	return nil
 }
 
-func (rc *KubevirtRunner) DeleteResources(ctx context.Context, virtualMachineInstance, dataVolume string) error {
+func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
+	appCtx := GetAppContext()
+
 	log.Printf("Cleaning %s Virtual Machine Instance resources\n",
-		virtualMachineInstance)
+		appCtx.GetVMIName())
 
 	if err := rc.virtClient.VirtualMachineInstance(rc.namespace).Delete(
-		ctx, virtualMachineInstance, k8smetav1.DeleteOptions{}); err != nil {
+		ctx, appCtx.GetVMIName(), k8smetav1.DeleteOptions{}); err != nil {
 		if !k8serrors.IsNotFound(err) {
-			log.Printf("fail to delete runner instance %s: %v", virtualMachineInstance, err)
+			log.Printf("fail to delete runner instance %s: %v", appCtx.GetVMIName(), err)
 		}
 	}
 
-	if len(dataVolume) > 0 {
+	if len(appCtx.GetDataVolumeName()) > 0 {
 		if err := rc.virtClient.CdiClient().CdiV1beta1().DataVolumes(rc.namespace).Delete(
-			ctx, dataVolume, k8smetav1.DeleteOptions{}); err != nil {
+			ctx, appCtx.GetDataVolumeName(), k8smetav1.DeleteOptions{}); err != nil {
 			if !k8serrors.IsNotFound(err) {
-				log.Printf("fail to delete runner data volume %s: %v", dataVolume, err)
+				log.Printf("fail to delete runner data volume %s: %v", appCtx.GetDataVolumeName(), err)
 			}
 		}
 	}

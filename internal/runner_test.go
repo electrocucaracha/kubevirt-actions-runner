@@ -67,7 +67,8 @@ var _ = Describe("Runner", func() {
 
 		if shouldSucceed {
 			Expect(err).NotTo(HaveOccurred())
-			Expect(karRunner.GetVMIName()).Should(Equal(runnerName))
+			appCtx := runner.GetAppContext()
+			Expect(appCtx.GetVMIName()).Should(Equal(runnerName))
 		} else {
 			Expect(err).To(HaveOccurred())
 			if len(vmTemplate) == 0 {
@@ -91,8 +92,9 @@ var _ = Describe("Runner", func() {
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
 			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
 		)
+		runner.NewAppContext(vmInstance, dataVolume)
 
-		err := karRunner.DeleteResources(context.TODO(), vmInstance, dataVolume)
+		err := karRunner.DeleteResources(context.TODO())
 
 		Expect(err).NotTo(HaveOccurred())
 	},

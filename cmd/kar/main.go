@@ -117,7 +117,7 @@ func main() {
 		cleanupCtx, cancel := ensureValidCleanupContext(ctx)
 		defer cancel()
 
-		if err := runner.DeleteResources(cleanupCtx, runner.GetVMIName(), runner.GetDataVolumeName()); err != nil {
+		if err := runner.DeleteResources(cleanupCtx); err != nil {
 			log.Println("cleanup failed:", err)
 		}
 	}()

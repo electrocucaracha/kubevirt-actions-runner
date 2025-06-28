@@ -54,14 +54,6 @@ func HasOneOf(f, flag Failure) bool {
 	return f&flag != 0
 }
 
-func (m *mock) GetVMIName() string {
-	return m.runnerName
-}
-
-func (m *mock) GetDataVolumeName() string {
-	return m.runnerName
-}
-
 func (m *mock) CreateResources(_ context.Context, vmTemplate, runnerName, jitConfig string,
 ) error {
 	m.vmTemplate = vmTemplate
@@ -73,13 +65,13 @@ func (m *mock) CreateResources(_ context.Context, vmTemplate, runnerName, jitCon
 	return m.createErr
 }
 
-func (m *mock) WaitForVirtualMachineInstance(_ context.Context, _ string) error {
+func (m *mock) WaitForVirtualMachineInstance(_ context.Context) error {
 	m.waitCalled = true
 
 	return m.waitErr
 }
 
-func (m *mock) DeleteResources(_ context.Context, _, _ string) error {
+func (m *mock) DeleteResources(_ context.Context) error {
 	m.deleteCalled = true
 
 	return m.deleteErr

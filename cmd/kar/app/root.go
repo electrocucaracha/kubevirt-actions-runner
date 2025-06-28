@@ -49,13 +49,13 @@ func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 
 	log.Println("Virtual Machine runner resources created successfully")
 
-	if err := runner.WaitForVirtualMachineInstance(ctx, runner.GetVMIName()); err != nil {
+	if err := runner.WaitForVirtualMachineInstance(ctx); err != nil {
 		return errors.Wrap(err, "fail to wait for resources")
 	}
 
 	log.Println("Virtual Machine runner completed successfully")
 
-	if err := runner.DeleteResources(ctx, runner.GetVMIName(), runner.GetDataVolumeName()); err != nil {
+	if err := runner.DeleteResources(ctx); err != nil {
 		return errors.Wrap(err, "fail to delete resources")
 	}
 
