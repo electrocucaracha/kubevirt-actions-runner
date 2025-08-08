@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # 5.5.0
         with:
           go-version: "^1.24"
-      - uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # 4.2.3
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # 4.2.4
         if: ${{ !env.ACT }}
         with:
           path: |
@@ -95,14 +95,14 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # 4.2.2
       - name: Log in to the Container registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # 3.4.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # 3.5.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # 5.7.0
+        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # 5.8.0
         with:
           images: ghcr.io/${{ github.repository }}
       - name: Build and push Docker image
