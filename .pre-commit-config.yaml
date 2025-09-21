@@ -1,0 +1,40 @@
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2025
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://opendev.org/openstack/bashate.git
+    rev: 2.1.1
+    hooks:
+      - id: bashate
+        # E005 file does not begin with #! or have a .sh prefix
+        # E006 check for lines longer than 79 columns
+        # E042 local declaration hides errors
+        # E043 Arithmetic compound has inconsistent return semantics
+        args: ["-v", "-iE006", "-iE005,E042,E043"]
+        files: .*\.sh
+        exclude: ".tox/.*"
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.12.0
+    hooks:
+      - id: markdownlint
+        # MD013: line length
+        args: ["-r", "~MD013"]
+        files: \.(md|mdown|markdown)$
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.17.2
+    hooks:
+      - id: yamlfmt
