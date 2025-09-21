@@ -18,6 +18,7 @@ cncf
 COCOMO
 codebase
 Codecov
+Codespaces
 cohost
 datavolumes
 dev
@@ -42,6 +43,7 @@ Ij
 img
 IShouldRefactorThis
 isThereSeriouslyAnotherOne
+itemName
 js
 json
 JSX
@@ -55,13 +57,17 @@ laobi
 lifecycle
 linter
 macOS
+mcp
 namespace
 namespaces
 npm
 npmjs
 oci
+ol
 omgSoManyParameters
+openapi
 opensource
+podman
 pptx
 pre
 precommit
@@ -91,9 +97,11 @@ VirtualMachine
 VirtualMachineInstance
 VirtualMachineInstances
 VirtualMachines
+visualstudio
 vm
 VMI
 VMs
+vscode
 Vue
 xyz
 yaml
