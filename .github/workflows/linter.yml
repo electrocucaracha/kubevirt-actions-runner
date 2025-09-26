@@ -59,3 +59,14 @@ jobs:
           VALIDATE_GO_MODULES: false
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}
+  notify:
+    name: Notify failed linter
+    needs: [check-broken-links, check-super-linter]
+    if: failure() && github.event.pull_request == null
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # 1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
