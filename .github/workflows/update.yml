@@ -17,8 +17,8 @@ jobs:
   check-versions:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # for technote-space/create-pr-action to push code
-      pull-requests: write # for technote-space/create-pr-action to create a PR
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
@@ -39,11 +39,11 @@ jobs:
   check-dockerfile:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
         with:
-          persist-credentials: true
+          persist-credentials: false
       - name: update Dockerfile
         uses: ludeeus/dockerfile-updater@eaf8ea79220d076eb46c127fa9895e3de3e0a512 # 21.01.0
         with:
