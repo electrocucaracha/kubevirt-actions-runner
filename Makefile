@@ -20,6 +20,7 @@ lint:
 	-e KUBERNETES_KUBECONFORM_OPTIONS='-ignore-missing-schemas' \
 	-e VALIDATE_GO=false \
 	-e VALIDATE_GO_MODULES=false \
+	-e VALIDATE_BIOME_FORMAT=false \
 	ghcr.io/super-linter/super-linter
 
 .PHONY: fmt
