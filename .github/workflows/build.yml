@@ -23,6 +23,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 jobs:
   changes:
+    name: Push Docker images to Docker Hub
     runs-on: ubuntu-latest
     permissions:
       contents: write
