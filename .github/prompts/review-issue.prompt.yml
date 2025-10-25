@@ -1,0 +1,73 @@
+name: Problem Reviewer
+description: Reviews input text for problems and suggests solutions.
+model: mistral-ai/mistral-medium-2505
+modelParameters:
+  temperature: 0.6
+messages:
+  - role: system
+    content: You are an expert software engineer who specializes in diagnosing and fixing software build and runtime failures. Always provide structured reasoning and propose concrete fixes when possible.
+  - role: user
+    content: |
+      You are an expert software engineer specializing in debugging and log analysis.
+
+      Task: Review the following log or error message carefully:
+      <log_input>
+      {{input}}
+      </log_input>
+
+      Objectives:
+
+      1. **Diagnosis:** Identify patterns, anomalies, or dependencies that could explain the failure. What is the most probable root cause?
+      2. **Reasoning:** Explain why this root cause is plausible — referencing specific log lines, timestamps, or stack traces.
+      3. **Resolution:** If a fix is evident, describe your reasoning process and propose an exact code or configuration change. Present your solution as a unified diff (diff format).
+      4. **Reflection:** If no clear fix is identifiable, summarize which parts of the log are ambiguous and what further information would be needed to proceed.
+
+      Goal: Deliver an insightful and technically sound explanation that not only solves the issue but also strengthens understanding of the system's behavior and failure patterns.
+testData:
+  - input: |
+      2025-10-12 23:35:40 [INFO]   Linting GITHUB_ACTIONS items...
+      Error: -12 23:35:41 [ERROR]   Found errors when linting GITHUB_ACTIONS. Exit code: 1.
+      2025-10-12 23:35:41 [INFO]   Command output for GITHUB_ACTIONS:
+      ------
+      .github/workflows/build.yml:47:9: shellcheck reported issue in this script: SC2046:warning:1:45: Quote this to prevent word splitting [shellcheck]
+      47 |         run: |
+      .github/workflows/build.yml:47:9: shellcheck reported issue in this script: SC2116:style:1:45: Useless echo? Instead of 'cmd $(echo foo)', just use 'cmd foo' [shellcheck]
+      47 |         run: |
+      .github/workflows/build.yml:47:9: shellcheck reported issue in this script: SC2086:info:2:46: Double quote to prevent globbing and word splitting [shellcheck]
+      47 |         run: |
+      ------
+    expected: |
+      Diagnosis:
+      The build process failed during the GitHub Actions linting stage. The logs show that the workflow file `.github/workflows/build.yml` triggered multiple shellcheck warnings (SC2046, SC2116, SC2086). These relate to improper shell quoting and use of echo within command substitutions. The linter treats these warnings as errors, causing the exit code 1 and marking the lint step as failed.
+      Reasoning:
+      At line 47 in build.yml, a script block (run: |) includes shell commands that likely resemble something like:
+      ```
+      run: |
+      cmd $(echo foo)
+      ```
+      ShellCheck flags this pattern:
+      - SC2116 warns that $(echo foo) is redundant — cmd foo would suffice.
+      - SC2046 and SC2086 indicate missing quotes, which can lead to unexpected word splitting or globbing.
+      - Since the linter runs as part of CI, any non-zero exit code (like 1) halts the workflow.
+      Resolution (Unified Diff):
+      ```
+      - run: |
+      -   cmd $(echo $VAR)
+      + run: |
+      +   cmd "$VAR"
+      ```
+      Reflection:
+      The logs are explicit enough to pinpoint the root cause — improper shell quoting within the GitHub Actions workflow. If the same issue recurs, enabling `shellcheck --severity=error` in CI can make failures more predictable.
+evaluators:
+  - name: Should include a 'Diagnosis' section
+    string:
+      contains: "Diagnosis:"
+  - name: Should include a 'Reasoning' section
+    string:
+      contains: "Reasoning:"
+  - name: Should include a 'Resolution' section
+    string:
+      contains: "Resolution"
+  - name: Should include a 'Reflection' section
+    string:
+      contains: "Reflection:"
