@@ -76,7 +76,7 @@ jobs:
         id: ai-linter-analysis
         if: failure()
         with:
-          model: mistral-ai/mistral-medium-2505
+          model: mistral-ai/Ministral-3B
           input: |
             diff: ${{ steps.git-diff.outputs.diff }}
           prompt-file: ./linter-errors.json
