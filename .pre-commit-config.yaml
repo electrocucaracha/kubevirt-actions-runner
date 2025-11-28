@@ -6,6 +6,9 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+default_install_hook_types:
+  - pre-commit
+  - prepare-commit-msg
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -38,3 +41,9 @@ repos:
     rev: v0.17.2
     hooks:
       - id: yamlfmt
+  - repo: https://github.com/electrocucaracha/ai-prepare-commit-msg
+    rev: 507c9dc0a2bb2b99a823f697040bec1e30f20b18
+    hooks:
+      - id: ai-prepare-commit
+        stages:
+          - prepare-commit-msg
