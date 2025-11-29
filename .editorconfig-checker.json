@@ -8,6 +8,7 @@
   "AllowedContentTypes": [],
   "PassedFiles": [],
   "Disable": {
+    "Charset": true,
     "EndOfLine": false,
     "Indentation": false,
     "IndentSize": false,
