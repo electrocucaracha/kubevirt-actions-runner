@@ -31,18 +31,18 @@ repos:
         files: .*\.sh
         exclude: ".tox/.*"
   - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.12.0
+    rev: v0.15.0
     hooks:
       - id: markdownlint
         # MD013: line length
         args: ["-r", "~MD013"]
         files: \.(md|mdown|markdown)$
   - repo: https://github.com/google/yamlfmt
-    rev: v0.17.2
+    rev: v0.20.0
     hooks:
       - id: yamlfmt
   - repo: https://github.com/electrocucaracha/ai-prepare-commit-msg
-    rev: 507c9dc0a2bb2b99a823f697040bec1e30f20b18
+    rev: cd01dd067c5cfb0fd9fc21a5df1855b18e7bf266
     hooks:
       - id: ai-prepare-commit
         stages:

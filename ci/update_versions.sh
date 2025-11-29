@@ -26,6 +26,11 @@ go_version="$(curl -sL https://golang.org/VERSION?m=text | sed -n 's/go//;s/\..$
 go mod tidy -go="$go_version"
 sed -i "s/go-version: .*/go-version: \"^$go_version\"/g" .github/workflows/update.yml
 
+if ! command -v uvx >/dev/null; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+uvx pre-commit autoupdate
+
 # Update GitHub Action commit hashes
 gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[\_a-z\-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
 exceptions=('reviewdog/action-misspell')
