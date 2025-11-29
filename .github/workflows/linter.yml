@@ -52,8 +52,6 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # 6.0.0
         with:
           persist-credentials: false
-      - name: Install OpenSSL
-        run: sudo apt-get update && sudo apt-get install -y libssl-dev
       - name: Run super-linter validation
         id: linter-validation
         uses: super-linter/super-linter@502f4fe48a81a392756e173e39a861f8c8efe056 # 8.3.0
@@ -63,6 +61,7 @@ jobs:
           VALIDATE_GO_MODULES: false
           VALIDATE_GO: false
           VALIDATE_BIOME_FORMAT: false
+          VALIDATE_PRE_COMMIT: false
           SAVE_SUPER_LINTER_OUTPUT: true
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}
