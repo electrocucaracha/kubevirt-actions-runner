@@ -33,7 +33,7 @@ uvx pre-commit autoupdate
 
 # Update GitHub Action commit hashes
 gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[\_a-z\-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
-exceptions=('reviewdog/action-misspell')
+exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance')
 for action in $gh_actions; do
     if [[ ${exceptions[*]} =~ (^|[^[:alpha:]])$action([^[:alpha:]]|$) ]]; then
         commit_hash=$(git ls-remote "https://github.com/$action" | grep 'refs/tags/[v]\?[0-9][0-9\.]*\^{}$' | sed 's|refs/tags/[vV]\?[\.]\?||g; s|\^{}$||g' | sort -u -k2 -V | tail -1 | awk '{ printf "%s # %s\n",$1,$2 }')
