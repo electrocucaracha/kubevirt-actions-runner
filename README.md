@@ -51,7 +51,7 @@ This template will be used to spawn VMs on-demand for each GitHub job. The base 
 kubectl apply -f scripts/vm_template.yml -n "${namespace}"
 ```
 
-Example snippet from `vm_template.yml`:
+Example snippet from [`vm.yaml`](scripts/test-data/vm.yaml):
 
 ```yaml
 apiVersion: kubevirt.io/v1

@@ -1,0 +1,62 @@
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2025
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+name: Check End-to-End (On Demand)
+# yamllint disable-line rule:truthy
+on:
+  push:
+    paths:
+      - "**.go"
+      - "**.sh"
+      - "!.github/*"
+  pull_request_review:
+    types:
+      - submitted
+permissions: read-all
+jobs:
+  check-scripts-format:
+    permissions:
+      contents: read
+    if: ( github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ) || github.event_name != 'pull_request_review'
+    name: Check scripts format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # 6.0.1
+      - name: Run the sh-checker
+        uses: luizm/action-sh-checker@17bd25a6ee188d2b91f677060038f4ba37ba14b2 # 0.9.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHFMT_OPTS: -i 4 -s
+        with:
+          sh_checker_shellcheck_disable: true
+  functional-test:
+    name: Check functional tests
+    needs: check-scripts-format
+    runs-on: vm-self-hosted
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # 6.0.1
+        with:
+          persist-credentials: false
+      - name: Run demo
+        working-directory: ./scripts
+        env:
+          DEBUG: true
+          PROVISION_PHASES: "install configure demo"
+        run: ./main.sh
+      - name: Export logs
+        if: always()
+        run: |
+          kind export logs --name mgmt -v 4 ./_artifacts/logs
+      - name: Upload mgmt cluster logs
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # 6.0.0
+        with:
+          name: kind-mgmt-logs-${{ github.run_id }}
+          path: ./_artifacts/logs

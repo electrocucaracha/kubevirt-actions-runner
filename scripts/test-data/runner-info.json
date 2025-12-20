@@ -1,0 +1,8 @@
+{
+  "name": "runner-abcde-abcde",
+  "token": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "url": "https://github.com/org/repo",
+  "ephemeral": true,
+  "groups": "",
+  "labels": ""
+}
