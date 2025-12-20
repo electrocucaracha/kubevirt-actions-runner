@@ -5,11 +5,18 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/ruby:1": {},
-    "ghcr.io/devcontainers-extra/features/uv:1": {}
+    "ghcr.io/devcontainers-extra/features/uv:1": {},
+    "ghcr.io/electrocucaracha/pkg-mgr_scripts/kubectl:latest": {
+      "pkg_krew_plugins_list": "virt"
+    },
+    "ghcr.io/electrocucaracha/pkg-mgr_scripts/cni-plugins:latest": {
+      "pkg_cni_plugins_install_flannel": false
+    },
+    "ghcr.io/electrocucaracha/pkg-mgr_scripts/kind:latest": {}
   },
   "hostRequirements": {
     "cpus": 2,
     "memory": "8gb"
   },
-  "postCreateCommand": "sudo apt update && sudo apt install -y $(uvx bindep -b); uvx pre-commit install"
+  "postCreateCommand": "cd scripts/; ./main.sh | tee ~/main.log"
 }
