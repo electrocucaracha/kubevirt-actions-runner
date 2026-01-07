@@ -20,6 +20,27 @@ source _common.sh
 # shellcheck source=./scripts/_utils.sh
 source _utils.sh
 
+function exit_trap {
+    printf "CPU usage: "
+    grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage " %"}'
+    printf "Memory free(Kb):"
+    awk -v low="$(grep low /proc/zoneinfo | awk '{k+=$2}END{print k}')" '{a[$1]=$2}  END{ print a["MemFree:"]+a["Active(file):"]+a["Inactive(file):"]+a["SReclaimable:"]-(12*low);}' /proc/meminfo
+    if command -v kubectl; then
+        echo "Kubernetes Events:"
+        kubectl get events -A --sort-by=".metadata.managedFields[0].time"
+        echo "Kubernetes Resources:"
+        kubectl get all -A -o wide
+        echo "Kubernetes Pods:"
+        kubectl describe pods
+        echo "Kubernetes Nodes:"
+        kubectl describe nodes
+    fi
+}
+
+trap exit_trap ERR
+
 info "Running a alpine demo instance"
-go run "$(git rev-parse --show-toplevel)/cmd/kar/main.go" -c test-data/runner-info.json -t testvm -r test
+# shellcheck disable=SC1091
+[ -f /etc/profile.d/path.sh ] && . /etc/profile.d/path.sh
+timeout 5m go run "$(git rev-parse --show-toplevel)/cmd/kar/main.go" -c test-data/runner-info.json -t testvm -r test
 info "Demo completed"
