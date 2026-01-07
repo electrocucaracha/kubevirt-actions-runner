@@ -55,10 +55,12 @@ jobs:
       - name: Export logs
         if: always()
         run: |
-          kind export logs --name mgmt -v 4 ./_artifacts/logs
-      - name: Upload mgmt cluster logs
+          newgrp docker <<EONG
+          kind export logs --name k8s -v 4 ./_artifacts/logs
+          EONG
+      - name: Upload cluster logs
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # 6.0.0
         with:
-          name: kind-mgmt-logs-${{ github.run_id }}
+          name: kind-logs-${{ github.run_id }}
           path: ./_artifacts/logs
