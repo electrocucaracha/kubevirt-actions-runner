@@ -66,7 +66,7 @@ jobs:
           SAVE_SUPER_LINTER_OUTPUT: true
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}
-      - uses: GrantBirki/git-diff-action@b738f701368465139a241732b30b053406041cc1 # 2.8.1
+      - uses: GrantBirki/git-diff-action@7420e4d095c27bb23359787640976d60c94fd216 # 2.8.1
         id: git-diff
         if: failure()
       - name: Get failed linter logs
