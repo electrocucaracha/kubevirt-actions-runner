@@ -10,10 +10,7 @@
 
 set -o pipefail
 set -o errexit
-#set -o nounset
-if [[ ${DEBUG:-false} == "true" ]]; then
-    set -o xtrace
-fi
+set -o nounset
 
 # shellcheck source=scripts/_common.sh
 source _common.sh
@@ -25,6 +22,10 @@ function exit_trap {
     grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage " %"}'
     printf "Memory free(Kb):"
     awk -v low="$(grep low /proc/zoneinfo | awk '{k+=$2}END{print k}')" '{a[$1]=$2}  END{ print a["MemFree:"]+a["Active(file):"]+a["Inactive(file):"]+a["SReclaimable:"]-(12*low);}' /proc/meminfo
+    echo "Storage:"
+    sudo df -h
+    sudo lsblk
+    sudo lsmod
     if command -v kubectl; then
         echo "Kubernetes Events:"
         kubectl get events -A --sort-by=".metadata.managedFields[0].time"

@@ -10,7 +10,7 @@
 
 set -o pipefail
 set -o errexit
-#set -o nounset
+set -o nounset
 if [[ ${DEBUG:-false} == "true" ]]; then
     set -o xtrace
 fi
@@ -51,6 +51,8 @@ function _deploy_kubevirt {
         attempt_counter=$((attempt_counter + 1))
         sleep $((attempt_counter * 15))
     done
+    kubectl patch kubevirts.kubevirt.io kubevirt -n kubevirt --type merge -p '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+    kubectl rollout restart daemonset virt-handler -n kubevirt
 }
 
 function main {

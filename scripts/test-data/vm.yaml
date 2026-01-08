@@ -27,9 +27,11 @@ spec:
             - name: cloudinitdrive
               disk:
                 bus: virtio
+          networkInterfaceMultiqueue: false
           interfaces:
             - name: default
               masquerade: {}
+              model: virtio
         resources:
           requests:
             memory: 256M
