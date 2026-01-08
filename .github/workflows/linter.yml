@@ -66,7 +66,7 @@ jobs:
           SAVE_SUPER_LINTER_OUTPUT: true
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}
-      - uses: technote-space/get-diff-action@f27caffdd0fb9b13f4fc191c016bb4e0632844af # 6.1.2
+      - uses: GrantBirki/git-diff-action@b738f701368465139a241732b30b053406041cc1 # 2.8.1
         id: git-diff
         if: failure()
       - name: Get failed linter logs
@@ -80,7 +80,7 @@ jobs:
         with:
           model: mistral-ai/Ministral-3B
           input: |
-            diff: ${{ steps.git-diff.outputs.diff }}
+            diff: ${{ steps.git-diff.outputs.raw-diff }}
           prompt-file: ./linter-errors.json
           system-prompt: |
             You are an expert software engineer who specializes in diagnosing and fixing software build and runtime failures. Always provide structured reasoning and propose concrete fixes when possible.
