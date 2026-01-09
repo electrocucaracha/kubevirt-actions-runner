@@ -39,7 +39,7 @@ repos:
         args: ["-r", "~MD013"]
         files: \.(md|mdown|markdown)$
   - repo: https://github.com/google/yamlfmt
-    rev: v0.20.0
+    rev: v0.21.0
     hooks:
       - id: yamlfmt
 #  - repo: https://github.com/electrocucaracha/ai-prepare-commit-msg
