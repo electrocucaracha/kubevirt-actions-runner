@@ -27,6 +27,7 @@ linters:
             - k8s.io/api/core/v1
             - k8s.io/apimachinery/pkg/api/errors
             - k8s.io/apimachinery/pkg/apis/meta/v1
+            - k8s.io/apimachinery/pkg/types
             - k8s.io/apimachinery/pkg/watch
             - k8s.io/utils/ptr
             - kubevirt.io/api/core/v1
@@ -39,6 +40,14 @@ linters:
             - github.com/matryer/resync
             - go.uber.org/zap
             - go.uber.org/mock/gomock
+            - go.opentelemetry.io/otel
+            - go.opentelemetry.io/otel/attribute
+            - go.opentelemetry.io/otel/trace
+            - go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp
+            - go.opentelemetry.io/otel/exporters/stdout/stdouttrace
+            - go.opentelemetry.io/otel/sdk/resource
+            - go.opentelemetry.io/otel/sdk/trace
+            - go.opentelemetry.io/otel/semconv/v1.24.0
     gomoddirectives:
       replace-allow-list:
         - k8s.io/kube-openapi
@@ -58,6 +67,9 @@ linters:
           - revive
         path: _test\.go
         text: "dot-imports:"
+      - linters:
+          - ireturn
+        text: "returns interface"
 formatters:
   enable:
     - gci

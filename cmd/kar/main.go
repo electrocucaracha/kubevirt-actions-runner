@@ -32,7 +32,10 @@ import (
 	"kubevirt.io/client-go/kubecli"
 )
 
-const defaultCleanupTimeout = 5 * time.Minute
+const (
+	defaultCleanupTimeout = 5 * time.Minute
+	shutdownTimeout       = 5 * time.Second
+)
 
 type buildInfo struct {
 	gitCommit       string
@@ -85,30 +88,82 @@ func ensureValidCleanupContext(parent context.Context) (context.Context, context
 	return context.WithTimeout(parent, getCleanupTimeout())
 }
 
+func setupTelemetry(log any) func(context.Context) error {
+	telemetryCfg := runner.GetTelemetryConfig()
+
+	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background(), telemetryCfg)
+	if err != nil {
+		// Cast log to the correct type
+		if logVal, ok := log.(interface{ Warnf(s string, args ...any) }); ok {
+			logVal.Warnf("failed to initialize telemetry: %v", err)
+		}
+	}
+
+	if shutdownTelemetry == nil {
+		return func(_ context.Context) error { return nil }
+	}
+
+	return shutdownTelemetry
+}
+
+func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
+	clientConfig := kubecli.DefaultClientConfig(&pflag.FlagSet{})
+
+	namespace, _, err := clientConfig.Namespace()
+	if err != nil {
+		return nil, "", errors.Wrap(err, "failed to get namespace")
+	}
+
+	virtClient, err := kubecli.GetKubevirtClientFromClientConfig(clientConfig)
+	if err != nil {
+		return nil, "", errors.Wrap(err, "cannot obtain KubeVirt client")
+	}
+
+	return virtClient, namespace, nil
+}
+
+func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log any) {
+	rootCmd := app.NewRootCommand(ctx, kr, opts)
+
+	execErr := rootCmd.Execute()
+	if execErr != nil && !errors.Is(errors.Cause(execErr), context.Canceled) {
+		if logVal, ok := log.(interface{ Println(args ...any) }); ok {
+			logVal.Println("execute command failed:", execErr)
+		}
+	}
+}
+
 func main() {
-	var (
-		opts app.Opts
-		err  error
-	)
+	var opts app.Opts
 
 	log := utils.GetLogger()
 	buildInfo := getBuildInfo()
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
-	clientConfig := kubecli.DefaultClientConfig(&pflag.FlagSet{})
+	// Initialize telemetry
+	shutdownTelemetry := setupTelemetry(log)
 
-	namespace, _, err := clientConfig.Namespace()
+	defer func() {
+		if shutdownTelemetry != nil {
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+			defer cancel()
+
+			err := shutdownTelemetry(shutdownCtx)
+			if err != nil {
+				log.Warnf("failed to shutdown telemetry: %v", err)
+			}
+		}
+	}()
+
+	virtClient, namespace, err := getClientAndNamespace()
 	if err != nil {
-		log.Fatalf("error in namespace : %v\n", err)
+		log.Warnf("error getting client or namespace: %v\n", err)
+
+		return
 	}
 
-	virtClient, err := kubecli.GetKubevirtClientFromClientConfig(clientConfig)
-	if err != nil {
-		log.Fatalf("cannot obtain KubeVirt client: %v\n", err)
-	}
-
-	runner := runner.NewRunner(namespace, virtClient)
+	kubevirtRunner := runner.NewRunner(namespace, virtClient)
 
 	log.Printf("cleanup timeout is set to: %s", getCleanupTimeout())
 
@@ -121,16 +176,11 @@ func main() {
 		cleanupCtx, cancel := ensureValidCleanupContext(ctx)
 		defer cancel()
 
-		err := runner.DeleteResources(cleanupCtx)
+		err := kubevirtRunner.DeleteResources(cleanupCtx)
 		if err != nil {
 			log.Println("cleanup failed:", err)
 		}
 	}()
 
-	rootCmd := app.NewRootCommand(ctx, runner, opts)
-
-	execErr := rootCmd.Execute()
-	if execErr != nil && !errors.Is(errors.Cause(execErr), context.Canceled) {
-		log.Println("execute command failed:", execErr)
-	}
+	runMainApp(ctx, opts, kubevirtRunner, log)
 }

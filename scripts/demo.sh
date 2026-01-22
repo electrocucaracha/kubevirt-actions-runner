@@ -17,6 +17,9 @@ source _common.sh
 # shellcheck source=./scripts/_utils.sh
 source _utils.sh
 
+export KAR_TELEMETRY_ENABLED=true
+export KAR_TELEMETRY_EXPORT_TYPE=stdout
+
 function exit_trap {
     printf "CPU usage: "
     grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage " %"}'
