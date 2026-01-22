@@ -127,10 +127,8 @@ func TestLoggerImplErrorw(t *testing.T) {
 	logger.Errorw("test message", "key1", "value1")
 }
 
-func TestGetLoggerDefaultLevel(t *testing.T) {
-	// Clear the environment variable and reset the singleton
-	t.Setenv("KAR_LOG_LEVEL", "")
-
+func verifyLoggerImpl(t *testing.T) {
+	t.Helper()
 	// Need to reset the singleton for testing
 	updateLoggerForTesting()
 
@@ -142,134 +140,52 @@ func TestGetLoggerDefaultLevel(t *testing.T) {
 	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
 		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
 	}
+}
+
+func TestGetLoggerDefaultLevel(t *testing.T) {
+	// Clear the environment variable and reset the singleton
+	t.Setenv("KAR_LOG_LEVEL", "")
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerDebugLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "debug")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerInfoLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "info")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerWarnLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "warn")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerWarningLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "warning")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerErrorLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "error")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerFatalLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "fatal")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerUnknownLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "unknown")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerUppercaseLevel(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "DEBUG")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
-
-	logger := utils.GetLogger()
-	if logger == nil {
-		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
-	}
+	verifyLoggerImpl(t)
 }
 
 func TestGetLoggerSingleton(t *testing.T) {
