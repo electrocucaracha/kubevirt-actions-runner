@@ -18,7 +18,6 @@ package main
 
 import (
 	"context"
-	"log"
 	"os"
 	"os/signal"
 	"runtime/debug"
@@ -27,6 +26,7 @@ import (
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app"
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
 	"kubevirt.io/client-go/kubecli"
@@ -63,8 +63,11 @@ func getBuildInfo() buildInfo {
 }
 
 func getCleanupTimeout() time.Duration {
+	log := utils.GetLogger()
+
 	if val := os.Getenv("KAR_CLEANUP_TIMEOUT"); val != "" {
-		if d, err := time.ParseDuration(val); err == nil {
+		d, err := time.ParseDuration(val)
+		if err == nil {
 			return d
 		}
 
@@ -88,6 +91,7 @@ func main() {
 		err  error
 	)
 
+	log := utils.GetLogger()
 	buildInfo := getBuildInfo()
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
@@ -117,14 +121,16 @@ func main() {
 		cleanupCtx, cancel := ensureValidCleanupContext(ctx)
 		defer cancel()
 
-		if err := runner.DeleteResources(cleanupCtx); err != nil {
+		err := runner.DeleteResources(cleanupCtx)
+		if err != nil {
 			log.Println("cleanup failed:", err)
 		}
 	}()
 
 	rootCmd := app.NewRootCommand(ctx, runner, opts)
 
-	if err := rootCmd.Execute(); err != nil && !errors.Is(errors.Cause(err), context.Canceled) {
-		log.Println("execute command failed:", err)
+	execErr := rootCmd.Execute()
+	if execErr != nil && !errors.Is(errors.Cause(execErr), context.Canceled) {
+		log.Println("execute command failed:", execErr)
 	}
 }

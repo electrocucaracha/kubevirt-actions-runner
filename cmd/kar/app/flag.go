@@ -18,9 +18,9 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -50,13 +50,17 @@ func initializeConfig(cmd *cobra.Command) error {
 }
 
 func bindFlags(cmd *cobra.Command, viperInstance *viper.Viper) {
+	log := utils.GetLogger()
+
 	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
 		configName := flag.Name
 
 		// Apply the viper config value to the flag when the flag is not set and viper has a value
 		if !flag.Changed && viperInstance.IsSet(configName) {
 			val := viperInstance.Get(configName)
-			if err := cmd.Flags().Set(flag.Name, fmt.Sprintf("%v", val)); err != nil {
+
+			err := cmd.Flags().Set(flag.Name, fmt.Sprintf("%v", val))
+			if err != nil {
 				log.Fatal(err.Error())
 			}
 		}

@@ -57,9 +57,17 @@ spec:
             userData: |-
               #cloud-config
               mounts:
-                - [ runner-info, /runner-info/, virtiofs, "rw,relatime,user=runner" ]
+                - [
+                  runner-info,
+                  /runner-info/,
+                  virtiofs,
+                  "rw,relatime,user=runner",
+                ]
               runcmd:
-                - "sudo runuser -l runner -c '/opt/runner/run.sh --jitconfig $(jq -r '.jitconfig' /runner-info/runner-info.json)'"
+                - >
+                  sudo runuser -l runner -c '/opt/runner/run.sh
+                  --jitconfig $(jq -r '.jitconfig'
+                  /runner-info/runner-info.json)'
                 - sleep 30
               power_state:
                 delay: now

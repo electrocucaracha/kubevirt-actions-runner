@@ -37,6 +37,8 @@ linters:
             - github.com/onsi/ginkgo/v2
             - github.com/onsi/gomega
             - github.com/matryer/resync
+            - go.uber.org/zap
+            - go.uber.org/mock/gomock
     gomoddirectives:
       replace-allow-list:
         - k8s.io/kube-openapi

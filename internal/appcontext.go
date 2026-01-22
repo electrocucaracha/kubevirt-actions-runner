@@ -17,8 +17,6 @@ limitations under the License.
 package runner
 
 import (
-	"log"
-
 	sync "github.com/matryer/resync"
 )
 
@@ -36,6 +34,8 @@ var (
 // NewAppContext creates the AppContext once with the provided values.
 // Subsequent calls return the same instance, ignoring new values.
 func NewAppContext(vmi, dataVolume string) *AppContext {
+	log := GetLogger()
+
 	once.Do(func() {
 		log.Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
 
@@ -51,6 +51,8 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 // GetAppContext returns the already initialized AppContext.
 // Panics if called before NewAppContext.
 func GetAppContext() *AppContext {
+	log := GetLogger()
+
 	if instance == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
 	}

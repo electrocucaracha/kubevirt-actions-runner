@@ -18,9 +18,9 @@ package app
 
 import (
 	"context"
-	"log"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -43,19 +43,24 @@ func NewRootCommand(ctx context.Context, runner runner.Runner, opts Opts) *cobra
 }
 
 func run(ctx context.Context, runner runner.Runner, opts Opts) error {
-	if err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig); err != nil {
+	log := utils.GetLogger()
+
+	err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig)
+	if err != nil {
 		return errors.Wrap(err, "fail to create resources")
 	}
 
 	log.Println("Virtual Machine runner resources created successfully")
 
-	if err := runner.WaitForVirtualMachineInstance(ctx); err != nil {
+	err = runner.WaitForVirtualMachineInstance(ctx)
+	if err != nil {
 		return errors.Wrap(err, "fail to wait for resources")
 	}
 
 	log.Println("Virtual Machine runner completed successfully")
 
-	if err := runner.DeleteResources(ctx); err != nil {
+	err = runner.DeleteResources(ctx)
+	if err != nil {
 		return errors.Wrap(err, "fail to delete resources")
 	}
 
