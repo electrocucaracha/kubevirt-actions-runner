@@ -42,6 +42,10 @@ repos:
     rev: v0.21.0
     hooks:
       - id: yamlfmt
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
 #  - repo: https://github.com/electrocucaracha/ai-prepare-commit-msg
 #    rev: 3daa7bfddb8023c82528bb786ee2be3b6d34cef3
 #    hooks:
