@@ -68,6 +68,18 @@ linters:
         path: _test\.go
         text: "dot-imports:"
       - linters:
+          - revive
+        path: _test\.go
+        text: "var-naming:"
+      - linters:
+          - revive
+        path: internal/utils/common\.go
+        text: "var-naming:"
+      - linters:
+          - paralleltest
+        path: internal/utils/common_test\.go
+        text: "TestGetLogger"
+      - linters:
           - ireturn
         text: "returns interface"
 formatters:

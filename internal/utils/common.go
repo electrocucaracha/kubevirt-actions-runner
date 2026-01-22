@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 // Package utils provides utility functions and logging capabilities.
-//
-//nolint:revive
 package utils
 
 import (
@@ -27,6 +25,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+const LoggerImplTypeString = "*utils.LoggerImpl"
 
 // Logger is an interface for structured logging with multiple formatting options.
 //
@@ -158,4 +158,10 @@ func GetLogger() *LoggerImpl {
 	})
 
 	return loggerInstance
+}
+
+// ResetLoggerForTesting resets the logger singleton for testing purposes.
+func ResetLoggerForTesting() {
+	loggerInstance = nil
+	loggerOnce = sync.Once{}
 }
