@@ -7,7 +7,7 @@ RUN apk add --no-cache git=2.49.1-r0
 
 COPY . .
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 RUN go build \
     -buildvcs=true \
     -ldflags="-X 'main.gitCommit=$(git rev-parse HEAD)' \
