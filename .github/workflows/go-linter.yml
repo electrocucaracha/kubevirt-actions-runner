@@ -1,0 +1,101 @@
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2026
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+name: Go Linter Reporter
+# yamllint disable-line rule:truthy
+on:
+  push:
+    paths:
+      - "**.go"
+  schedule:
+    - cron: "0 0 * * 5"
+  workflow_dispatch:
+permissions: read-all
+jobs:
+  check-golangci:
+    name: Check Go Lang (syntax)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      models: read
+      issues: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+        with:
+          go-version: "^1.25"
+          cache: false
+      - name: Run golangci-lint tool
+        id: golangci-lint
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # 9.2.0
+        with:
+          version: latest
+          args: --allow-parallel-runners --output.json.path linter-errors.json
+      - uses: actions/ai-inference@a6101c89c6feaecc585efdd8d461f18bb7896f20 # 2.0.5
+        id: ai-linter-analysis
+        if: failure()
+        with:
+          model: mistral-ai/Ministral-3B
+          prompt-file: ./linter-errors.json
+          system-prompt: |
+            You are a senior Go engineer interpreting golangci-lint output and converting it into a concise, GitHub-ready issue.
+
+            Task: Analyze the provided golangci-lint output and generate a COMPLETE issue description that contains enough technical detail for another developer to fix the problem without additional context.
+
+            HARD REQUIREMENTS:
+            - Output MUST be valid Markdown.
+            - Use Markdown headings (##), bullet points, and code blocks where appropriate.
+            - Do NOT include CI status messages or references to external logs.
+            - Do NOT invent code or context beyond the lint output.
+            - Cover every reported issue.
+            - Group repeated findings from the same linter when applicable.
+            - Explicitly mention affected functions, variables, or constructs when named in the lint output.
+
+            Required Markdown Structure:
+            ## Issues
+            For each issue or grouped set, include:
+            - **Linter**
+            - **File & line(s)**
+            - **Affected code element(s)** (function, variable, or construct name if provided)
+            - **Problem** (what the linter is flagging)
+            - **Why it matters** (risk or best-practice violation)
+
+            Style:
+            - Technical, precise, and concise.
+            - Assume a Go developer audience.
+            - Avoid filler or meta commentary.
+            - Do not suggest disabling linters unless clearly justified.
+
+            Goal: Produce a minimal but sufficiently detailed Markdown issue description that enables another developer to implement the fix confidently.
+      - name: Get the entire analysis output
+        id: get-analysis-output
+        if: failure()
+        env:
+          RESPONSE_FILE: ${{ steps.ai-linter-analysis.outputs.response-file }}
+        run: |
+          DELIM="EOF_$(uuidgen)"
+          {
+            printf "response<<%s\n" "$DELIM"
+            cat "$RESPONSE_FILE"
+            printf "\n%s\n" "$DELIM"
+          } >> "$GITHUB_OUTPUT"
+      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # 1.2.0
+        if: failure()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          title-template: "golangci-lint has failed"
+          label-name: golangci-lint-issue
+          body-template: |
+            The golangci-lint step has failed.
+
+            Please check the [logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.
+
+            ${{ steps.get-analysis-output.outputs.response }}
