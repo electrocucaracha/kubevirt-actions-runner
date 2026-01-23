@@ -37,12 +37,6 @@ const (
 	shutdownTimeout       = 5 * time.Second
 )
 
-var (
-	gitCommit       string
-	buildDate       string
-	gitTreeModified string
-)
-
 type buildInfo struct {
 	gitCommit       string
 	gitTreeModified string
@@ -50,38 +44,62 @@ type buildInfo struct {
 	goVersion       string
 }
 
-func getBuildInfo() buildInfo {
-	out := buildInfo{
+// buildInfoVars holds the build-time variables set via ldflags.
+type buildInfoVars struct {
+	gitCommit       string
+	buildDate       string
+	gitTreeModified string
+}
+
+// NewBuildInfoVars creates a new buildInfoVars instance. This allows for testing
+// and avoids using global variables.
+func NewBuildInfoVars(gitCommit, buildDate, gitTreeModified string) buildInfoVars {
+	return buildInfoVars{
 		gitCommit:       gitCommit,
 		buildDate:       buildDate,
 		gitTreeModified: gitTreeModified,
 	}
+}
 
-	if info, ok := debug.ReadBuildInfo(); ok {
-		out.goVersion = info.GoVersion
+func getBuildInfo(vars buildInfoVars) buildInfo {
+	out := buildInfo{
+		gitCommit:       vars.gitCommit,
+		buildDate:       vars.buildDate,
+		gitTreeModified: vars.gitTreeModified,
+	}
 
-		// If ldflags weren't set, try to read from VCS information
-		if out.gitCommit == "" || out.buildDate == "" {
-			for _, setting := range info.Settings {
-				switch setting.Key {
-				case "vcs.revision":
-					if out.gitCommit == "" {
-						out.gitCommit = setting.Value
-					}
-				case "vcs.time":
-					if out.buildDate == "" {
-						out.buildDate = setting.Value
-					}
-				case "vcs.modified":
-					if out.gitTreeModified == "" {
-						out.gitTreeModified = setting.Value
-					}
-				}
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return out
+	}
+
+	out.goVersion = info.GoVersion
+	if vars.gitCommit != "" && vars.buildDate != "" {
+		return out
+	}
+
+	populateBuildInfoFromVCS(&out, info)
+
+	return out
+}
+
+func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
+	for _, setting := range info.Settings {
+		switch setting.Key {
+		case "vcs.revision":
+			if out.gitCommit == "" {
+				out.gitCommit = setting.Value
+			}
+		case "vcs.time":
+			if out.buildDate == "" {
+				out.buildDate = setting.Value
+			}
+		case "vcs.modified":
+			if out.gitTreeModified == "" {
+				out.gitTreeModified = setting.Value
 			}
 		}
 	}
-
-	return out
 }
 
 func getCleanupTimeout() time.Duration {
@@ -156,7 +174,10 @@ func main() {
 	var opts app.Opts
 
 	log := utils.GetLogger()
-	buildInfo := getBuildInfo()
+	// Note: ldflags would be set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
+	// -X main.gitTreeModified=<modified>. For now these are empty, but the structure allows build-time config.
+	vars := NewBuildInfoVars("", "", "")
+	buildInfo := getBuildInfo(vars)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
