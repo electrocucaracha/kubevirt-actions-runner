@@ -74,7 +74,7 @@ jobs:
         if: failure()
         run: |
           find ./super-linter-output/super-linter/ -name '*.json' -exec sh -c 'jq -e ".Exitval != 0" "$1" >/dev/null && printf "%s\0" "$1"' _ {} \; | xargs -0 jq -s '.' > linter-errors.json
-      - uses: actions/ai-inference@334892bb203895caaed82ec52d23c1ed9385151e # 2.0.4
+      - uses: actions/ai-inference@a6101c89c6feaecc585efdd8d461f18bb7896f20 # 2.0.5
         id: ai-linter-analysis
         if: failure()
         with:
