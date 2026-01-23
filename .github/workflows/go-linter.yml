@@ -74,7 +74,7 @@ jobs:
             - Avoid filler or meta commentary.
             - Do not suggest disabling linters unless clearly justified.
 
-            Goal: Produce a minimal but sufficiently detailed Markdown issue description that enables another developer to implement the fix confidently.
+            Goal: Produce a full comprehensive but sufficiently detailed Markdown issue description that enables another developer to implement the fix confidently.
       - name: Get the entire analysis output
         id: get-analysis-output
         if: failure()
@@ -91,7 +91,7 @@ jobs:
         if: failure()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          title-template: "golangci-lint has failed"
+          title-template: "golangci-lint GitHub action has failed"
           label-name: golangci-lint-issue
           body-template: |
             The golangci-lint step has failed.
