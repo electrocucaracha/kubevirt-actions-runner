@@ -25,6 +25,7 @@ fi
 go_version="$(curl -sL https://golang.org/VERSION?m=text | sed -n 's/go//;s/\..$//;1p')"
 go mod tidy -go="$go_version"
 sed -i "s/go-version: .*/go-version: \"^$go_version\"/g" .github/workflows/update.yml
+sed -i "s/go-version: .*/go-version: \"^$go_version\"/g" .github/workflows/build.yml
 
 if ! command -v uvx >/dev/null; then
     curl -LsSf https://astral.sh/uv/install.sh | sh

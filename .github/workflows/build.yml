@@ -57,6 +57,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 10
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+        with:
+          go-version: "^1.25"
       - uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # 2.0.0
         with:
           coverage-threshold: 40
