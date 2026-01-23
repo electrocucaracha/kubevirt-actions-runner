@@ -155,8 +155,3 @@ func createStdoutExporter() (trace.SpanExporter, error) {
 
 	return exporter, nil
 }
-
-// GetTracer returns a tracer for the given name.
-func GetTracer(name string) any {
-	return otel.Tracer(name)
-}

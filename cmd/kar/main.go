@@ -69,6 +69,25 @@ func NewBuildInfoVars(gitCommit, buildDate, gitTreeModified string) buildInfoVar
 	}
 }
 
+func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
+	for _, setting := range info.Settings {
+		switch setting.Key {
+		case "vcs.revision":
+			if out.gitCommit == "" {
+				out.gitCommit = setting.Value
+			}
+		case "vcs.time":
+			if out.buildDate == "" {
+				out.buildDate = setting.Value
+			}
+		case "vcs.modified":
+			if out.gitTreeModified == "" {
+				out.gitTreeModified = setting.Value
+			}
+		}
+	}
+}
+
 func getBuildInfo(vars buildInfoVars) buildInfo {
 	out := buildInfo{
 		gitCommit:       vars.gitCommit,
@@ -89,25 +108,6 @@ func getBuildInfo(vars buildInfoVars) buildInfo {
 	populateBuildInfoFromVCS(&out, info)
 
 	return out
-}
-
-func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
-	for _, setting := range info.Settings {
-		switch setting.Key {
-		case "vcs.revision":
-			if out.gitCommit == "" {
-				out.gitCommit = setting.Value
-			}
-		case "vcs.time":
-			if out.buildDate == "" {
-				out.buildDate = setting.Value
-			}
-		case "vcs.modified":
-			if out.gitTreeModified == "" {
-				out.gitTreeModified = setting.Value
-			}
-		}
-	}
 }
 
 func getCleanupTimeout() time.Duration {

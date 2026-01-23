@@ -27,10 +27,6 @@ import (
 )
 
 func installFlags(flags *pflag.FlagSet, cmdOptions *Opts) {
-	v := viper.New()
-	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-	v.AutomaticEnv()
-
 	flags.StringVarP(&cmdOptions.VMTemplate, "kubevirt-vm-template", "t", "vm-template",
 		"The VirtualMachine resource to use as the template.")
 	flags.StringVarP(&cmdOptions.RunnerName, "runner-name", "r", "runner",
