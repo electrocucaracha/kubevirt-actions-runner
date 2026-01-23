@@ -43,6 +43,8 @@ jobs:
           filters: |
             golang:
               - '**.go'
+              - 'go.mod'
+              - 'go.sum'
   code-coverage:
     name: Check code coverage
     if: needs.changes.outputs.golang == 'true'
@@ -63,7 +65,7 @@ jobs:
           cache: false
       - uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # 2.0.0
         with:
-          coverage-threshold: 40
+          coverage-threshold: 45
   unit-test:
     name: Check Go lang unit tests
     if: needs.changes.outputs.golang == 'true'
