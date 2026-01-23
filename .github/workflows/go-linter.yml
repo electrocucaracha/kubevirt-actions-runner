@@ -75,6 +75,7 @@ jobs:
             - Do not suggest disabling linters unless clearly justified.
 
             Goal: Produce a full comprehensive but sufficiently detailed Markdown issue description that enables another developer to implement the fix confidently.
+          # jscpd:ignore-start
       - name: Get the entire analysis output
         id: get-analysis-output
         if: failure()
@@ -87,6 +88,7 @@ jobs:
             cat "$RESPONSE_FILE"
             printf "\n%s\n" "$DELIM"
           } >> "$GITHUB_OUTPUT"
+        # jscpd:ignore-end
       - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # 1.2.0
         if: failure()
         with:

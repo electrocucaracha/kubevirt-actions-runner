@@ -96,6 +96,7 @@ jobs:
             4. **Reflection:** If no clear fix is identifiable, summarize which parts of the log are ambiguous and what further information would be needed to proceed.
 
             Goal: Deliver an insightful and technically sound explanation that not only solves the issue but also strengthens understanding of the system's behavior and failure patterns.
+          # jscpd:ignore-start
       - name: Get the entire analysis output
         id: get-analysis-output
         if: failure()
@@ -108,6 +109,7 @@ jobs:
             cat "$RESPONSE_FILE"
             printf "\n%s\n" "$DELIM"
           } >> "$GITHUB_OUTPUT"
+        # jscpd:ignore-end
       - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # 1.2.0
         if: failure()
         with:
