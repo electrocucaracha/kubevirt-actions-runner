@@ -37,6 +37,14 @@ const (
 	shutdownTimeout       = 5 * time.Second
 )
 
+//nolint:gochecknoglobals
+var (
+	// Build-time variables set via ldflags during build.
+	gitCommit       string
+	buildDate       string
+	gitTreeModified string
+)
+
 type buildInfo struct {
 	gitCommit       string
 	gitTreeModified string
@@ -174,9 +182,9 @@ func main() {
 	var opts app.Opts
 
 	log := utils.GetLogger()
-	// Note: ldflags would be set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
-	// -X main.gitTreeModified=<modified>. For now these are empty, but the structure allows build-time config.
-	vars := NewBuildInfoVars("", "", "")
+	// Note: ldflags are set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
+	// -X main.gitTreeModified=<modified>.
+	vars := NewBuildInfoVars(gitCommit, buildDate, gitTreeModified)
 	buildInfo := getBuildInfo(vars)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)

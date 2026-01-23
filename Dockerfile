@@ -10,9 +10,7 @@ COPY . .
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 RUN go build \
     -buildvcs=true \
-    -ldflags="-X 'main.gitCommit=$(git rev-parse HEAD)' \
-    -X 'main.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')' \
-    -X 'main.gitTreeModified=$(git status --porcelain | wc -l)'" \
+    -ldflags="-X main.gitCommit=$(git rev-parse HEAD) -X main.buildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -X main.gitTreeModified=$(git status --porcelain | wc -l)" \
     -o /go/bin/ ./...
 
 FROM scratch
