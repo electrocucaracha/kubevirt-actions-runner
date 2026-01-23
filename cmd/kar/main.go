@@ -37,6 +37,12 @@ const (
 	shutdownTimeout       = 5 * time.Second
 )
 
+var (
+	gitCommit       string
+	buildDate       string
+	gitTreeModified string
+)
+
 type buildInfo struct {
 	gitCommit       string
 	gitTreeModified string
@@ -45,19 +51,32 @@ type buildInfo struct {
 }
 
 func getBuildInfo() buildInfo {
-	out := buildInfo{}
+	out := buildInfo{
+		gitCommit:       gitCommit,
+		buildDate:       buildDate,
+		gitTreeModified: gitTreeModified,
+	}
 
 	if info, ok := debug.ReadBuildInfo(); ok {
 		out.goVersion = info.GoVersion
 
-		for _, setting := range info.Settings {
-			switch setting.Key {
-			case "vcs.revision":
-				out.gitCommit = setting.Value
-			case "vcs.time":
-				out.buildDate = setting.Value
-			case "vcs.modified":
-				out.gitTreeModified = setting.Value
+		// If ldflags weren't set, try to read from VCS information
+		if out.gitCommit == "" || out.buildDate == "" {
+			for _, setting := range info.Settings {
+				switch setting.Key {
+				case "vcs.revision":
+					if out.gitCommit == "" {
+						out.gitCommit = setting.Value
+					}
+				case "vcs.time":
+					if out.buildDate == "" {
+						out.buildDate = setting.Value
+					}
+				case "vcs.modified":
+					if out.gitTreeModified == "" {
+						out.gitTreeModified = setting.Value
+					}
+				}
 			}
 		}
 	}
