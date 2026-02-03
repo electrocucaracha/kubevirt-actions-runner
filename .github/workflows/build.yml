@@ -31,6 +31,7 @@ jobs:
       ( github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ) || github.event_name != 'pull_request_review'
     outputs:
       golang: ${{ steps.filter.outputs.golang }}
+      docker: ${{ steps.filter.outputs.docker }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
@@ -45,6 +46,8 @@ jobs:
               - '**.go'
               - 'go.mod'
               - 'go.sum'
+            docker:
+              - Dockerfile
   code-coverage:
     name: Check code coverage
     if: needs.changes.outputs.golang == 'true'
@@ -101,11 +104,28 @@ jobs:
       contents: read
       attestations: write
       id-token: write
-    needs: [code-coverage, unit-test]
+    needs: [code-coverage, unit-test, changes]
+    if: |
+      always() &&
+      (
+        (
+          needs.changes.outputs.golang == 'true' &&
+          contains(needs.*.result, 'success') &&
+          !contains(needs.*.result, 'failure')
+        )
+        || needs.changes.outputs.docker == 'true'
+      )
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
+      - name: Build a smoke test image
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # 6.18.0
+        with:
+          load: true
+          tags: test:latest
+      - name: Smoke test
+        run: docker run --rm test:latest --help
       - name: Log in to the Container registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
         with:
