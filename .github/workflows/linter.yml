@@ -64,6 +64,7 @@ jobs:
           VALIDATE_GO: false
           VALIDATE_BIOME_FORMAT: false
           VALIDATE_PRE_COMMIT: false
+          VALIDATE_SPELL_CODESPELL: false
           SAVE_SUPER_LINTER_OUTPUT: true
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}

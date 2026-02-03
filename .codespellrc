@@ -1,2 +1,2 @@
 [codespell]
-skip = go.sum
+skip = go.*

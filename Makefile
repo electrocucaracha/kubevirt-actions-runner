@@ -22,6 +22,7 @@ lint:
 	-e VALIDATE_GO=false \
 	-e VALIDATE_BIOME_FORMAT=false \
 	-e VALIDATE_PRE_COMMIT=false \
+	-e VALIDATE_SPELL_CODESPELL=false \
 	ghcr.io/super-linter/super-linter
 
 .PHONY: fmt
