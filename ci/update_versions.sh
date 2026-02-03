@@ -23,6 +23,7 @@ if ! command -v go >/dev/null; then
 fi
 
 go_version="$(curl -sL https://golang.org/VERSION?m=text | sed -n 's/go//;s/\..$//;1p')"
+go get -u ./... || true
 go mod tidy -go="$go_version"
 find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) \
     -exec grep -l 'go-version:' {} + \
