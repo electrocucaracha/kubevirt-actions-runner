@@ -79,7 +79,9 @@ func (m *mock) DeleteResources(_ context.Context) error {
 
 var _ = Describe("Root Command", func() {
 	var runner mock
+
 	var cmd *cobra.Command
+
 	var opts app.Opts
 
 	BeforeEach(func() {
@@ -89,12 +91,15 @@ var _ = Describe("Root Command", func() {
 
 	DescribeTable("initialization process", func(shouldSucceed bool, failure Failure, args ...string) {
 		cmd.SetArgs(args)
+
 		if HasOneOf(failure, Create) {
 			runner.createErr = errExpectedFailure
 		}
+
 		if HasOneOf(failure, Delete) {
 			runner.deleteErr = errExpectedFailure
 		}
+
 		if HasOneOf(failure, Wait) {
 			runner.waitErr = errExpectedFailure
 		}
@@ -110,21 +115,27 @@ var _ = Describe("Root Command", func() {
 		if slices.Contains(args, "-c") {
 			Expect(runner.jitConfig).To(Equal(args[slices.Index(args, "-c")+1]))
 		}
+
 		if slices.Contains(args, "-r") {
 			Expect(runner.runnerName).To(Equal(args[slices.Index(args, "-r")+1]))
 		}
+
 		if slices.Contains(args, "-t") {
 			Expect(runner.vmTemplate).To(Equal(args[slices.Index(args, "-t")+1]))
 		}
 
 		Expect(runner.createCalled).Should(BeTrue())
+
 		if HasOneOf(failure, Create) {
 			return
 		}
+
 		Expect(runner.waitCalled).Should(BeTrue())
+
 		if HasOneOf(failure, Wait) {
 			return
 		}
+
 		Expect(runner.deleteCalled).Should(BeTrue())
 	},
 		Entry("when the default options are provided", true, None),
