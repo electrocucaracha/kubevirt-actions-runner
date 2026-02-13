@@ -36,8 +36,11 @@ import (
 
 var _ = Describe("Runner", func() {
 	var virtClient *kubecli.MockKubevirtClient
+
 	var virtClientset *kubevirtfake.Clientset
+
 	var karRunner runner.Runner
+
 	var mockCtrl *gomock.Controller
 
 	const (
@@ -76,16 +79,21 @@ var _ = Describe("Runner", func() {
 
 		if shouldSucceed {
 			Expect(err).NotTo(HaveOccurred())
+
 			appCtx := runner.GetAppContext()
+
 			Expect(appCtx.GetVMIName()).Should(Equal(runnerName))
 		} else {
 			Expect(err).To(HaveOccurred())
+
 			if len(vmTemplate) == 0 {
 				Expect(err).Should(Equal(runner.ErrEmptyVMTemplate))
 			}
+
 			if len(runnerName) == 0 {
 				Expect(err).Should(Equal(runner.ErrEmptyRunnerName))
 			}
+
 			if len(jitConfig) == 0 {
 				Expect(err).Should(Equal(runner.ErrEmptyJitConfig))
 			}
@@ -115,19 +123,24 @@ var _ = Describe("Runner", func() {
 
 	DescribeTable("watch resources", func(shouldSucceed bool, lastPhase v1.VirtualMachineInstancePhase) {
 		const timeout = 1 * time.Second
+
 		fakeWatcher := watch.NewFake()
+
 		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
 		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
 		runner.NewAppContext(vmInstance, "")
 
 		errChan := make(chan error, 1)
+
 		go func() {
 			errChan <- karRunner.WaitForVirtualMachineInstance(context.TODO())
+
 			close(errChan)
 		}()
 
 		phases := [5]v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, lastPhase}
+
 		vmi := NewVirtualMachineInstance(vmInstance)
 		for _, phase := range phases {
 			vmi.Status.Phase = phase
