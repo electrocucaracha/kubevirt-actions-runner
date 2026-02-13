@@ -25,6 +25,7 @@ jobs:
       models: read
       issues: write
     steps:
+      # jscpd:ignore-start
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           fetch-depth: 0
@@ -33,13 +34,14 @@ jobs:
         with:
           go-version: "^1.25"
           cache: false
+          # jscpd:ignore-end
       - name: Run golangci-lint tool
         id: golangci-lint
         uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # 9.2.0
         with:
           version: latest
           args: --allow-parallel-runners --output.json.path linter-errors.json
-      - uses: actions/ai-inference@a6101c89c6feaecc585efdd8d461f18bb7896f20 # 2.0.5
+      - uses: actions/ai-inference@a380166897b5408b8fb7dddd148142794cb5624a # 2.0.6
         id: ai-linter-analysis
         if: failure()
         with:

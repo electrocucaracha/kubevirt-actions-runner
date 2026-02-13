@@ -33,10 +33,10 @@ jobs:
         with:
           EXECUTE_COMMANDS: |
             ./ci/update_versions.sh
-          COMMIT_MESSAGE: "Upgrade versions files"
+          COMMIT_MESSAGE: "chore: update versions"
           COMMIT_NAME: "electrocucaracha bot"
           PR_BRANCH_NAME: "versions-update-${PR_ID}"
-          PR_TITLE: "chore: update versions"
+          PR_TITLE: "Upgrade versions files"
   check-dockerfile:
     runs-on: ubuntu-latest
     permissions:

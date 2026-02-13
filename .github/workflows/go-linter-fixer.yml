@@ -1,0 +1,99 @@
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2026
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+name: Go Linter Fixer
+# yamllint disable-line rule:truthy
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+permissions: read-all
+jobs:
+  fix-golangci:
+    name: Fix golangci-lint Issues
+    if: >
+      github.event_name == 'workflow_dispatch' || (github.event.label.name == 'golangci-lint-issue')
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # jscpd:ignore-start
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+        with:
+          go-version: "^1.25"
+          cache: false
+          # jscpd:ignore-end
+      - name: Run golangci-lint tool
+        id: golangci-lint
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # 9.2.0
+        with:
+          version: latest
+          install-only: true
+      - name: "Run Copilot CLI"
+        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+        with:
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
+          allow-all-tools: true
+          repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
+          mcp-config: |
+            {
+              "mcpServers": {
+                "github-mcp-server": {
+                  "type": "http",
+                  "url": "https://api.githubcopilot.com/mcp/",
+                  "headers": {
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}",
+                    "X-MCP-Toolsets": "*"
+                  },
+                  "tools": ["*"]
+                }
+              }
+            }
+          prompt: |-
+            Objective:
+            Fully resolve all golangci-lint findings in this repository.
+
+            Execution Steps:
+            1. Run: `golangci-lint run ./...`
+            2. Identify ALL reported issues.
+            3. Apply minimal, idiomatic Go fixes directly to the affected files.
+            4. Re-run: `golangci-lint run ./...`
+            5. Repeat until the linter exits with code 0.
+
+            Requirements:
+            - Do NOT suppress linters via configuration changes unless absolutely unavoidable.
+            - Do NOT remove existing error handling.
+            - Do NOT introduce panic() calls.
+            - Do NOT change exported function signatures unless strictly required for correctness.
+            - Do NOT introduce breaking API changes.
+            - Keep changes minimal and focused only on lint violations.
+            - Follow idiomatic Go patterns and effective Go guidelines.
+            - Preserve existing behavior and tests.
+            - If a fix requires refactoring, keep it localized and safe.
+
+            Completion Criteria:
+            The task is complete ONLY when:
+            - `golangci-lint run ./...` exits successfully
+            - The repository builds successfully
+            - No new warnings are introduced
+
+            Do not stop after partial fixes.
+            Do not leave TODO comments.
+            Do not modify unrelated files.
+
+            Create a pull request with the necessary changes, using the following details:
+            - Title: "fix: resolve golangci-lint issues"
+            - Body: Closes #${{ github.event.issue.number }}. Provide a summary of the changes made and the issues resolved.
+
+            Ensure the PR is well-documented and ready for review.
