@@ -17,7 +17,7 @@ limitations under the License.
 package runner
 
 import (
-	sync "github.com/matryer/resync"
+	"sync"
 )
 
 type AppContext struct {
@@ -28,6 +28,7 @@ type AppContext struct {
 //nolint:gochecknoglobals
 var (
 	instance *AppContext
+	mu       sync.Mutex
 	once     sync.Once
 )
 
@@ -53,6 +54,9 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 func GetAppContext() *AppContext {
 	log := GetLogger()
 
+	mu.Lock()
+	defer mu.Unlock()
+
 	if instance == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
 	}
@@ -62,7 +66,11 @@ func GetAppContext() *AppContext {
 
 // CancelAppContext resets the AppContext to its initial state.
 func CancelAppContext() {
-	once.Reset()
+	mu.Lock()
+	defer mu.Unlock()
+
+	instance = nil
+	once = sync.Once{}
 }
 
 // GetVMIName returns the Virtual Machine Instance Name created for the runner.
