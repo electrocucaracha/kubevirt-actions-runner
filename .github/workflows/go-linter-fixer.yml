@@ -33,7 +33,6 @@ jobs:
         with:
           go-version: "^1.25"
           cache: false
-          # jscpd:ignore-end
       - name: Run golangci-lint tool
         id: golangci-lint
         uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # 9.2.0
@@ -60,6 +59,7 @@ jobs:
                 }
               }
             }
+          # jscpd:ignore-end
           prompt: |-
             Objective:
             Fully resolve all golangci-lint findings in this repository.

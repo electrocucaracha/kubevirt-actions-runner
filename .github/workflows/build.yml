@@ -119,13 +119,78 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - name: Build a smoke test image
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # 6.18.0
+      - name: Build Docker image
+        id: docker-build
+        run: |
+          set -o pipefail
+          docker build -t test . 2>&1 | tee docker-build.log
+      - name: Run Docker container
+        id: docker-run
+        run: |
+          set -o pipefail
+          docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
+      - uses: actions/ai-inference@a380166897b5408b8fb7dddd148142794cb5624a # 2.0.6
+        id: ai-docker-analysis
+        if: failure()
         with:
-          load: true
-          tags: test:latest
-      - name: Smoke test
-        run: docker run --rm test:latest --help
+          model: mistral-ai/Ministral-3B
+          prompt-file: docker-build.log
+          system-prompt: |
+            You are a senior DevOps engineer specializing in Docker and CI container failures.
+
+            Task:
+            Analyze the provided Docker build or runtime failure logs and produce a complete, GitHub-ready issue description.
+
+            Requirements:
+            - Output MUST be valid Markdown.
+            - Use headings and code blocks.
+            - Do NOT reference CI URLs or external logs.
+            - Do NOT invent missing context.
+            - Base conclusions strictly on the provided log output.
+
+            Required Structure:
+
+            ## Summary
+            Brief technical description of what failed and whether it occurred during Build or Runtime.
+
+            ## Failure Details
+            - **Stage:** Build | Runtime
+            - **Failing instruction/command**
+            - **Relevant log excerpt:**
+              ```text
+              (key error lines only)
+              ```
+
+            ## Root Cause
+            Clear explanation derived only from the logs.
+            Reference the Dockerfile instruction or runtime command when visible.
+
+            ## Impact
+            State practical impact:
+            - Blocks image build?
+            - Prevents container startup?
+            - Breaks CI or deployment?
+            Clearly indicate severity.
+
+            ## Fix
+            Provide specific, actionable remediation steps.
+            Avoid vague advice.
+
+            Style:
+            Technical, concise, precise. No filler. No speculation.
+
+            Goal:
+            Produce a focused issue that enables a developer to fix the container failure without reviewing raw logs.
+      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # 1.2.0
+        if: failure()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          title-template: "Docker build or runtime failure"
+          label-name: docker-build-issue
+          body-template: |
+            The Docker build or container execution step has failed.
+
+            ${{ steps.ai-docker-analysis.outputs.response }}
       - name: Log in to the Container registry
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
         with:
