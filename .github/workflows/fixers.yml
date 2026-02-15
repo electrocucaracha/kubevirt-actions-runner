@@ -10,7 +10,7 @@ name: AI Fixers
 # yamllint disable-line rule:truthy
 on:
   issues:
-    types: [labeled]
+    types: [opened]
   workflow_dispatch:
 permissions: read-all
 jobs:

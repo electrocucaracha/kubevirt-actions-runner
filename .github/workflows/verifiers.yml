@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Verifier
+name: Verifiers
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -138,15 +138,19 @@ jobs:
           # jscpd:ignore-end
           agent: janitor
           prompt: |-
-            Reduce technical debt and open a Pull Request with the improvements.
+            Reduce technical debt and submit a Pull Request with the improvements.
 
             Workflow:
             1. Analyze the repo for unused code, duplication, dead paths, and unnecessary complexity.
             2. Delete and simplify safely. Preserve behavior and avoid breaking public APIs.
             3. Validate by running: make test
-            4. Create a Pull Request:
-               - Title: "chore: reduce technical debt"
-               - Include summary of changes, rationale, test results, and confirmation of no breaking changes.
+            4. Create a new branch and push it:
+               - git checkout -b tech-debt-reduction
+               - git push origin tech-debt-reduction
+            5. Submit Pull Request via GitHub:
+               - Use GitHub CLI: gh pr create \
+                 --title "chore: reduce technical debt" \
+                 --body "Summary of changes, rationale, tests passing, and confirmation of no breaking changes." \
+                 --base main \
+                 --head tech-debt-reduction
                - Keep the diff focused and reviewable.
-
-            Prefer deletion over addition. Simpler code is better.
