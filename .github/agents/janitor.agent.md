@@ -49,7 +49,7 @@ Clean any codebase by eliminating tech debt. Every line of code is potential deb
 - Delete unused functions, variables, imports, dependencies
 - Remove dead code paths and unreachable branches
 - Eliminate duplicate logic through extraction/consolidation
-- Strip unnecessary abstractions and over-engineering
+- Strip unnecessary abstractions and overengineering
 - Purge commented-out code and debug statements
 
 ### Simplification
