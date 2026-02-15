@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Go Linter Reporter
+name: Verifier
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -103,3 +103,50 @@ jobs:
             Please check the [logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.
 
             ${{ steps.get-analysis-output.outputs.response }}
+  reduce-tech-debt:
+    name: Reduce technical debt
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # jscpd:ignore-start
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: "Run Copilot CLI"
+        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+        with:
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
+          allow-all-tools: true
+          repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
+          mcp-config: |
+            {
+              "mcpServers": {
+                "github-mcp-server": {
+                  "type": "http",
+                  "url": "https://api.githubcopilot.com/mcp/",
+                  "headers": {
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}",
+                    "X-MCP-Toolsets": "*"
+                  },
+                  "tools": ["*"]
+                }
+              }
+            }
+          # jscpd:ignore-end
+          agent: janitor
+          prompt: |-
+            Reduce technical debt and open a Pull Request with the improvements.
+
+            Workflow:
+            1. Analyze the repo for unused code, duplication, dead paths, and unnecessary complexity.
+            2. Delete and simplify safely. Preserve behavior and avoid breaking public APIs.
+            3. Validate by running: make test
+            4. Create a Pull Request:
+               - Title: "chore: reduce technical debt"
+               - Include summary of changes, rationale, test results, and confirmation of no breaking changes.
+               - Keep the diff focused and reviewable.
+
+            Prefer deletion over addition. Simpler code is better.
