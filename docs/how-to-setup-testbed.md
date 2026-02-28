@@ -69,7 +69,7 @@ cd scripts
 - Configure cluster: runs [`configure.sh`](../scripts/configure.sh).
   - Creates a local Kubernetes cluster with `kind` (if it does not already exist).
   - Installs the KubeVirt operator and required components.
-  - Applies [a runner VM template ](../scripts/test-data/vm.yaml) used by the scripts.
+  - Applies [a runner VM template](../scripts/test-data/vm.yaml) used by the scripts.
     That template is an example base object the runner clones into
     ephemeral `VirtualMachineInstance` (VMI) objects when processing jobs.
 
