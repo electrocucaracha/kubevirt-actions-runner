@@ -22,6 +22,8 @@ This is particularly useful for validating scenarios that are not supported by d
 - Custom environments that require specific kernel modules or system services
 - Jobs requiring strong isolation from the host system
 
+![Diagram](docs/assets/diagram.png)
+
 ## Key Features
 
 - _Ephemeral VM creation_: Launch a fresh VM for every job and destroy it after completion
