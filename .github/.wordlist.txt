@@ -8,6 +8,7 @@ apiGroups
 apiVersion
 AProd
 backends
+blockquote
 boyter
 brightgreen
 ccb
@@ -65,6 +66,7 @@ KCD
 kubectl
 Kubernetes
 KubeVirt
+KVM
 labelColor
 laobi
 lifecycle
@@ -85,6 +87,8 @@ opensource
 OpenTelemetry
 OTEL
 OTLP
+passwordless
+png
 podman
 pptx
 pre
@@ -107,8 +111,10 @@ sloc
 src
 Stdout
 subgraph
+sudo
 svg
 Teardown
+testbed
 unpkg
 untrusted
 valueFrom
@@ -121,6 +127,7 @@ visualstudio
 vm
 VMI
 vmiName
+vmis
 VMs
 vmTemplate
 vscode
