@@ -76,8 +76,6 @@ Start the `kubevirt-actions-runner` application with telemetry enabled:
 
 ## Verification
 
-### OTLP Exporter
-
 If using the OTLP exporter, verify that traces are visible in your observability platform (e.g., Jaeger, DataDog).
 
 #### Example: Jaeger
@@ -92,8 +90,6 @@ If using the OTLP exporter, verify that traces are visible in your observability
    ```
 
 2. Open Jaeger UI at `http://localhost:16686` and search for traces under the service name you configured.
-
-### Stdout Exporter
 
 If using the stdout exporter, verify that trace logs are printed to the console.
 

@@ -34,7 +34,7 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Avoid generic names like `util`, `common`, or `base`
 - Package names should be singular, not plural
 
-#### Package Declaration Rules (CRITICAL):
+#### Package Declaration Rules (CRITICAL)
 
 - **NEVER duplicate `package` declarations** - each Go file must have exactly ONE `package` line
 - When editing an existing `.go` file:
@@ -79,7 +79,7 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Always use `gofmt` to format code
 - Use `goimports` to manage imports automatically
 - Keep line length reasonable (no hard limit, but consider readability)
-- Add blank lines to separate logical groups of code
+- Add empty lines to separate logical groups of code
 
 ### Comments
 
@@ -332,7 +332,7 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Update documentation when code changes
 - Avoid emoji in documentation and comments
 
-### README and Documentation Files
+### Readme and Documentation Files
 
 - Include clear setup instructions
 - Document dependencies and requirements
