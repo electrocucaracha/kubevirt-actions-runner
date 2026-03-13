@@ -89,7 +89,7 @@ If using the OTLP exporter, verify that traces are visible in your observability
      jaegertracing/all-in-one
    ```
 
-2. Open Jaeger UI at `http://localhost:16686` and search for traces under the service name you configured.
+1. Open Jaeger UI at `http://localhost:16686` and search for traces under the service name you configured.
 
 If using the stdout exporter, verify that trace logs are printed to the console.
 
