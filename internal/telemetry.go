@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
@@ -65,7 +66,7 @@ func getEnvOrDefault(key, defaultVal string) string {
 // InitializeTelemetry sets up OpenTelemetry tracing based on the configuration.
 // Returns a shutdown function that should be called before the application exits.
 func InitializeTelemetry(ctx context.Context, cfg TelemetryConfig) (func(context.Context) error, error) {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	if !cfg.Enabled {
 		log.Infof("Telemetry is disabled")
@@ -105,7 +106,7 @@ func InitializeTelemetry(ctx context.Context, cfg TelemetryConfig) (func(context
 }
 
 func createExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporter, error) {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	switch cfg.ExportType {
 	case "otlp":
@@ -122,7 +123,7 @@ func createExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporte
 }
 
 func createOTLPExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporter, error) {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	endpoint := cfg.OTLPEndpoint
 	if endpoint == "" {
@@ -142,7 +143,7 @@ func createOTLPExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExp
 }
 
 func createStdoutExporter() (trace.SpanExporter, error) {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	log.Infof("Using stdout exporter")
 

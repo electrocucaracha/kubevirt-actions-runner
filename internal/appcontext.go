@@ -17,7 +17,9 @@ limitations under the License.
 package runner
 
 import (
-	sync "github.com/matryer/resync"
+	"sync"
+
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 )
 
 type AppContext struct {
@@ -27,14 +29,15 @@ type AppContext struct {
 
 //nolint:gochecknoglobals
 var (
-	instance *AppContext
-	once     sync.Once
+	appContextMu sync.Mutex
+	instance     *AppContext
+	once         sync.Once
 )
 
 // NewAppContext creates the AppContext once with the provided values.
 // Subsequent calls return the same instance, ignoring new values.
 func NewAppContext(vmi, dataVolume string) *AppContext {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	once.Do(func() {
 		log.Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
@@ -49,9 +52,8 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 }
 
 // GetAppContext returns the already initialized AppContext.
-// Panics if called before NewAppContext.
 func GetAppContext() *AppContext {
-	log := GetLogger()
+	log := utils.GetLogger()
 
 	if instance == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
@@ -62,7 +64,11 @@ func GetAppContext() *AppContext {
 
 // CancelAppContext resets the AppContext to its initial state.
 func CancelAppContext() {
-	once.Reset()
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
+
+	instance = nil
+	once = sync.Once{}
 }
 
 // GetVMIName returns the Virtual Machine Instance Name created for the runner.

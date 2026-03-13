@@ -17,7 +17,6 @@ limitations under the License.
 package utils_test
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
@@ -129,16 +128,10 @@ func TestLoggerImplErrorw(t *testing.T) {
 
 func verifyLoggerImpl(t *testing.T) {
 	t.Helper()
-	// Need to reset the singleton for testing
 	updateLoggerForTesting()
 
-	logger := utils.GetLogger()
-	if logger == nil {
+	if utils.GetLogger() == nil {
 		t.Fatal("GetLogger returned nil")
-	}
-
-	if reflect.TypeFor[*utils.LoggerImpl]().String() != utils.LoggerImplTypeString {
-		t.Errorf("Expected *utils.LoggerImpl, got %s", reflect.TypeFor[*utils.LoggerImpl]().String())
 	}
 }
 

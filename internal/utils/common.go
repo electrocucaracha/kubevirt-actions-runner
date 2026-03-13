@@ -26,8 +26,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const LoggerImplTypeString = "*utils.LoggerImpl"
-
 // Logger is an interface for structured logging with multiple formatting options.
 //
 //nolint:interfacebloat

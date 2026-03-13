@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -112,7 +113,7 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 	)
 	defer spanCreateVMI.End()
 
-	vmi, err := rc.createVMI(ctx, tracer, virtualMachineInstance, span, spanCreateVMI)
+	vmi, err := rc.createVMI(ctx, virtualMachineInstance, span, spanCreateVMI)
 	if err != nil {
 		return err
 	}
@@ -138,7 +139,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	ctx, span := tracer.Start(ctx, "WaitForVirtualMachineInstance")
 	defer span.End()
 
-	log := GetLogger()
+	log := utils.GetLogger()
 	appCtx := GetAppContext()
 
 	log.Printf("Watching %s Virtual Machine Instance\n", appCtx.GetVMIName())
@@ -191,7 +192,7 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 	ctx, span := tracer.Start(ctx, "DeleteResources")
 	defer span.End()
 
-	log := GetLogger()
+	log := utils.GetLogger()
 	appCtx := GetAppContext()
 
 	log.Printf("Cleaning %s Virtual Machine Instance resources\n",
@@ -253,11 +254,10 @@ func (rc *KubevirtRunner) validateResourceInputs(vmTemplate, runnerName, jitConf
 
 func (rc *KubevirtRunner) createVMI(
 	ctx context.Context,
-	_ trace.Tracer,
 	vmi *v1.VirtualMachineInstance,
 	span, spanCreateVMI trace.Span,
 ) (*v1.VirtualMachineInstance, error) {
-	log := GetLogger()
+	log := utils.GetLogger()
 	log.Printf("Creating %s Virtual Machine Instance\n", vmi.Name)
 
 	createdVMI, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Create(ctx,
@@ -284,7 +284,7 @@ func (rc *KubevirtRunner) createDataVolume(
 		return nil
 	}
 
-	log := GetLogger()
+	log := utils.GetLogger()
 	log.Printf("Creating %s Data Volume\n", dataVolume.Name)
 
 	_, spanCreateDV := tracer.Start(ctx, "CreateDataVolume",
