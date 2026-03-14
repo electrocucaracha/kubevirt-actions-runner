@@ -27,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: >-
-      ( github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ) || github.event_name != 'pull_request_review'
     outputs:
       golang: ${{ steps.filter.outputs.golang }}
       docker: ${{ steps.filter.outputs.docker }}

@@ -105,6 +105,7 @@ jobs:
             ${{ steps.get-analysis-output.outputs.response }}
   reduce-tech-debt:
     name: Reduce technical debt
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write

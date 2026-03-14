@@ -17,7 +17,7 @@ jobs:
   fix-docker-build:
     name: Fix Docker Issues
     if: >
-      github.event_name == 'workflow_dispatch' || (github.event.label.name == 'docker-build-issue')
+      github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'docker-build-issue')
 
     runs-on: ubuntu-latest
     permissions:
@@ -94,7 +94,7 @@ jobs:
   fix-golangci:
     name: Fix golangci-lint Issues
     if: >
-      github.event_name == 'workflow_dispatch' || (github.event.label.name == 'golangci-lint-issue')
+      github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'golangci-lint-issue')
 
     runs-on: ubuntu-latest
     permissions:
