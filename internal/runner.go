@@ -197,6 +197,10 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 	ctx, span := tracer.Start(ctx, "DeleteResources")
 	defer span.End()
 
+	if !HasAppContext() {
+		return nil
+	}
+
 	log := GetLogger()
 	appCtx := GetAppContext()
 
