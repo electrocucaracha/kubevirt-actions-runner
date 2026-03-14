@@ -13,7 +13,11 @@
 
 ## Overview
 
-The `kubevirt-actions-runner` project provides a robust solution for running GitHub Actions workflows in isolated, ephemeral virtual machines using [KubeVirt](https://kubevirt.io/). By integrating with [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller), this project enables you to execute CI/CD jobs in highly customizable VM environments with enhanced security and flexibility.
+The `kubevirt-actions-runner` project provides a robust solution for running GitHub Actions
+workflows in isolated, ephemeral virtual machines using [KubeVirt](https://kubevirt.io/).
+By integrating with [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller),
+this project enables you to execute CI/CD jobs in highly customizable VM environments with
+enhanced security and flexibility.
 
 This project acts as a bridge between Kubernetes and GitHub Actions, automatically provisioning dedicated VMs for each workflow job and cleaning them up after completion.
 
@@ -46,7 +50,7 @@ While GitHub-hosted runners work well for standard workflows, they have limitati
 
 ## Documentation
 
-Full documentation is available at the [official website](https://electrocucaracha.github.io/kubevirt-actions-runner/).
+Full documentation is available at the [official site](https://electrocucaracha.github.io/kubevirt-actions-runner/).
 
 ## Learn More
 
