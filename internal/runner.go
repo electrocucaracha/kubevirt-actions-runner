@@ -41,6 +41,12 @@ const (
 	runnerInfoPath       string = "runner-info.json"
 )
 
+// This file defines the Runner interface and its implementation for managing
+// KubeVirt resources, such as Virtual Machine Instances (VMIs) and Data Volumes.
+
+// KubevirtRunner is the concrete implementation of the Runner interface.
+// It interacts with the KubeVirt API to create, monitor, and delete resources.
+
 type Runner interface {
 	CreateResources(ctx context.Context, vmTemplate string, runnerName string, jitConfig string) error
 	WaitForVirtualMachineInstance(ctx context.Context) error

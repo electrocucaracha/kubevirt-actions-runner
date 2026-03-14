@@ -20,6 +20,9 @@ import (
 	sync "github.com/matryer/resync"
 )
 
+// This file manages the application context for the runner.
+// It provides a singleton instance to store and access shared state, such as the VMI and Data Volume names.
+
 type AppContext struct {
 	vmiName        string
 	dataVolumeName string

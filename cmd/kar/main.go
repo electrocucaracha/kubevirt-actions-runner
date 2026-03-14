@@ -40,6 +40,7 @@ const (
 //nolint:gochecknoglobals
 var (
 	// Build-time variables set via ldflags during build.
+	// These variables provide metadata about the build, such as the Git commit hash and build date.
 	gitCommit       string
 	buildDate       string
 	gitTreeModified string
