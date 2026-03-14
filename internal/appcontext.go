@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,10 @@ limitations under the License.
 package runner
 
 import (
-	sync "github.com/matryer/resync"
-)
+	"sync"
 
-// This file manages the application context for the runner.
-// It provides a singleton instance to store and access shared state, such as the VMI and Data Volume names.
+	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
+)
 
 type AppContext struct {
 	vmiName        string
@@ -30,23 +29,26 @@ type AppContext struct {
 
 //nolint:gochecknoglobals
 var (
-	instance *AppContext
-	once     sync.Once
+	appContextMu sync.Mutex
+	instance     *AppContext
 )
 
 // NewAppContext creates the AppContext once with the provided values.
 // Subsequent calls return the same instance, ignoring new values.
 func NewAppContext(vmi, dataVolume string) *AppContext {
-	log := GetLogger()
+	log := utils.GetLogger()
 
-	once.Do(func() {
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
+
+	if instance == nil {
 		log.Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
 
 		instance = &AppContext{
 			vmiName:        vmi,
 			dataVolumeName: dataVolume,
 		}
-	})
+	}
 
 	return instance
 }
@@ -54,18 +56,25 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 // GetAppContext returns the already initialized AppContext.
 // Panics if called before NewAppContext.
 func GetAppContext() *AppContext {
-	log := GetLogger()
+	log := utils.GetLogger()
 
-	if instance == nil {
+	appContextMu.Lock()
+	curr := instance
+	appContextMu.Unlock()
+
+	if curr == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
 	}
 
-	return instance
+	return curr
 }
 
 // CancelAppContext resets the AppContext to its initial state.
 func CancelAppContext() {
-	once.Reset()
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
+
+	instance = nil
 }
 
 // GetVMIName returns the Virtual Machine Instance Name created for the runner.
