@@ -21,6 +21,8 @@ enhanced security and flexibility.
 
 This project acts as a bridge between Kubernetes and GitHub Actions, automatically provisioning dedicated VMs for each workflow job and cleaning them up after completion.
 
+![Diagram](docs/assets/diagram.png)
+
 ## Reasons to Use KubeVirt Actions Runner
 
 While GitHub-hosted runners work well for standard workflows, they have limitations. This project addresses these limitations by offering:
