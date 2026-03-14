@@ -30,22 +30,8 @@ This testbed uses:
 
 ## Deployment Flow
 
-The following flowchart describes the complete deployment and runtime sequence:
-
-```mermaid
-flowchart TD
-  A[Start: Run automation] --> B[Install tools]
-  B --> C[Configure cluster]
-  C --> D[Deploy KubeVirt operator]
-  D --> E[Apply VM template]
-  E --> F[Configure RBAC]
-  F --> G[Deploy runner scale set]
-  G --> H[Runner pod mounts runner-info]
-  H --> I[Runner creates VirtualMachineInstance]
-  I --> J[VM boots and executes job]
-  J --> K[Job completes]
-  K --> L[Teardown: delete VMI / pod]
-```
+For a detailed view of the deployment and runtime sequence, see the
+[Architecture Overview](../explanations/architecture-overview.md).
 
 ## Automated install
 
@@ -91,26 +77,23 @@ This confirms that:
 
 ## Verification
 
-You can manually inspect cluster resources to confirm correct behavior.
+Confirm the kind cluster is running and KubeVirt is healthy:
 
 ```bash
-kubectl get pods -A
-kubectl get vms -A
-kubectl get vmis -A
+kind get clusters
+kubectl get nodes
+kubectl get pods -n kubevirt
+kubectl get kubevirt -n kubevirt
 ```
 
-Inspect runner logs for job output and lifecycle events:
+Verify the VM template was registered successfully:
 
 ```bash
-kubectl logs <runner-pod> -n <your-namespace>
+kubectl get vm -A
 ```
 
-To inspect a specific VMI and recent events:
-
-```bash
-kubectl describe vmi <vmi-name> -n <your-namespace>
-kubectl get events -n <your-namespace>
-```
+For runner-specific verification steps (inspecting pods, VMIs, and logs),
+see the [Quick Start verification section](../tutorials/quickstart.md#verification).
 
 ## Next steps
 
