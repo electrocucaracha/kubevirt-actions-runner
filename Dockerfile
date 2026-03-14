@@ -6,7 +6,6 @@ WORKDIR /app
 RUN apk add --no-cache git=2.49.1-r0
 
 COPY . .
-COPY .git .git
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 RUN go build \
