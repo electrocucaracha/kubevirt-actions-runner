@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Deploy GitHub Pages
+name: Deploy Documentation to GitHub Pages
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -23,21 +23,22 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: Build GitHub Pages artifact
+    name: Build and prepare GitHub Pages artifact
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - name: Configure GitHub Pages
+      - name: Configure GitHub Pages settings
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # 5.0.0
-      - name: Stage docs for GitHub Pages
+      - name: Prepare documentation for GitHub Pages
         run: python3 ci/prepare_pages_site.py docs .pages-src
-      - name: Build with Jekyll
+      - name: Build documentation with Jekyll
         uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # 1.0.13
         with:
           source: ./.pages-src
@@ -47,7 +48,7 @@ jobs:
         with:
           path: ./_site
   deploy:
-    name: Deploy GitHub Pages
+    name: Deploy GitHub Pages site
     needs: build
     runs-on: ubuntu-latest
     permissions:

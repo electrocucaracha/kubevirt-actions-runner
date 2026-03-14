@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: AI Fixers
+name: Automated Fixers for Docker and Go
 # yamllint disable-line rule:truthy
 on:
   issues:
@@ -15,7 +15,7 @@ on:
 permissions: read-all
 jobs:
   fix-docker-build:
-    name: Fix Docker Issues
+    name: Automatically fix Docker build and runtime issues
     if: >
       github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'docker-build-issue')
 
@@ -25,12 +25,13 @@ jobs:
       pull-requests: write
     steps:
       # jscpd:ignore-start
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Run Copilot CLI to fix Docker build/runtime failures
-        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+      - name: Run Copilot CLI for Docker issues
+        uses: austenstone/copilot-cli@5b23dfc07bb6d20baf2638d98c007bfd5b56ae97 # 3.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
@@ -92,7 +93,7 @@ jobs:
 
             Ensure the PR is clean, minimal, and ready for review.
   fix-golangci:
-    name: Fix golangci-lint Issues
+    name: Automatically fix Go linting issues
     if: >
       github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'golangci-lint-issue')
 
@@ -102,11 +103,12 @@ jobs:
       pull-requests: write
     steps:
       # jscpd:ignore-start
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
           go-version: "^1.25"
           cache: false
@@ -117,7 +119,7 @@ jobs:
           version: latest
           install-only: true
       - name: "Run Copilot CLI"
-        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+        uses: austenstone/copilot-cli@5b23dfc07bb6d20baf2638d98c007bfd5b56ae97 # 3.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true

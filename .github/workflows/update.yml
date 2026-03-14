@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Scheduled Versions verification
+name: Scheduled Version Updates
 # yamllint disable-line rule:truthy
 on:
   schedule:
@@ -15,21 +15,24 @@ on:
 permissions: read-all
 jobs:
   check-versions:
+    name: Verify and update version files
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
-          # Fine-grained PAT with contents:write and workflows:write scopes
           token: ${{ secrets.WORKFLOW_TOKEN }}
           persist-credentials: true
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+      - name: Setup Go environment
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
           go-version: "^1.25"
           cache: false
-      - uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
+      - name: Create pull request for version updates
+        uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
         with:
           EXECUTE_COMMANDS: |
             ./ci/update_versions.sh
@@ -38,6 +41,7 @@ jobs:
           PR_BRANCH_NAME: "versions-update-${PR_ID}"
           PR_TITLE: "Upgrade versions files"
   check-dockerfile:
+    name: Update Dockerfile with latest versions
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

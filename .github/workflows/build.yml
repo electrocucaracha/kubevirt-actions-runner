@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Create and publish Docker image
+name: Build and Publish Docker Image
 # yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 jobs:
   changes:
-    name: Push Docker images to Docker Hub
+    name: Analyze changes and filter paths
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -28,10 +28,12 @@ jobs:
       golang: ${{ steps.filter.outputs.golang }}
       docker: ${{ steps.filter.outputs.docker }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # 3.0.2
+      - name: Filter changes
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # 4.0.1
         if: ${{ !env.ACT }}
         id: filter
         with:
@@ -44,7 +46,7 @@ jobs:
             docker:
               - Dockerfile
   code-coverage:
-    name: Check code coverage
+    name: Analyze code coverage for Go files
     if: needs.changes.outputs.golang == 'true'
     needs: changes
     runs-on: ubuntu-latest
@@ -53,26 +55,30 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: true
           fetch-depth: 10
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+      - name: Setup Go environment
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
           go-version: "^1.25"
           cache: false
-      - uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # 2.0.0
+      - name: Run code coverage analysis
+        uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # 2.0.0
         with:
           coverage-threshold: 45
   unit-test:
-    name: Check Go lang unit tests
+    name: Run Go unit tests
     if: needs.changes.outputs.golang == 'true'
     needs: changes
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
       - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
@@ -111,7 +117,8 @@ jobs:
         || needs.changes.outputs.docker == 'true'
       )
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
       - name: Build Docker image
@@ -124,7 +131,7 @@ jobs:
         run: |
           set -o pipefail
           docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
-      - uses: actions/ai-inference@a380166897b5408b8fb7dddd148142794cb5624a # 2.0.6
+      - uses: actions/ai-inference@e09e65981758de8b2fdab13c2bfb7c7d5493b0b6 # 2.0.7
         id: ai-docker-analysis
         if: failure()
         with:
@@ -187,25 +194,25 @@ jobs:
 
             ${{ steps.ai-docker-analysis.outputs.response }}
       - name: Log in to the Container registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # 5.10.0
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # 6.0.0
         with:
           images: ghcr.io/${{ github.repository }}
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # 6.18.0
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # 7.0.0
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # 3.2.0
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # 4
         with:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}

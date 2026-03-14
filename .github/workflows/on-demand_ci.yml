@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Check End-to-End (On Demand)
+name: On-Demand End-to-End Tests
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -25,16 +25,17 @@ on:
 permissions: read-all
 jobs:
   check-scripts-format:
+    name: Validate shell script formatting
     permissions:
       contents: read
     if: ( github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ) || github.event_name != 'pull_request_review'
-    name: Check scripts format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - name: Run the sh-checker
+      - name: Run shell script checker
         uses: luizm/action-sh-checker@883217215b11c1fabbf00eb1a9a041f62d74c744 # 0.10.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +43,7 @@ jobs:
         with:
           sh_checker_shellcheck_disable: true
   functional-test:
-    name: Check functional tests
+    name: Execute functional tests on self-hosted runner
     needs: check-scripts-format
     runs-on: vm-self-hosted
     permissions:
@@ -65,7 +66,7 @@ jobs:
           EONG
       - name: Upload cluster logs
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # 6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
         with:
           name: kind-logs-${{ github.run_id }}
           path: ./_artifacts/logs

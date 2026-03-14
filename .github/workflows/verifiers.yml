@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Verifiers
+name: Code Quality Verifiers
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -18,7 +18,7 @@ on:
 permissions: read-all
 jobs:
   check-golangci:
-    name: Check Go Lang (syntax)
+    name: Run Go linter checks
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
           go-version: "^1.25"
           cache: false
@@ -41,7 +41,7 @@ jobs:
         with:
           version: latest
           args: --allow-parallel-runners --output.json.path linter-errors.json
-      - uses: actions/ai-inference@a380166897b5408b8fb7dddd148142794cb5624a # 2.0.6
+      - uses: actions/ai-inference@e09e65981758de8b2fdab13c2bfb7c7d5493b0b6 # 2.0.7
         id: ai-linter-analysis
         if: failure()
         with:
@@ -104,7 +104,7 @@ jobs:
 
             ${{ steps.get-analysis-output.outputs.response }}
   reduce-tech-debt:
-    name: Reduce technical debt
+    name: Analyze and reduce technical debt
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -117,7 +117,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: "Run Copilot CLI"
-        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+        uses: austenstone/copilot-cli@5b23dfc07bb6d20baf2638d98c007bfd5b56ae97 # 3.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
