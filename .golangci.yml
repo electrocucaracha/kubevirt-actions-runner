@@ -37,7 +37,6 @@ linters:
             - kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
             - github.com/onsi/ginkgo/v2
             - github.com/onsi/gomega
-            - github.com/matryer/resync
             - go.uber.org/zap
             - go.uber.org/mock/gomock
             - go.opentelemetry.io/otel
@@ -79,6 +78,10 @@ linters:
           - paralleltest
         path: internal/utils/common_test\.go
         text: "TestGetLogger"
+      - linters:
+          - paralleltest
+        path: internal/appcontext_test\.go
+        text: "TestCancelAppContextResetsSingleton"
       - linters:
           - ireturn
         text: "returns interface"

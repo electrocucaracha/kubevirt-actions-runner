@@ -54,17 +54,19 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 }
 
 // GetAppContext returns the already initialized AppContext.
+// Panics if called before NewAppContext.
 func GetAppContext() *AppContext {
 	log := utils.GetLogger()
 
 	appContextMu.Lock()
-	defer appContextMu.Unlock()
+	curr := instance
+	appContextMu.Unlock()
 
-	if instance == nil {
+	if curr == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
 	}
 
-	return instance
+	return curr
 }
 
 // CancelAppContext resets the AppContext to its initial state.
