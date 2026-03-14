@@ -39,35 +39,6 @@ To use this project, ensure you have the following installed:
 - [Actions Runner Controller](https://github.com/actions/actions-runner-controller/blob/master/docs/quickstart.md)
 - [KubeVirt](https://kubevirt.io/quickstart_cloud)
 
-## Architecture Diagram
-
-```mermaid
-flowchart TD
-  subgraph GitHub
-    A[GitHub Job Triggered]
-  end
-
-  subgraph Kubernetes Cluster
-    B[Actions Runner Controller]
-    C[Create kubevirt-actions-runner Pod]
-    E[Mount runner-info.json]
-    F[Create VirtualMachineInstance from Template]
-    G[Boot VirtualMachineInstance]
-  end
-
-  subgraph Virtual Machine
-    H[Runner fetches GitHub job metadata]
-    I[Execute Job Steps]
-    J[Job Completion]
-  end
-
-  subgraph Teardown
-    K[Cleanup: Terminate VMI & Runner Pod]
-  end
-
-  A --> B --> C --> E --> F --> G --> H --> I --> J --> K
-```
-
 ## Limitations
 
 - _macOS support_: macOS virtualization is not supported via KubeVirt due to licensing constraints.

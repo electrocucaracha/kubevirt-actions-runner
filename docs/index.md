@@ -25,6 +25,8 @@ below to navigate through the different sections.
 
 ### Explanations
 
+- [Architecture Overview](explanations/architecture-overview.md): Explore the
+  architecture and design principles of the testbed.
 - [Concepts and Architecture](explanations/concepts.md) _(Coming Soon)_: Explore
   the underlying architecture and design principles of the project.
 
