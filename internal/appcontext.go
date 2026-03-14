@@ -31,7 +31,6 @@ type AppContext struct {
 var (
 	appContextMu sync.Mutex
 	instance     *AppContext
-	once         sync.Once
 )
 
 // NewAppContext creates the AppContext once with the provided values.
@@ -39,14 +38,17 @@ var (
 func NewAppContext(vmi, dataVolume string) *AppContext {
 	log := utils.GetLogger()
 
-	once.Do(func() {
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
+
+	if instance == nil {
 		log.Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
 
 		instance = &AppContext{
 			vmiName:        vmi,
 			dataVolumeName: dataVolume,
 		}
-	})
+	}
 
 	return instance
 }
@@ -54,6 +56,9 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 // GetAppContext returns the already initialized AppContext.
 func GetAppContext() *AppContext {
 	log := utils.GetLogger()
+
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
 
 	if instance == nil {
 		log.Fatal("AppContext not initialized. Call NewAppContext first.")
@@ -68,7 +73,6 @@ func CancelAppContext() {
 	defer appContextMu.Unlock()
 
 	instance = nil
-	once = sync.Once{}
 }
 
 // GetVMIName returns the Virtual Machine Instance Name created for the runner.
