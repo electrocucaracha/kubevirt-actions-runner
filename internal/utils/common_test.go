@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,170 +22,53 @@ import (
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 )
 
-func TestLoggerImplPrintf(t *testing.T) {
-	t.Parallel()
-
+func TestLoggerMethods(t *testing.T) {
 	logger := utils.GetLogger()
-	// Should not panic
-	logger.Printf("test %s", "message")
-}
 
-func TestLoggerImplPrintln(t *testing.T) {
-	t.Parallel()
+	tests := []struct {
+		name string
+		call func(*utils.LoggerImpl)
+	}{
+		{name: "Printf", call: func(log *utils.LoggerImpl) { log.Printf("test %s", "message") }},
+		{name: "Println", call: func(log *utils.LoggerImpl) { log.Println("test message") }},
+		{name: "Debugf", call: func(log *utils.LoggerImpl) { log.Debugf("test %s", "debug") }},
+		{name: "Debug", call: func(log *utils.LoggerImpl) { log.Debug("test debug") }},
+		{name: "Infof", call: func(log *utils.LoggerImpl) { log.Infof("test %s", "info") }},
+		{name: "Info", call: func(log *utils.LoggerImpl) { log.Info("test info") }},
+		{name: "Infow", call: func(log *utils.LoggerImpl) { log.Infow("test message", "key1", "value1", "key2", "value2") }},
+		{name: "Warnf", call: func(log *utils.LoggerImpl) { log.Warnf("test %s", "warning") }},
+		{name: "Warn", call: func(log *utils.LoggerImpl) { log.Warn("test warning") }},
+		{name: "Warnw", call: func(log *utils.LoggerImpl) { log.Warnw("test message", "key1", "value1") }},
+		{name: "Errorf", call: func(log *utils.LoggerImpl) { log.Errorf("test %s", "error") }},
+		{name: "Error", call: func(log *utils.LoggerImpl) { log.Error("test error") }},
+		{name: "Errorw", call: func(log *utils.LoggerImpl) { log.Errorw("test message", "key1", "value1") }},
+	}
 
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Println("test message")
-}
-
-func TestLoggerImplDebugf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Debugf("test %s", "debug")
-}
-
-func TestLoggerImplDebug(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Debug("test debug")
-}
-
-func TestLoggerImplInfof(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Infof("test %s", "info")
-}
-
-func TestLoggerImplInfo(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Info("test info")
-}
-
-func TestLoggerImplInfow(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Infow("test message", "key1", "value1", "key2", "value2")
-}
-
-func TestLoggerImplWarnf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warnf("test %s", "warning")
-}
-
-func TestLoggerImplWarn(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warn("test warning")
-}
-
-func TestLoggerImplWarnw(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warnw("test message", "key1", "value1")
-}
-
-func TestLoggerImplErrorf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Errorf("test %s", "error")
-}
-
-func TestLoggerImplError(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Error("test error")
-}
-
-func TestLoggerImplErrorw(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Errorw("test message", "key1", "value1")
-}
-
-func verifyLoggerImpl(t *testing.T) {
-	t.Helper()
-	updateLoggerForTesting()
-
-	if utils.GetLogger() == nil {
-		t.Fatal("GetLogger returned nil")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.call(logger)
+		})
 	}
 }
 
-func TestGetLoggerDefaultLevel(t *testing.T) {
-	// Clear the environment variable and reset the singleton
-	t.Setenv("KAR_LOG_LEVEL", "")
-	verifyLoggerImpl(t)
-}
+func TestGetLoggerLevels(t *testing.T) {
+	levels := []string{"", "debug", "info", "warn", "warning", "error", "fatal", "unknown", "DEBUG"}
 
-func TestGetLoggerDebugLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "debug")
-	verifyLoggerImpl(t)
-}
+	for _, level := range levels {
+		t.Run(levelName(level), func(t *testing.T) {
+			t.Setenv("KAR_LOG_LEVEL", level)
+			utils.ResetLoggerForTesting()
 
-func TestGetLoggerInfoLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "info")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerWarnLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "warn")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerWarningLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "warning")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerErrorLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "error")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerFatalLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "fatal")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerUnknownLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "unknown")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerUppercaseLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "DEBUG")
-	verifyLoggerImpl(t)
+			if utils.GetLogger() == nil {
+				t.Fatal("GetLogger returned nil")
+			}
+		})
+	}
 }
 
 func TestGetLoggerSingleton(t *testing.T) {
 	t.Setenv("KAR_LOG_LEVEL", "info")
-
-	// Need to reset the singleton for testing
-	updateLoggerForTesting()
+	utils.ResetLoggerForTesting()
 
 	logger1 := utils.GetLogger()
 	logger2 := utils.GetLogger()
@@ -195,15 +78,10 @@ func TestGetLoggerSingleton(t *testing.T) {
 	}
 }
 
-func TestLoggerInterface(t *testing.T) {
-	t.Parallel()
+func levelName(level string) string {
+	if level == "" {
+		return "default"
+	}
 
-	logger := utils.GetLogger()
-
-	// Verify logger implements Logger interface
-	var _ utils.Logger = logger
-}
-
-func updateLoggerForTesting() {
-	utils.ResetLoggerForTesting()
+	return level
 }

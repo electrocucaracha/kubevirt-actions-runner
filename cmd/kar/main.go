@@ -59,16 +59,6 @@ type buildInfoVars struct {
 	gitTreeModified string
 }
 
-// NewBuildInfoVars creates a new buildInfoVars instance. This allows for testing
-// and avoids using global variables.
-func NewBuildInfoVars(gitCommit, buildDate, gitTreeModified string) buildInfoVars {
-	return buildInfoVars{
-		gitCommit:       gitCommit,
-		buildDate:       buildDate,
-		gitTreeModified: gitTreeModified,
-	}
-}
-
 func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
 	for _, setting := range info.Settings {
 		switch setting.Key {
@@ -133,15 +123,12 @@ func ensureValidCleanupContext(parent context.Context) (context.Context, context
 	return context.WithTimeout(parent, getCleanupTimeout())
 }
 
-func setupTelemetry(log any) func(context.Context) error {
+func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
 	telemetryCfg := runner.GetTelemetryConfig()
 
 	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background(), telemetryCfg)
 	if err != nil {
-		// Cast log to the correct type
-		if logVal, ok := log.(interface{ Warnf(s string, args ...any) }); ok {
-			logVal.Warnf("failed to initialize telemetry: %v", err)
-		}
+		log.Warnf("failed to initialize telemetry: %v", err)
 	}
 
 	if shutdownTelemetry == nil {
@@ -167,14 +154,12 @@ func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
 	return virtClient, namespace, nil
 }
 
-func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log any) {
+func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log *utils.LoggerImpl) {
 	rootCmd := app.NewRootCommand(ctx, kr, opts)
 
 	execErr := rootCmd.Execute()
 	if execErr != nil && !errors.Is(errors.Cause(execErr), context.Canceled) {
-		if logVal, ok := log.(interface{ Println(args ...any) }); ok {
-			logVal.Println("execute command failed:", execErr)
-		}
+		log.Println("execute command failed:", execErr)
 	}
 }
 
@@ -184,7 +169,7 @@ func main() {
 	log := utils.GetLogger()
 	// Note: ldflags are set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
 	// -X main.gitTreeModified=<modified>.
-	vars := NewBuildInfoVars(gitCommit, buildDate, gitTreeModified)
+	vars := buildInfoVars{gitCommit: gitCommit, buildDate: buildDate, gitTreeModified: gitTreeModified}
 	buildInfo := getBuildInfo(vars)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
