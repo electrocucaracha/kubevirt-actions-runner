@@ -28,6 +28,7 @@ config
 CreateDataVolume
 CreateResources
 CreateVMI
+customizable
 DataDog
 DataVolume
 datavolumes
@@ -107,6 +108,7 @@ RBAC
 README
 reallyLongArg
 repo
+reproducibility
 runnerName
 runStrategy
 runtime
@@ -147,6 +149,7 @@ vmTemplate
 vscode
 Vue
 WaitForVirtualMachineInstance
+walkthrough
 xyz
 yaml
 yml

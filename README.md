@@ -1,4 +1,4 @@
-# Kubevirt Actions Runner
+# KubeVirt Actions Runner
 
 <!-- markdown-link-check-disable-next-line -->
 
@@ -13,50 +13,59 @@
 
 ## Overview
 
-`kubevirt-actions-runner` is a custom GitHub Actions runner image designed for use with the [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller).
-This runner provisions ephemeral virtual machines (VMs) using [KubeVirt](https://kubevirt.io), extending the flexibility and security of your CI/CD workflows.
+The `kubevirt-actions-runner` project provides a robust solution for running GitHub Actions workflows in isolated, ephemeral virtual machines using [KubeVirt](https://kubevirt.io/). By integrating with [Actions Runner Controller (ARC)](https://github.com/actions/actions-runner-controller), this project enables you to execute CI/CD jobs in highly customizable VM environments with enhanced security and flexibility.
 
-This is particularly useful for validating scenarios that are not supported by default GitHub-hosted runners, such as:
+This project acts as a bridge between Kubernetes and GitHub Actions, automatically provisioning dedicated VMs for each workflow job and cleaning them up after completion.
 
-- Running Windows or macOS jobs
-- Custom environments that require specific kernel modules or system services
-- Jobs requiring strong isolation from the host system
+## Reasons to Use KubeVirt Actions Runner
 
-![Diagram](docs/assets/diagram.png)
+While GitHub-hosted runners work well for standard workflows, they have limitations. This project addresses these limitations by offering:
+
+- **Custom Environments**: Run jobs requiring specific kernel modules, system services, or custom OS configurations.
+- **Enhanced Isolation**: Execute untrusted code or security-sensitive workflows in fully isolated VMs.
+- **OS Flexibility**: Support for Windows VMs and other operating systems beyond standard Linux containers.
+- **Ephemeral Instances**: Fresh, clean VM for every job run ensures reproducibility.
+- **System-Level Control**: Full control over VM resources, storage, and network configuration.
 
 ## Key Features
 
-- _Ephemeral VM creation_: Launch a fresh VM for every job and destroy it after completion
-- _Increased isolation_: Ideal for untrusted code or complex system configurations
-- Custom system-level configuration support
-- Easily integrates with ARC and Kubernetes-native tooling
+- **Ephemeral VM Creation**: Automatically provisions and destroys VMs for each job.
+- **Kubernetes-Native**: Seamless integration with Kubernetes clusters and ARC.
+- **Customizable**: Tailor VM specifications, resources, and configurations per workflow.
+- **Lifecycle Management**: Automatic VM cleanup and resource management.
+- **Cloud-Native**: Built with Go and follows cloud-native best practices.
 
-## Prerequisites
+## Getting Started
 
-To use this project, ensure you have the following installed:
+### Prerequisites
 
-- A working Kubernetes cluster
-- [Actions Runner Controller](https://github.com/actions/actions-runner-controller/blob/master/docs/quickstart.md)
-- [KubeVirt](https://kubevirt.io/quickstart_cloud)
+- Kubernetes cluster (v1.24+)
+- KubeVirt installed and configured
+- Actions Runner Controller (ARC) deployed
+- GitHub Personal Access Token (PAT) with appropriate permissions
 
-## Limitations
+## Documentation
 
-- _macOS support_: macOS virtualization is not supported via KubeVirt due to licensing constraints.
-- _Long job durations_: Boot time of VMs may increase total runtime.
-- _Persistent state_: Not designed for workflows requiring persisted state between jobs.
+Full documentation is available at the [official website](https://electrocucaracha.github.io/kubevirt-actions-runner/).
 
-## Presentations
+## Learn More
 
-### KCD Guadalajara 2025 – Migrating GitHub Actions with Nested Virtualization to the Cloud-Native Ecosystem
+For a detailed walkthrough of the project, check out the following resources:
 
-This project was presented at [Kubernetes Community Days (KCD) Guadalajara 2025](https://community.cncf.io/events/details/cncf-kcd-guadalajara-presents-kcd-guadalajara-2025/cohost-kcd-guadalajara), showcasing how to extend GitHub Actions with KubeVirt and nested virtualization to support custom and complex CI/CD workflows in Kubernetes.
+- **[KCD Guadalajara 2025 Presentation](https://community.cncf.io/events/details/cncf-kcd-guadalajara-presents-kcd-guadalajara-2025/cohost-kcd-guadalajara)**: Event details and presentation materials
+- **[Video Recording](https://www.youtube.com/watch?v=ccb8y_Ij30k)**: Watch the full presentation
 
-- [Video (Spanish)](https://www.youtube.com/watch?v=ccb8y_Ij30k)
-- [Slides](https://www.slideshare.net/slideshow/migrating-github-actions-with-nested-virtualization-to-cloud-native-ecosystem-pptx/277448656)
+## Contributing
 
-The presentation walks through:
+We welcome contributions from the community, including:
 
-- Challenges with standard GitHub-hosted runners
-- Benefits of using KubeVirt for GitHub Actions runners
-- Live demo deploying and running jobs inside ephemeral VMs
-- Lessons learned and architectural considerations
+- Bug reports and fixes
+- New features
+- Documentation improvements
+- Ideas and suggestions
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get involved.
+
+## License
+
+This project is licensed under the Apache License 2.0. See the [license](https://opensource.org/licenses/Apache-2.0) for details.
