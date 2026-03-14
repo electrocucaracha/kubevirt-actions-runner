@@ -29,13 +29,3 @@ below to navigate through the different sections.
   architecture and design principles of the testbed.
 - [Concepts and Architecture](explanations/concepts.md) _(Coming Soon)_: Explore
   the underlying architecture and design principles of the project.
-
-## Contributing
-
-We welcome contributions! Refer to the [CONTRIBUTING.md](../CONTRIBUTING.md)
-file for detailed guidelines on how to get involved.
-
-## Get Started
-
-Dive into the documentation and start leveraging the `kubevirt-actions-runner`
-today!
