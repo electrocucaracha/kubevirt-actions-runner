@@ -69,6 +69,14 @@ func GetAppContext() *AppContext {
 	return curr
 }
 
+// HasAppContext reports whether the AppContext has been initialized.
+func HasAppContext() bool {
+	appContextMu.Lock()
+	defer appContextMu.Unlock()
+
+	return instance != nil
+}
+
 // CancelAppContext resets the AppContext to its initial state.
 func CancelAppContext() {
 	appContextMu.Lock()

@@ -121,6 +121,16 @@ var _ = Describe("Runner", func() {
 		Entry("when the data volume doesn't exist", vmInstance, "dv-abc098"),
 	)
 
+	It("delete resources does nothing when AppContext is not initialized", func() {
+		// Ensure AppContext is not initialized (AfterEach calls CancelAppContext,
+		// but be explicit here for clarity).
+		runner.CancelAppContext()
+
+		err := karRunner.DeleteResources(context.TODO())
+
+		Expect(err).NotTo(HaveOccurred())
+	})
+
 	DescribeTable("watch resources", func(shouldSucceed bool, lastPhase v1.VirtualMachineInstancePhase) {
 		const timeout = 1 * time.Second
 
