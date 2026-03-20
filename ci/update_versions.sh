@@ -25,7 +25,8 @@ fi
 go_version="$(curl -sL https://golang.org/VERSION?m=text | sed -n 's/go//;s/\..$//;1p')"
 go get -u ./... || true
 go mod tidy -go="$go_version"
-find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) \
+# Exclude update.yml so its go-version stays "stable" (always installs the latest Go toolchain)
+find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) ! -name 'update.yml' \
     -exec grep -l 'go-version:' {} + \
     -exec env go_version="${go_version}" bash -s {} + <<'EOF'
     for file; do
@@ -53,3 +54,12 @@ for action in $gh_actions; do
     # shellcheck disable=SC2267
     grep -ElRZ "uses: $action@" .github/ | xargs -0 -l sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
 done
+
+# Update Dockerfile base image to the latest golang alpine tag for this Go version
+# The || true is intentional: a failed API call or missing jq leaves go_docker_tag empty
+# and the subsequent if-check skips the update without aborting the script.
+go_docker_tag=$(curl -sL "https://hub.docker.com/v2/repositories/library/golang/tags?page_size=100&name=${go_version}-alpine" | \
+    jq -r '[.results[].name | select(test("^[0-9]+\\.[0-9]+-alpine[0-9]+\\.[0-9]+$"))] | sort | last // empty' 2>/dev/null || true)
+if [[ -n "$go_docker_tag" ]]; then
+    sed -i "s|^FROM golang:[^[:space:]]*[[:space:]]AS build|FROM golang:${go_docker_tag} AS build|" Dockerfile
+fi
