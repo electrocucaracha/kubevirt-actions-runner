@@ -46,5 +46,9 @@ trap exit_trap ERR
 info "Running a alpine demo instance"
 # shellcheck disable=SC1091
 [ -f /etc/profile.d/path.sh ] && . /etc/profile.d/path.sh
-timeout 5m go run "$(git rev-parse --show-toplevel)/cmd/kar/main.go" -c test-data/runner-info.json -t testvm -r test
+kar_dir="$(mktemp -d)"
+kar_bin="$kar_dir/kar"
+trap 'rm -rf "$kar_dir"' EXIT
+go build -o "$kar_bin" "$(git rev-parse --show-toplevel)/cmd/kar"
+timeout 5m "$kar_bin" -c test-data/runner-info.json -t testvm -r test
 info "Demo completed"
