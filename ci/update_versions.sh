@@ -22,7 +22,12 @@ if ! command -v go >/dev/null; then
     source /etc/profile.d/path.sh
 fi
 
-go_version="$(curl -sL https://golang.org/VERSION?m=text | sed -n 's/go//;s/\..$//;1p')"
+full_go_version="$(curl -sL https://golang.org/VERSION?m=text | head -n1 | sed 's/^go//')"
+go_version="$(printf '%s' "$full_go_version" | awk -F. '{print $1"."$2}')"
+if [[ ! $go_version =~ ^[0-9]+\.[0-9]+$ ]]; then
+    echo "ERROR: could not extract a valid Go major.minor version (got: '${go_version}')" >&2
+    exit 1
+fi
 go get -u ./... || true
 go mod tidy -go="$go_version"
 # Exclude update.yml so its go-version stays "stable" (always installs the latest Go toolchain)
