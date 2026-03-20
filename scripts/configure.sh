@@ -53,6 +53,7 @@ function _deploy_kubevirt {
     done
     kubectl patch kubevirts.kubevirt.io kubevirt -n kubevirt --type merge -p '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
     kubectl rollout restart daemonset virt-handler -n kubevirt
+    kubectl rollout status daemonset virt-handler -n kubevirt --timeout=5m
 }
 
 function main {
