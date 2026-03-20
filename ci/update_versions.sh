@@ -58,8 +58,8 @@ done
 # Update Dockerfile base image to the latest golang alpine tag for this Go version
 # The || true is intentional: a failed API call or missing jq leaves go_docker_tag empty
 # and the subsequent if-check skips the update without aborting the script.
-go_docker_tag=$(curl -sL "https://hub.docker.com/v2/repositories/library/golang/tags?page_size=100&name=${go_version}-alpine" | \
+go_docker_tag=$(curl -sL "https://hub.docker.com/v2/repositories/library/golang/tags?page_size=100&name=${go_version}-alpine" |
     jq -r '[.results[].name | select(test("^[0-9]+\\.[0-9]+-alpine[0-9]+\\.[0-9]+$"))] | sort | last // empty' 2>/dev/null || true)
-if [[ -n "$go_docker_tag" ]]; then
+if [[ -n $go_docker_tag ]]; then
     sed -i "s|^FROM golang:[^[:space:]]*[[:space:]]AS build|FROM golang:${go_docker_tag} AS build|" Dockerfile
 fi
