@@ -29,7 +29,7 @@ jobs:
       - name: Setup Go environment
         uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
-          go-version: "^1.25"
+          go-version: "stable"
           cache: false
       - name: Create pull request for version updates
         uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # 2.1.4
@@ -40,17 +40,3 @@ jobs:
           COMMIT_NAME: "electrocucaracha bot"
           PR_BRANCH_NAME: "versions-update-${PR_ID}"
           PR_TITLE: "Upgrade versions files"
-  check-dockerfile:
-    name: Update Dockerfile with latest versions
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
-        with:
-          persist-credentials: false
-      - name: update Dockerfile
-        uses: ludeeus/dockerfile-updater@eaf8ea79220d076eb46c127fa9895e3de3e0a512 # 21.01.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "chore: update Dockerfile"
