@@ -32,7 +32,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
-          go-version: "^1.25"
+          go-version: "^1.26"
           cache: false
           # jscpd:ignore-end
       - name: Run golangci-lint tool
@@ -41,7 +41,7 @@ jobs:
         with:
           version: latest
           args: --allow-parallel-runners --output.json.path linter-errors.json
-      - uses: actions/ai-inference@e09e65981758de8b2fdab13c2bfb7c7d5493b0b6 # 2.0.7
+      - uses: actions/ai-inference@af6ad2c4ac4edf01884054fc3a6caa6d2567c13a # 2.0.8
         id: ai-linter-analysis
         if: failure()
         with:

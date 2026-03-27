@@ -1,6 +1,6 @@
 module github.com/electrocucaracha/kubevirt-actions-runner
 
-go 1.25
+go 1.26
 
 replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20240430033511-f0e62f92d13f
 
