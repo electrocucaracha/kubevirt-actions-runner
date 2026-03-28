@@ -63,7 +63,7 @@ jobs:
       - name: Setup Go environment
         uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
-          go-version: "^1.25"
+          go-version: "^1.26"
           cache: false
       - name: Run code coverage analysis
         uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # 2.0.0
@@ -81,9 +81,9 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # 6.2.0
+      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
         with:
-          go-version: "^1.25"
+          go-version: "^1.26"
           cache: false
       - uses: GoTestTools/gotestfmt-action@8b4478c7019be847373babde9300210e7de34bfb # 2.2.0
       - name: Run tests
@@ -91,7 +91,7 @@ jobs:
           set -euo pipefail
           go test -json -v ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
       - name: Upload test log
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # 6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
         if: ${{ !env.ACT }}
         with:
           name: test-log
@@ -131,7 +131,7 @@ jobs:
         run: |
           set -o pipefail
           docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
-      - uses: actions/ai-inference@e09e65981758de8b2fdab13c2bfb7c7d5493b0b6 # 2.0.7
+      - uses: actions/ai-inference@af6ad2c4ac4edf01884054fc3a6caa6d2567c13a # 2.0.8
         id: ai-docker-analysis
         if: failure()
         with:
