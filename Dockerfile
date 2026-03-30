@@ -3,7 +3,7 @@ FROM golang:1.26-alpine3.23 AS build
 
 WORKDIR /app
 
-RUN apk add --no-cache git=2.49.1-r0
+RUN apk add --no-cache git=2.52.0-r0
 
 COPY . .
 
