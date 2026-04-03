@@ -68,7 +68,6 @@ jobs:
           SAVE_SUPER_LINTER_OUTPUT: true
           KUBERNETES_KUBECONFORM_OPTIONS: "-ignore-missing-schemas"
           DEFAULT_BRANCH: ${{ github.head_ref || github.ref_name }}
-          ZIZMOR_CONFIG: /github/workspace/.zizmor.yml
       - uses: GrantBirki/git-diff-action@b27608d18e6dd9b31b46ede56a93e045d3881a28 # 3.0.0
         id: git-diff
         if: failure()
