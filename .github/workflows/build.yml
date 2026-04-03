@@ -61,7 +61,7 @@ jobs:
           persist-credentials: true
           fetch-depth: 10
       - name: Setup Go environment
-        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # 6.4.0
         with:
           go-version: "^1.26"
           cache: false
@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # 6.3.0
+      - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # 6.4.0
         with:
           go-version: "^1.26"
           cache: false
@@ -194,7 +194,7 @@ jobs:
 
             ${{ steps.ai-docker-analysis.outputs.response }}
       - name: Log in to the Container registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
