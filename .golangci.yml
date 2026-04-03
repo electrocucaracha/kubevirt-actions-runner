@@ -11,6 +11,9 @@ linters:
   default: all
   disable:
     - exhaustruct
+    - wsl
+  enable:
+    - wsl_v5
   settings:
     depguard:
       rules:
@@ -29,7 +32,6 @@ linters:
             - k8s.io/apimachinery/pkg/apis/meta/v1
             - k8s.io/apimachinery/pkg/types
             - k8s.io/apimachinery/pkg/watch
-            - k8s.io/utils/ptr
             - kubevirt.io/api/core/v1
             - kubevirt.io/client-go/containerizeddataimporter/fake
             - kubevirt.io/client-go/kubecli
@@ -50,6 +52,10 @@ linters:
     gomoddirectives:
       replace-allow-list:
         - k8s.io/kube-openapi
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
   exclusions:
     generated: lax
     presets:

@@ -29,7 +29,6 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/utils/ptr"
 	v1 "kubevirt.io/api/core/v1"
 	"kubevirt.io/client-go/kubecli"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
@@ -310,7 +309,7 @@ func (rc *KubevirtRunner) createDataVolume(
 			Kind:       "VirtualMachineInstance",
 			Name:       vmiName,
 			UID:        vmiUID,
-			Controller: ptr.To(false),
+			Controller: new(bool),
 		},
 	}
 
