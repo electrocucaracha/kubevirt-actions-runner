@@ -3,34 +3,29 @@ description: "Perform janitorial tasks on any codebase including cleanup, simpli
 name: "Universal Janitor"
 tools:
   [
-    "search/changes",
-    "search/codebase",
-    "edit/editFiles",
-    "vscode/extensions",
-    "web/fetch",
-    "findTestFiles",
-    "web/githubRepo",
-    "vscode/getProjectSetupInfo",
-    "vscode/installExtension",
-    "vscode/newWorkspace",
-    "vscode/runCommand",
-    "vscode/openSimpleBrowser",
-    "read/problems",
-    "execute/getTerminalOutput",
-    "execute/runInTerminal",
-    "read/terminalLastCommand",
-    "read/terminalSelection",
-    "execute/createAndRunTask",
-    "execute/getTaskOutput",
-    "execute/runTask",
-    "execute/runTests",
-    "search",
-    "search/searchResults",
-    "execute/testFailure",
-    "search/usages",
-    "vscode/vscodeAPI",
-    "microsoft.docs.mcp",
-    "github",
+    vscode/extensions,
+    vscode/getProjectSetupInfo,
+    vscode/installExtension,
+    vscode/newWorkspace,
+    vscode/runCommand,
+    vscode/vscodeAPI,
+    execute/getTerminalOutput,
+    execute/runTask,
+    execute/createAndRunTask,
+    execute/runTests,
+    execute/runInTerminal,
+    execute/testFailure,
+    read/terminalSelection,
+    read/terminalLastCommand,
+    read/getTaskOutput,
+    read/problems,
+    read/readFile,
+    browser,
+    "github/*",
+    "microsoft.docs.mcp/*",
+    edit/editFiles,
+    search,
+    web,
   ]
 ---
 
@@ -112,10 +107,10 @@ Use `microsoft.docs.mcp` for:
 
 ## Analysis Priority
 
-1. Find and delete unused code
-1. Identify and remove complexity
-1. Eliminate duplicate patterns
-1. Simplify conditional logic
-1. Remove unnecessary dependencies
+1. **Find and delete unused code**
+1. **Identify and remove complexity**
+1. **Eliminate duplicate patterns**
+1. **Simplify conditional logic**
+1. **Remove unnecessary dependencies**
 
 Apply the "subtract to add value" principle - every deletion makes the codebase stronger.
