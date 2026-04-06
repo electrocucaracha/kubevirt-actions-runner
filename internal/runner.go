@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
@@ -140,6 +141,9 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) error {
 	tracer := otel.Tracer("kubevirt-actions-runner/runner")
 
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Minute) // Add timeout
+	defer cancel()
+
 	ctx, span := tracer.Start(ctx, "WaitForVirtualMachineInstance")
 	defer span.End()
 
@@ -152,42 +156,44 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	watch, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Watch(ctx, k8smetav1.ListOptions{})
 	if err != nil {
 		span.RecordError(err)
-
 		return errors.Wrap(err, "failed to watch the virtual machine instance")
 	}
-
 	defer watch.Stop()
 
 	var currentStatus v1.VirtualMachineInstancePhase
 
-	for event := range watch.ResultChan() {
-		vmi, ok := event.Object.(*v1.VirtualMachineInstance)
-		if ok && vmi.Name == appCtx.GetVMIName() {
-			if vmi.Status.Phase != currentStatus {
-				switch vmi.Status.Phase {
-				case v1.Succeeded:
-					log.Printf("%s has successfully completed\n", appCtx.GetVMIName())
-					span.SetAttributes(attribute.String("phase", "Succeeded"))
+	for {
+		select {
+		case <-ctx.Done():
+			return errors.New("timeout while waiting for the virtual machine instance")
+		case event, ok := <-watch.ResultChan():
+			if !ok {
+				return errors.New("watch channel closed unexpectedly")
+			}
 
-					return nil
-				case v1.Failed:
-					log.Printf("%s has failed\n", appCtx.GetVMIName())
-					span.SetAttributes(attribute.String("phase", "Failed"))
-
-					return ErrRunnerFailed
-				case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown, v1.WaitingForSync:
-					log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), vmi.Status.Phase)
-					span.AddEvent("phase_transition", trace.WithAttributes(
-						attribute.String("phase", string(vmi.Status.Phase)),
-					))
-
-					currentStatus = vmi.Status.Phase
+			vmi, ok := event.Object.(*v1.VirtualMachineInstance)
+			if ok && vmi.Name == appCtx.GetVMIName() {
+				if vmi.Status.Phase != currentStatus {
+					switch vmi.Status.Phase {
+					case v1.Succeeded:
+						log.Printf("%s has successfully completed\n", appCtx.GetVMIName())
+						span.SetAttributes(attribute.String("phase", "Succeeded"))
+						return nil
+					case v1.Failed:
+						log.Printf("%s has failed\n", appCtx.GetVMIName())
+						span.SetAttributes(attribute.String("phase", "Failed"))
+						return ErrRunnerFailed
+					case v1.VmPhaseUnset, v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, v1.Unknown, v1.WaitingForSync:
+						log.Printf("%s has transitioned to %s phase \n", appCtx.GetVMIName(), vmi.Status.Phase)
+						span.AddEvent("phase_transition", trace.WithAttributes(
+							attribute.String("phase", string(vmi.Status.Phase)),
+						))
+						currentStatus = vmi.Status.Phase
+					}
 				}
 			}
 		}
 	}
-
-	return nil
 }
 
 func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {

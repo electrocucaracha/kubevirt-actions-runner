@@ -7,7 +7,7 @@ tools:
     "browser",
     "edit",
     "execute",
-    "github/*",
+    "github/repo",
     "read",
     "search",
     "todo",
