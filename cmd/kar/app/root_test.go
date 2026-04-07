@@ -140,7 +140,7 @@ var _ = Describe("Root Command", func() {
 		Entry("when vm template option is provided", true, None, "-t", "vm template"),
 		Entry("when runner name option is provided", true, None, "-r", "runner name"),
 		Entry("when the creation failed", true, Create), // Adjusted to simulate success
-		Entry("when the delete failed", true, Delete), // Adjusted to simulate success
-		Entry("when the wait failed", true, Wait),    // Adjusted to simulate success
+		Entry("when the delete failed", true, Delete),   // Adjusted to simulate success
+		Entry("when the wait failed", true, Wait),       // Adjusted to simulate success
 	)
 })

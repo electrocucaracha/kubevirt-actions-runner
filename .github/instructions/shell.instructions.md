@@ -5,7 +5,7 @@ applyTo: "**/*.sh"
 
 # Shell Scripting Guidelines
 
-Instructions for writing clean, safe, and maintainable shell scripts for bash, sh, zsh, and other shells.
+Instructions for writing clean, safe, and maintainable shell scripts for Bash, sh, Zsh, and other shells.
 
 ## General Principles
 
