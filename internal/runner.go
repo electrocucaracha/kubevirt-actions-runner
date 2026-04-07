@@ -209,9 +209,14 @@ func handleVMIPhase(span trace.Span, vmiName string, phase v1.VirtualMachineInst
 		))
 
 		return false, nil
-	}
+	default:
+		log.Printf("%s encountered an unrecognized phase: %s\n", vmiName, phase)
+		span.AddEvent("phase_unhandled", trace.WithAttributes(
+			attribute.String("phase", string(phase)),
+		))
 
-	return false, nil
+		return false, nil
+	}
 }
 
 func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
