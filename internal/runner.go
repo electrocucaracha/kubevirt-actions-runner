@@ -36,10 +36,10 @@ import (
 )
 
 const (
-	runnerInfoAnnotation string = "electrocucaracha.kubevirt-actions-runner/runner-info"
-	runnerInfoVolume     string = "runner-info"
-	runnerInfoPath       string = "runner-info.json"
-	waitTimeout                 = 5 * time.Minute
+	runnerInfoAnnotation string        = "electrocucaracha.kubevirt-actions-runner/runner-info"
+	runnerInfoVolume     string        = "runner-info"
+	runnerInfoPath       string        = "runner-info.json"
+	waitTimeout          time.Duration = 5 * time.Minute
 )
 
 // This file defines the Runner interface and its implementation for managing
@@ -186,6 +186,8 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	}
 }
 
+// handleVMIPhase processes a VMI phase transition. It returns (true, err) when a
+// terminal state (Succeeded or Failed) is reached, or (false, nil) for non-terminal phases.
 func handleVMIPhase(span trace.Span, vmiName string, phase v1.VirtualMachineInstancePhase) (bool, error) {
 	log := GetLogger()
 
