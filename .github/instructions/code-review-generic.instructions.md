@@ -149,7 +149,7 @@ stmt.setString(1, email);
 
 ```javascript
 // ❌ BAD: Exposed secret in code
-const API_KEY = "sk_live_abc123xyz789";
+const API_KEY = "sk_live_abc123xyz789"; // gitleaks:allow
 
 // ✅ GOOD: Use environment variables
 const API_KEY = process.env.API_KEY;
@@ -229,7 +229,7 @@ When performing a code review, check documentation:
 
 - **API Documentation**: Public APIs must be documented (purpose, parameters, returns)
 - **Complex Logic**: Non-obvious logic should have explanatory comments
-- **README Updates**: Update README when adding features or changing setup
+- **Readme Updates**: Update readme when adding features or changing setup
 - **Breaking Changes**: Document any breaking changes clearly
 - **Examples**: Provide usage examples for complex features
 
@@ -350,7 +350,7 @@ When performing a code review, systematically verify:
 - [ ] No code duplication
 - [ ] Complex logic is broken into simpler parts
 - [ ] Error handling is appropriate
-- [ ] No commented-out code or TODO without tickets
+- [ ] No commented-out code or todo without tickets
 
 ### Security
 
@@ -386,7 +386,7 @@ When performing a code review, systematically verify:
 
 - [ ] Public APIs are documented
 - [ ] Complex logic has explanatory comments
-- [ ] README is updated if needed
+- [ ] Readme is updated if needed
 - [ ] Breaking changes are documented
 
 ## Project-Specific Customizations

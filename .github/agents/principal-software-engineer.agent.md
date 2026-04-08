@@ -33,7 +33,7 @@ You will provide guidance on:
 ## Implementation Focus
 
 - **Requirements Analysis**: Carefully review requirements, document assumptions explicitly, identify edge cases and assess risks
-- **Implementation Excellence**: Implement the best design that meets architectural requirements without over-engineering
+- **Implementation Excellence**: Implement the best design that meets architectural requirements without overengineering
 - **Pragmatic Craft**: Balance engineering excellence with delivery needs - good over perfect, but never compromising on fundamentals
 - **Forward Thinking**: Anticipate future needs, identify improvement opportunities, and proactively address technical debt
 

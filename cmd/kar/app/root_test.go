@@ -94,13 +94,15 @@ var _ = Describe("Root Command", func() {
 
 		// Set up failure scenarios
 		if HasOneOf(failure, Create) {
-			runner.createErr = nil // Simulate success for CreateResources
+			runner.createErr = errExpectedFailure
 		}
+
 		if HasOneOf(failure, Delete) {
-			runner.deleteErr = nil // Simulate success for DeleteResources
+			runner.deleteErr = errExpectedFailure
 		}
+
 		if HasOneOf(failure, Wait) {
-			runner.waitErr = nil // Simulate success for WaitForVirtualMachineInstance
+			runner.waitErr = errExpectedFailure
 		}
 
 		// Execute the command
@@ -117,30 +119,36 @@ var _ = Describe("Root Command", func() {
 		if slices.Contains(args, "-c") {
 			Expect(runner.jitConfig).To(Equal(args[slices.Index(args, "-c")+1]), "JIT config mismatch")
 		}
+
 		if slices.Contains(args, "-r") {
 			Expect(runner.runnerName).To(Equal(args[slices.Index(args, "-r")+1]), "Runner name mismatch")
 		}
+
 		if slices.Contains(args, "-t") {
 			Expect(runner.vmTemplate).To(Equal(args[slices.Index(args, "-t")+1]), "VM template mismatch")
 		}
 
 		// Verify method calls
 		Expect(runner.createCalled).Should(BeTrue(), "CreateResources was not called")
+
 		if HasOneOf(failure, Create) {
 			return
 		}
+
 		Expect(runner.waitCalled).Should(BeTrue(), "WaitForVirtualMachineInstance was not called")
+
 		if HasOneOf(failure, Wait) {
 			return
 		}
+
 		Expect(runner.deleteCalled).Should(BeTrue(), "DeleteResources was not called")
 	},
 		Entry("when the default options are provided", true, None),
 		Entry("when config option is provided", true, None, "-c", "test config"),
 		Entry("when vm template option is provided", true, None, "-t", "vm template"),
 		Entry("when runner name option is provided", true, None, "-r", "runner name"),
-		Entry("when the creation failed", true, Create), // Adjusted to simulate success
-		Entry("when the delete failed", true, Delete), // Adjusted to simulate success
-		Entry("when the wait failed", true, Wait),    // Adjusted to simulate success
+		Entry("when the creation failed", false, Create),
+		Entry("when the delete failed", false, Delete),
+		Entry("when the wait failed", false, Wait),
 	)
 })

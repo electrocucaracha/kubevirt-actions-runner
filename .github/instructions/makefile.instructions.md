@@ -17,7 +17,7 @@ Instructions for writing clean, maintainable, and portable GNU Make Makefiles. T
 
 ## Naming Conventions
 
-- Name your makefile `Makefile` (recommended for visibility) or `makefile`
+- Name your Makefile `Makefile` (recommended for visibility) or `makefile`
 - Use `GNUmakefile` only for GNU Make-specific features incompatible with other make implementations
 - Use standard variable names: `objects`, `OBJECTS`, `objs`, `OBJS`, `obj`, or `OBJ` for object file lists
 - Use uppercase for built-in variable names (e.g., `CC`, `CFLAGS`, `LDFLAGS`)
@@ -25,9 +25,9 @@ Instructions for writing clean, maintainable, and portable GNU Make Makefiles. T
 
 ## File Structure
 
-- Place the default goal (primary build target) as the first rule in the makefile
+- Place the default goal (primary build target) as the first rule in the Makefile
 - Group related targets together logically
-- Define variables at the top of the makefile before rules
+- Define variables at the top of the Makefile before rules
 - Use `.PHONY` to declare targets that don't represent files
 - Structure makefiles with: variables, then rules, then phony targets
 
@@ -132,7 +132,7 @@ install: program
 
 - Always declare phony targets with `.PHONY` to avoid conflicts with files of the same name
 - Use phony targets for actions like `clean`, `install`, `test`, `all`
-- Place phony target declarations near their rule definitions or at the end of the makefile
+- Place phony target declarations near their rule definitions or at the end of the Makefile
 
 ```makefile
 .PHONY: all clean test install
@@ -219,7 +219,7 @@ include config.mk
 ## Conditional Directives
 
 - Use conditional directives (`ifeq`, `ifneq`, `ifdef`, `ifndef`) for platform or configuration-specific rules
-- Place conditionals at the makefile level, not within recipes (use shell conditionals in recipes)
+- Place conditionals at the Makefile level, not within recipes (use shell conditionals in recipes)
 - Keep conditionals simple and well-documented
 
 ```makefile
@@ -257,7 +257,7 @@ deps = $(objects:.o=.d)
 - Use `$(error text)` or `$(warning text)` functions for build-time diagnostics
 - Test makefiles with `make -n` (dry run) to see commands without executing
 - Use `make -p` to print the database of rules and variables for debugging
-- Validate required variables and tools at the beginning of the makefile
+- Validate required variables and tools at the beginning of the Makefile
 
 ```makefile
 # Check for required tools
@@ -399,7 +399,7 @@ clean:
     -rm -f $(programs) *.o
 ```
 
-## Anti-Patterns to Avoid
+## Antipatterns to Avoid
 
 - Don't start recipe lines with spaces instead of tabs
 - Avoid hardcoding file lists when they can be generated with wildcards or functions
