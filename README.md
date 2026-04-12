@@ -58,7 +58,7 @@ Full documentation is available at the [official site](https://electrocucaracha.
 
 For a detailed walkthrough of the project, check out the following resources:
 
-- **[KCD Guadalajara 2025 Presentation](https://community.cncf.io/events/details/cncf-kcd-guadalajara-presents-kcd-guadalajara-2025/cohost-kcd-guadalajara)**: Event details and presentation materials
+- **[KCD Guadalajara 2025 Presentation](https://www.slideshare.net/slideshow/migrating-github-actions-with-nested-virtualization-to-cloud-native-ecosystem-pptx/277448656)**: Presentation materials
 - **[Video Recording](https://www.youtube.com/watch?v=ccb8y_Ij30k)**: Watch the full presentation
 
 ## Contributing
