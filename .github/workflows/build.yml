@@ -85,13 +85,13 @@ jobs:
         with:
           go-version: "^1.26"
           cache: false
-      - uses: GoTestTools/gotestfmt-action@8b4478c7019be847373babde9300210e7de34bfb # 2.2.0
+      - uses: GoTestTools/gotestfmt-action@eba2ac97f623e866e7b1b117c99f18b43cd36d18 # 2.3.0
       - name: Run tests
         run: |
           set -euo pipefail
           go test -json -v ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
       - name: Upload test log
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # 7.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # 7.0.1
         if: ${{ !env.ACT }}
         with:
           name: test-log
@@ -206,7 +206,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # 7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # 7.1.0
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
