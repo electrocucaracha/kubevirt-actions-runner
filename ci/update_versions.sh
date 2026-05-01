@@ -58,12 +58,12 @@ readonly pinned_actions=('austenstone/copilot-cli')
 for action in $gh_actions; do
     is_pinned=false
     for pinned in "${pinned_actions[@]}"; do
-        if [[ "$action" == "$pinned" ]]; then
+        if [[ $action == "$pinned" ]]; then
             is_pinned=true
             break
         fi
     done
-    if [[ "$is_pinned" == "true" ]]; then
+    if [[ $is_pinned == "true" ]]; then
         echo "Skipping auto-update for pinned action: $action"
         continue
     fi
