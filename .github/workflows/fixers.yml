@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Run Copilot CLI for Docker issues
-        uses: austenstone/copilot-cli@5b23dfc07bb6d20baf2638d98c007bfd5b56ae97 # 3.0
+        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
@@ -119,7 +119,7 @@ jobs:
           version: latest
           install-only: true
       - name: "Run Copilot CLI"
-        uses: austenstone/copilot-cli@5b23dfc07bb6d20baf2638d98c007bfd5b56ae97 # 3.0
+        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
