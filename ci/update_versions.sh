@@ -54,9 +54,16 @@ exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'Grant
 # Remove an entry only once the underlying issue is confirmed resolved.
 # austenstone/copilot-cli: v3.0+ depends on actions/setup-copilot@v0 which does
 # not yet exist publicly; keep at v2.0 until that action is released.
-pinned_actions=('austenstone/copilot-cli')
+readonly pinned_actions=('austenstone/copilot-cli')
 for action in $gh_actions; do
-    if [[ ${pinned_actions[*]} =~ (^|[^[:alpha:]])$action([^[:alpha:]]|$) ]]; then
+    is_pinned=false
+    for pinned in "${pinned_actions[@]}"; do
+        if [[ "$action" == "$pinned" ]]; then
+            is_pinned=true
+            break
+        fi
+    done
+    if [[ "$is_pinned" == "true" ]]; then
         echo "Skipping auto-update for pinned action: $action"
         continue
     fi
