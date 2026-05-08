@@ -52,7 +52,7 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 }
 
 // GetAppContext returns the already initialized AppContext.
-// Panics if called before NewAppContext.
+// Exits the process if called before NewAppContext.
 func GetAppContext() *AppContext {
 	appContextMu.Lock()
 	curr := instance
