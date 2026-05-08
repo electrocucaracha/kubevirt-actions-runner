@@ -36,13 +36,11 @@ var (
 // NewAppContext creates the AppContext once with the provided values.
 // Subsequent calls return the same instance, ignoring new values.
 func NewAppContext(vmi, dataVolume string) *AppContext {
-	log := utils.GetLogger()
-
 	appContextMu.Lock()
 	defer appContextMu.Unlock()
 
 	if instance == nil {
-		log.Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
+		utils.GetLogger().Printf("Registering %s Virtual Machine Instance and %s Data Volume\n", vmi, dataVolume)
 
 		instance = &AppContext{
 			vmiName:        vmi,
@@ -56,14 +54,12 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 // GetAppContext returns the already initialized AppContext.
 // Panics if called before NewAppContext.
 func GetAppContext() *AppContext {
-	log := utils.GetLogger()
-
 	appContextMu.Lock()
 	curr := instance
 	appContextMu.Unlock()
 
 	if curr == nil {
-		log.Fatal("AppContext not initialized. Call NewAppContext first.")
+		utils.GetLogger().Fatal("AppContext not initialized. Call NewAppContext first.")
 	}
 
 	return curr
