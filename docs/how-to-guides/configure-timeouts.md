@@ -17,10 +17,10 @@ or to adjust the grace period given to resource cleanup.
 Timeouts are configured via environment variables.
 Below is a summary of the available options:
 
-| Environment Variable  | Default | Description                                                                                                              |
-| --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `KAR_WAIT_TIMEOUT`    | `10m0s` | Maximum time to wait for the VMI to reach a terminal phase (`Succeeded`/`Failed`). Must cover the full expected job duration, not just provisioning time. |
-| `KAR_CLEANUP_TIMEOUT` | `5m0s`  | Maximum time allowed for resource cleanup (VMI and DataVolume deletion) after job completion.                            |
+| Environment Variable  | Default | Description                                                                  |
+| --------------------- | ------- | ---------------------------------------------------------------------------- |
+| `KAR_WAIT_TIMEOUT`    | `10m0s` | Maximum time to wait for a terminal VMI phase (`Succeeded`/`Failed`).        |
+| `KAR_CLEANUP_TIMEOUT` | `5m0s`  | Maximum time allowed for resource cleanup after job completion.              |
 
 Both variables accept any valid Go duration string,
 for example `30m`, `1h`, or `90s`.
