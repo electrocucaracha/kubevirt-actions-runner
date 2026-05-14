@@ -19,7 +19,7 @@ Below is a summary of the available options:
 
 | Environment Variable  | Default  | Description                                                                                          |
 | --------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `KAR_WAIT_TIMEOUT`    | `10m0s`  | Maximum time to wait for the VMI to become usable before treating the job as failed.                 |
+| `KAR_WAIT_TIMEOUT`    | `10m0s`  | Maximum time to wait for the VMI to reach `Running` phase with `Ready=True` condition before treating the job as failed.                 |
 | `KAR_CLEANUP_TIMEOUT` | `5m0s`   | Maximum time allowed for resource cleanup (VMI and DataVolume deletion) after job completion.        |
 
 Both variables accept any valid Go duration string,
