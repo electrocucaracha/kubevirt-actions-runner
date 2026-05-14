@@ -213,10 +213,11 @@ func main() {
 		return
 	}
 
-	kubevirtRunner := runner.NewRunner(namespace, virtClient, getWaitTimeout())
+	waitTimeout := getWaitTimeout()
+	kubevirtRunner := runner.NewRunner(namespace, virtClient, waitTimeout)
 
 	log.Printf("cleanup timeout is set to: %s", getCleanupTimeout())
-	log.Printf("wait timeout is set to: %s", getWaitTimeout())
+	log.Printf("wait timeout is set to: %s", waitTimeout)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

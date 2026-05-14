@@ -175,7 +175,7 @@ var _ = Describe("Runner", func() {
 		Entry("when the runner completes unsuccessfully", false, v1.Failed),
 	)
 
-	It("succeeds when the VMI becomes Running and Ready", func() {
+	It("logs Running+Ready as a milestone and succeeds when VMI reaches Succeeded", func() {
 		const timeout = 1 * time.Second
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
@@ -190,6 +190,12 @@ var _ = Describe("Runner", func() {
 		fakeWatcher.Add(vmi)
 
 		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
+		fakeWatcher.Modify(readyVMI)
+
+		// Running+Ready is only a milestone; the watcher must continue until Succeeded.
+		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+
+		readyVMI.Status.Phase = v1.Succeeded
 		fakeWatcher.Modify(readyVMI)
 
 		Eventually(errChan, timeout).Should(Receive(BeNil()))

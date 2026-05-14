@@ -183,8 +183,6 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 			if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
 				log.Printf("%s is Running and Ready\n", appCtx.GetVMIName())
 				span.SetAttributes(attribute.String("phase", "Running+Ready"))
-
-				return nil
 			}
 
 			if vmi.Status.Phase != currentStatus {

@@ -28,19 +28,26 @@ Invalid values are logged and the default is used instead.
 
 ## VMI provisioning-success semantics
 
-The runner considers a VM-backed job **successfully provisioned** as soon as
+The runner logs a **provisioning milestone** as soon as
 the VMI reaches the `Running` phase **and** the KubeVirt `Ready` condition
 becomes `True`.
-At that point the runner exits its wait loop and proceeds to cleanup,
-without waiting for the VMI to reach the terminal `Succeeded` phase.
+At that point the runner records the milestone in the telemetry span and
+continues watching,
+without treating this event as a terminal success.
 
-This change allows long-running jobs (jobs that keep the VM alive for many minutes
-or hours) to be treated as successful once the VM is usable,
-rather than requiring the entire VM lifecycle to complete within the wait timeout.
+The runner exits its wait loop only when a terminal phase is observed:
 
-The runner still treats a VMI that enters the `Failed` phase as an error,
-and it still recognizes `Succeeded` as a terminal success for cases where
-the VMI completes normally before the `Running + Ready` signal is observed.
+- **`Succeeded`** – the job completed successfully;
+  cleanup proceeds normally.
+- **`Failed`** – the job failed;
+  the runner returns an error and cleanup proceeds.
+
+This means long-running jobs (jobs that keep the VM alive for many minutes
+or hours) are correctly tracked:
+the `Running + Ready` milestone tells you the VM became usable,
+while the terminal `Succeeded`/`Failed` phase ends the wait.
+The wait timeout (`KAR_WAIT_TIMEOUT`) therefore needs to cover the entire
+expected job duration, not just provisioning time.
 
 ## Steps to configure `KAR_WAIT_TIMEOUT`
 
