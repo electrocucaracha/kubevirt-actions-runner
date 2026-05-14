@@ -183,12 +183,10 @@ var _ = Describe("Runner", func() {
 		for _, phase := range []v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled} {
 			vmi.Status.Phase = phase
 			fakeWatcher.Add(vmi)
-			time.Sleep(10 * time.Millisecond)
 		}
 
 		vmi.Status.Phase = v1.Running
 		fakeWatcher.Add(vmi)
-		time.Sleep(10 * time.Millisecond)
 
 		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
 		fakeWatcher.Modify(readyVMI)
