@@ -197,7 +197,7 @@ func handleWatchEvent(
 	vmiName string,
 	event k8swatch.Event,
 	currentStatus *v1.VirtualMachineInstancePhase,
-) (done bool, skip bool, err error) {
+) (bool, bool, error) {
 	log := utils.GetLogger()
 
 	vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
@@ -214,7 +214,7 @@ func handleWatchEvent(
 		return false, false, nil
 	}
 
-	done, err = handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
 	*currentStatus = vmi.Status.Phase
 
 	return done, false, err
