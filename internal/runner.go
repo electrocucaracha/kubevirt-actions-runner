@@ -31,16 +31,16 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	k8swatch "k8s.io/apimachinery/pkg/watch"
 	v1 "kubevirt.io/api/core/v1"
 	"kubevirt.io/client-go/kubecli"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
 const (
-	runnerInfoAnnotation string        = "electrocucaracha.kubevirt-actions-runner/runner-info"
-	runnerInfoVolume     string        = "runner-info"
-	runnerInfoPath       string        = "runner-info.json"
-	waitTimeout          time.Duration = 5 * time.Minute
+	runnerInfoAnnotation string = "electrocucaracha.kubevirt-actions-runner/runner-info"
+	runnerInfoVolume     string = "runner-info"
+	runnerInfoPath       string = "runner-info.json"
 )
 
 // This file defines the Runner interface and its implementation for managing
@@ -56,16 +56,18 @@ type Runner interface {
 }
 
 type KubevirtRunner struct {
-	virtClient kubecli.KubevirtClient
-	namespace  string
+	virtClient  kubecli.KubevirtClient
+	namespace   string
+	waitTimeout time.Duration
 }
 
 var _ Runner = (*KubevirtRunner)(nil)
 
-func NewRunner(namespace string, virtClient kubecli.KubevirtClient) *KubevirtRunner {
+func NewRunner(namespace string, virtClient kubecli.KubevirtClient, waitTimeout time.Duration) *KubevirtRunner {
 	return &KubevirtRunner{
-		namespace:  namespace,
-		virtClient: virtClient,
+		namespace:   namespace,
+		virtClient:  virtClient,
+		waitTimeout: waitTimeout,
 	}
 }
 
@@ -143,7 +145,7 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) error {
 	tracer := otel.Tracer("kubevirt-actions-runner/runner")
 
-	ctx, cancel := context.WithTimeout(ctx, waitTimeout)
+	ctx, cancel := context.WithTimeout(ctx, rc.waitTimeout)
 	defer cancel()
 
 	ctx, span := tracer.Start(ctx, "WaitForVirtualMachineInstance")
@@ -174,17 +176,48 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 				return errors.New("watch channel closed unexpectedly")
 			}
 
-			vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
-			if isVMI && vmi.Name == appCtx.GetVMIName() && vmi.Status.Phase != currentStatus {
-				done, err := handleVMIPhase(span, appCtx.GetVMIName(), vmi.Status.Phase)
-				if done {
-					return err
-				}
+			done, skip, err := handleWatchEvent(span, appCtx.GetVMIName(), event, &currentStatus)
+			if skip {
+				continue
+			}
 
-				currentStatus = vmi.Status.Phase
+			if done {
+				return err
 			}
 		}
 	}
+}
+
+// handleWatchEvent processes one event from the VMI watch channel.
+// It returns (done=true, _, err) when the watch loop should exit,
+// (false, skip=true, nil) when the event should be ignored, or
+// (false, false, nil) to continue watching.
+func handleWatchEvent(
+	span trace.Span,
+	vmiName string,
+	event k8swatch.Event,
+	currentStatus *v1.VirtualMachineInstancePhase,
+) (bool, bool, error) {
+	log := utils.GetLogger()
+
+	vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
+	if !isVMI || vmi.Name != vmiName {
+		return false, true, nil
+	}
+
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+		log.Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+	}
+
+	if vmi.Status.Phase == *currentStatus {
+		return false, false, nil
+	}
+
+	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	*currentStatus = vmi.Status.Phase
+
+	return done, false, err
 }
 
 // handleVMIPhase processes a VMI phase transition. It returns (true, err) when a
@@ -218,6 +251,17 @@ func handleVMIPhase(span trace.Span, vmiName string, phase v1.VirtualMachineInst
 
 		return false, nil
 	}
+}
+
+// isVMIReady reports whether the VMI has the Ready condition set to True.
+func isVMIReady(vmi *v1.VirtualMachineInstance) bool {
+	for _, cond := range vmi.Status.Conditions {
+		if cond.Type == v1.VirtualMachineInstanceReady && cond.Status == k8scorev1.ConditionTrue {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {

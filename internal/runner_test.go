@@ -44,9 +44,10 @@ var _ = Describe("Runner", func() {
 	var mockCtrl *gomock.Controller
 
 	const (
-		vmTemplate = "vm-template"
-		vmInstance = "runner-xyz123"
-		dataVolume = "dv-xyz123"
+		defaultWaitTimeout = 5 * time.Minute
+		vmTemplate         = "vm-template"
+		vmInstance         = "runner-xyz123"
+		dataVolume         = "dv-xyz123"
 	)
 
 	BeforeEach(func() {
@@ -57,13 +58,32 @@ var _ = Describe("Runner", func() {
 
 		virtClient.EXPECT().CdiClient().Return(cdiClientset).AnyTimes()
 
-		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient)
+		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient, defaultWaitTimeout)
 	})
 
 	AfterEach(func() {
 		mockCtrl.Finish()
 		runner.CancelAppContext()
 	})
+
+	startVMIWatcher := func(karRunner runner.Runner) (*watch.FakeWatcher, chan error) {
+		fakeWatcher := watch.NewFake()
+
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		errChan := make(chan error, 1)
+
+		go func() {
+			errChan <- karRunner.WaitForVirtualMachineInstance(context.TODO())
+
+			close(errChan)
+		}()
+
+		return fakeWatcher, errChan
+	}
 
 	DescribeTable("create resources", func(shouldSucceed bool, vmTemplate, runnerName, jitConfig string) {
 		if shouldSucceed {
@@ -134,20 +154,7 @@ var _ = Describe("Runner", func() {
 	DescribeTable("watch resources", func(shouldSucceed bool, lastPhase v1.VirtualMachineInstancePhase) {
 		const timeout = 1 * time.Second
 
-		fakeWatcher := watch.NewFake()
-
-		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
-		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
-		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
-		runner.NewAppContext(vmInstance, "")
-
-		errChan := make(chan error, 1)
-
-		go func() {
-			errChan <- karRunner.WaitForVirtualMachineInstance(context.TODO())
-
-			close(errChan)
-		}()
+		fakeWatcher, errChan := startVMIWatcher(karRunner)
 
 		phases := [5]v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled, v1.Running, lastPhase}
 
@@ -167,6 +174,47 @@ var _ = Describe("Runner", func() {
 		Entry("when the runner completes successfully", true, v1.Succeeded),
 		Entry("when the runner completes unsuccessfully", false, v1.Failed),
 	)
+
+	It("logs Running+Ready as a milestone and succeeds when VMI reaches Succeeded", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher, errChan := startVMIWatcher(karRunner)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		for _, phase := range []v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled} {
+			vmi.Status.Phase = phase
+			fakeWatcher.Add(vmi)
+		}
+
+		vmi.Status.Phase = v1.Running
+		fakeWatcher.Add(vmi)
+
+		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
+		fakeWatcher.Modify(readyVMI)
+
+		// Running+Ready is only a milestone; the watcher must continue until Succeeded.
+		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+
+		readyVMI.Status.Phase = v1.Succeeded
+		fakeWatcher.Modify(readyVMI)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("times out when no terminal VMI phase is observed within the wait timeout", func() {
+		const waitTimeout = 100 * time.Millisecond
+
+		const timeout = 1 * time.Second
+
+		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)
+		fakeWatcher, errChan := startVMIWatcher(shortTimeoutRunner)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.Running
+		fakeWatcher.Add(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(MatchError("timeout while waiting for the virtual machine instance")))
+	})
 })
 
 func NewVirtualMachine(name string) *v1.VirtualMachine {
@@ -188,6 +236,24 @@ func NewVirtualMachineInstance(name string) *v1.VirtualMachineInstance {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: k8sv1.NamespaceDefault,
+		},
+	}
+}
+
+func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
+	return &v1.VirtualMachineInstance{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: k8sv1.NamespaceDefault,
+		},
+		Status: v1.VirtualMachineInstanceStatus{
+			Phase: v1.Running,
+			Conditions: []v1.VirtualMachineInstanceCondition{
+				{
+					Type:   v1.VirtualMachineInstanceReady,
+					Status: k8sv1.ConditionTrue,
+				},
+			},
 		},
 	}
 }
