@@ -34,7 +34,7 @@ import (
 
 const (
 	defaultCleanupTimeout = 5 * time.Minute
-	defaultWaitTimeout    = 10 * time.Minute
+	defaultWaitTimeout    = 1 * time.Hour
 	shutdownTimeout       = 5 * time.Second
 )
 
