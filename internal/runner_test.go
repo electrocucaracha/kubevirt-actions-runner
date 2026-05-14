@@ -57,7 +57,7 @@ var _ = Describe("Runner", func() {
 
 		virtClient.EXPECT().CdiClient().Return(cdiClientset).AnyTimes()
 
-		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient)
+		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient, 5*time.Minute)
 	})
 
 	AfterEach(func() {
@@ -167,6 +167,69 @@ var _ = Describe("Runner", func() {
 		Entry("when the runner completes successfully", true, v1.Succeeded),
 		Entry("when the runner completes unsuccessfully", false, v1.Failed),
 	)
+
+	It("succeeds when the VMI becomes Running and Ready", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher := watch.NewFake()
+
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		errChan := make(chan error, 1)
+
+		go func() {
+			errChan <- karRunner.WaitForVirtualMachineInstance(context.TODO())
+
+			close(errChan)
+		}()
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		for _, phase := range []v1.VirtualMachineInstancePhase{v1.Pending, v1.Scheduling, v1.Scheduled} {
+			vmi.Status.Phase = phase
+			fakeWatcher.Add(vmi)
+			time.Sleep(10 * time.Millisecond)
+		}
+
+		vmi.Status.Phase = v1.Running
+		fakeWatcher.Add(vmi)
+		time.Sleep(10 * time.Millisecond)
+
+		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
+		fakeWatcher.Modify(readyVMI)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("times out when the VMI does not become ready within the wait timeout", func() {
+		const waitTimeout = 100 * time.Millisecond
+		const timeout = 1 * time.Second
+
+		fakeWatcher := watch.NewFake()
+
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+
+		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)
+		runner.NewAppContext(vmInstance, "")
+
+		errChan := make(chan error, 1)
+
+		go func() {
+			errChan <- shortTimeoutRunner.WaitForVirtualMachineInstance(context.TODO())
+
+			close(errChan)
+		}()
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.Running
+		fakeWatcher.Add(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(MatchError("timeout while waiting for the virtual machine instance")))
+	})
 })
 
 func NewVirtualMachine(name string) *v1.VirtualMachine {
@@ -188,6 +251,24 @@ func NewVirtualMachineInstance(name string) *v1.VirtualMachineInstance {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: k8sv1.NamespaceDefault,
+		},
+	}
+}
+
+func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
+	return &v1.VirtualMachineInstance{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: k8sv1.NamespaceDefault,
+		},
+		Status: v1.VirtualMachineInstanceStatus{
+			Phase: v1.Running,
+			Conditions: []v1.VirtualMachineInstanceCondition{
+				{
+					Type:   v1.VirtualMachineInstanceReady,
+					Status: k8sv1.ConditionTrue,
+				},
+			},
 		},
 	}
 }

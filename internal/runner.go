@@ -37,10 +37,9 @@ import (
 )
 
 const (
-	runnerInfoAnnotation string        = "electrocucaracha.kubevirt-actions-runner/runner-info"
-	runnerInfoVolume     string        = "runner-info"
-	runnerInfoPath       string        = "runner-info.json"
-	waitTimeout          time.Duration = 5 * time.Minute
+	runnerInfoAnnotation string = "electrocucaracha.kubevirt-actions-runner/runner-info"
+	runnerInfoVolume     string = "runner-info"
+	runnerInfoPath       string = "runner-info.json"
 )
 
 // This file defines the Runner interface and its implementation for managing
@@ -56,16 +55,18 @@ type Runner interface {
 }
 
 type KubevirtRunner struct {
-	virtClient kubecli.KubevirtClient
-	namespace  string
+	virtClient  kubecli.KubevirtClient
+	namespace   string
+	waitTimeout time.Duration
 }
 
 var _ Runner = (*KubevirtRunner)(nil)
 
-func NewRunner(namespace string, virtClient kubecli.KubevirtClient) *KubevirtRunner {
+func NewRunner(namespace string, virtClient kubecli.KubevirtClient, waitTimeout time.Duration) *KubevirtRunner {
 	return &KubevirtRunner{
-		namespace:  namespace,
-		virtClient: virtClient,
+		namespace:   namespace,
+		virtClient:  virtClient,
+		waitTimeout: waitTimeout,
 	}
 }
 
@@ -143,7 +144,7 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) error {
 	tracer := otel.Tracer("kubevirt-actions-runner/runner")
 
-	ctx, cancel := context.WithTimeout(ctx, waitTimeout)
+	ctx, cancel := context.WithTimeout(ctx, rc.waitTimeout)
 	defer cancel()
 
 	ctx, span := tracer.Start(ctx, "WaitForVirtualMachineInstance")
@@ -175,7 +176,18 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 			}
 
 			vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
-			if isVMI && vmi.Name == appCtx.GetVMIName() && vmi.Status.Phase != currentStatus {
+			if !isVMI || vmi.Name != appCtx.GetVMIName() {
+				continue
+			}
+
+			if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+				log.Printf("%s is Running and Ready\n", appCtx.GetVMIName())
+				span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
+				return nil
+			}
+
+			if vmi.Status.Phase != currentStatus {
 				done, err := handleVMIPhase(span, appCtx.GetVMIName(), vmi.Status.Phase)
 				if done {
 					return err
@@ -218,6 +230,17 @@ func handleVMIPhase(span trace.Span, vmiName string, phase v1.VirtualMachineInst
 
 		return false, nil
 	}
+}
+
+// isVMIReady reports whether the VMI has the Ready condition set to True.
+func isVMIReady(vmi *v1.VirtualMachineInstance) bool {
+	for _, cond := range vmi.Status.Conditions {
+		if cond.Type == v1.VirtualMachineInstanceReady && cond.Status == k8scorev1.ConditionTrue {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {

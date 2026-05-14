@@ -34,6 +34,7 @@ import (
 
 const (
 	defaultCleanupTimeout = 5 * time.Minute
+	defaultWaitTimeout    = 10 * time.Minute
 	shutdownTimeout       = 5 * time.Second
 )
 
@@ -114,6 +115,21 @@ func getCleanupTimeout() time.Duration {
 	}
 
 	return defaultCleanupTimeout
+}
+
+func getWaitTimeout() time.Duration {
+	log := utils.GetLogger()
+
+	if val := os.Getenv("KAR_WAIT_TIMEOUT"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err == nil {
+			return d
+		}
+
+		log.Printf("Invalid KAR_WAIT_TIMEOUT value: %q, using default %s", val, defaultWaitTimeout)
+	}
+
+	return defaultWaitTimeout
 }
 
 func ensureValidCleanupContext(parent context.Context) (context.Context, context.CancelFunc) {
@@ -197,9 +213,10 @@ func main() {
 		return
 	}
 
-	kubevirtRunner := runner.NewRunner(namespace, virtClient)
+	kubevirtRunner := runner.NewRunner(namespace, virtClient, getWaitTimeout())
 
 	log.Printf("cleanup timeout is set to: %s", getCleanupTimeout())
+	log.Printf("wait timeout is set to: %s", getWaitTimeout())
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
