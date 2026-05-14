@@ -44,9 +44,10 @@ var _ = Describe("Runner", func() {
 	var mockCtrl *gomock.Controller
 
 	const (
-		vmTemplate = "vm-template"
-		vmInstance = "runner-xyz123"
-		dataVolume = "dv-xyz123"
+		defaultWaitTimeout = 5 * time.Minute
+		vmTemplate         = "vm-template"
+		vmInstance         = "runner-xyz123"
+		dataVolume         = "dv-xyz123"
 	)
 
 	BeforeEach(func() {
@@ -57,7 +58,7 @@ var _ = Describe("Runner", func() {
 
 		virtClient.EXPECT().CdiClient().Return(cdiClientset).AnyTimes()
 
-		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient, 5*time.Minute)
+		karRunner = runner.NewRunner(k8sv1.NamespaceDefault, virtClient, defaultWaitTimeout)
 	})
 
 	AfterEach(func() {
