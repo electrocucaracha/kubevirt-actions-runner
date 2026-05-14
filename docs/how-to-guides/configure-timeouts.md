@@ -39,7 +39,7 @@ or hours) to be treated as successful once the VM is usable,
 rather than requiring the entire VM lifecycle to complete within the wait timeout.
 
 The runner still treats a VMI that enters the `Failed` phase as an error,
-and it still recognises `Succeeded` as a terminal success for cases where
+and it still recognizes `Succeeded` as a terminal success for cases where
 the VMI completes normally before the `Running + Ready` signal is observed.
 
 ## Steps to configure `KAR_WAIT_TIMEOUT`
