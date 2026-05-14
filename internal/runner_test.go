@@ -201,7 +201,7 @@ var _ = Describe("Runner", func() {
 		Eventually(errChan, timeout).Should(Receive(BeNil()))
 	})
 
-	It("times out when the VMI does not become ready within the wait timeout", func() {
+	It("times out when no terminal VMI phase is observed within the wait timeout", func() {
 		const waitTimeout = 100 * time.Millisecond
 
 		const timeout = 1 * time.Second

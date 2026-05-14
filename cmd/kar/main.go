@@ -126,7 +126,7 @@ func getWaitTimeout() time.Duration {
 			return d
 		}
 
-		log.Printf("Invalid KAR_WAIT_TIMEOUT value: %q, using default %s", val, defaultWaitTimeout)
+		log.Printf("Invalid KAR_WAIT_TIMEOUT value: %q, using default %v", val, defaultWaitTimeout)
 	}
 
 	return defaultWaitTimeout
@@ -216,8 +216,8 @@ func main() {
 	waitTimeout := getWaitTimeout()
 	kubevirtRunner := runner.NewRunner(namespace, virtClient, waitTimeout)
 
-	log.Printf("cleanup timeout is set to: %s", getCleanupTimeout())
-	log.Printf("wait timeout is set to: %s", waitTimeout)
+	log.Printf("cleanup timeout is set to: %v", getCleanupTimeout())
+	log.Printf("wait timeout is set to: %v", waitTimeout)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
