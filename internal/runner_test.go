@@ -203,6 +203,7 @@ var _ = Describe("Runner", func() {
 
 	It("times out when the VMI does not become ready within the wait timeout", func() {
 		const waitTimeout = 100 * time.Millisecond
+
 		const timeout = 1 * time.Second
 
 		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)

@@ -31,6 +31,7 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	k8swatch "k8s.io/apimachinery/pkg/watch"
 	v1 "kubevirt.io/api/core/v1"
 	"kubevirt.io/client-go/kubecli"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
@@ -175,26 +176,48 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 				return errors.New("watch channel closed unexpectedly")
 			}
 
-			vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
-			if !isVMI || vmi.Name != appCtx.GetVMIName() {
+			done, skip, err := handleWatchEvent(span, appCtx.GetVMIName(), event, &currentStatus)
+			if skip {
 				continue
 			}
 
-			if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
-				log.Printf("%s is Running and Ready\n", appCtx.GetVMIName())
-				span.SetAttributes(attribute.String("phase", "Running+Ready"))
-			}
-
-			if vmi.Status.Phase != currentStatus {
-				done, err := handleVMIPhase(span, appCtx.GetVMIName(), vmi.Status.Phase)
-				if done {
-					return err
-				}
-
-				currentStatus = vmi.Status.Phase
+			if done {
+				return err
 			}
 		}
 	}
+}
+
+// handleWatchEvent processes one event from the VMI watch channel.
+// It returns (done=true, _, err) when the watch loop should exit,
+// (false, skip=true, nil) when the event should be ignored, or
+// (false, false, nil) to continue watching.
+func handleWatchEvent(
+	span trace.Span,
+	vmiName string,
+	event k8swatch.Event,
+	currentStatus *v1.VirtualMachineInstancePhase,
+) (done bool, skip bool, err error) {
+	log := utils.GetLogger()
+
+	vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
+	if !isVMI || vmi.Name != vmiName {
+		return false, true, nil
+	}
+
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+		log.Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+	}
+
+	if vmi.Status.Phase == *currentStatus {
+		return false, false, nil
+	}
+
+	done, err = handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	*currentStatus = vmi.Status.Phase
+
+	return done, false, err
 }
 
 // handleVMIPhase processes a VMI phase transition. It returns (true, err) when a
