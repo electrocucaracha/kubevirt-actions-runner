@@ -46,7 +46,6 @@ func TestLoggerMethods(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 			test.run()
@@ -81,7 +80,6 @@ func TestGetLoggerLevels(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Setenv("KAR_LOG_LEVEL", test.level)
 			verifyLoggerImpl(t)
