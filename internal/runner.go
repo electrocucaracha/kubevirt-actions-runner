@@ -122,7 +122,7 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 	)
 	defer spanCreateVMI.End()
 
-	vmi, err := rc.createVMI(ctx, tracer, virtualMachineInstance, span, spanCreateVMI)
+	vmi, err := rc.createVMI(ctx, virtualMachineInstance, span, spanCreateVMI)
 	if err != nil {
 		return err
 	}
@@ -152,10 +152,10 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	defer span.End()
 
 	log := utils.GetLogger()
-	appCtx := GetAppContext()
+	vmiName := GetAppContext().GetVMIName()
 
-	log.Printf("Watching %s Virtual Machine Instance\n", appCtx.GetVMIName())
-	span.SetAttributes(attribute.String("vmiName", appCtx.GetVMIName()))
+	log.Printf("Watching %s Virtual Machine Instance\n", vmiName)
+	span.SetAttributes(attribute.String("vmiName", vmiName))
 
 	watch, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Watch(ctx, k8smetav1.ListOptions{})
 	if err != nil {
@@ -176,7 +176,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 				return errors.New("watch channel closed unexpectedly")
 			}
 
-			done, skip, err := handleWatchEvent(span, appCtx.GetVMIName(), event, &currentStatus)
+			done, skip, err := handleWatchEvent(span, vmiName, event, &currentStatus)
 			if skip {
 				continue
 			}
@@ -336,7 +336,6 @@ func (rc *KubevirtRunner) validateResourceInputs(vmTemplate, runnerName, jitConf
 
 func (rc *KubevirtRunner) createVMI(
 	ctx context.Context,
-	_ trace.Tracer,
 	vmi *v1.VirtualMachineInstance,
 	span, spanCreateVMI trace.Span,
 ) (*v1.VirtualMachineInstance, error) {
@@ -363,10 +362,6 @@ func (rc *KubevirtRunner) createDataVolume(
 	vmiUID types.UID,
 	span trace.Span,
 ) error {
-	if dataVolume == nil {
-		return nil
-	}
-
 	log := utils.GetLogger()
 	log.Printf("Creating %s Data Volume\n", dataVolume.Name)
 
@@ -415,11 +410,11 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 		virtualMachineInstance.Annotations = make(map[string]string)
 	}
 
-	jri := map[string]any{
+	runnerInfo := map[string]string{
 		"jitconfig": jitConfig,
 	}
 
-	out, err := json.Marshal(jri)
+	out, err := json.Marshal(runnerInfo)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "cannot marshal jitConfig")
 	}

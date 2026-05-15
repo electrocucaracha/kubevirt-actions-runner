@@ -102,34 +102,25 @@ func getBuildInfo(vars buildInfoVars) buildInfo {
 	return out
 }
 
-func getCleanupTimeout() time.Duration {
-	log := utils.GetLogger()
-
-	if val := os.Getenv("KAR_CLEANUP_TIMEOUT"); val != "" {
+func getDurationEnvOrDefault(key string, defaultValue time.Duration) time.Duration {
+	if val := os.Getenv(key); val != "" {
 		d, err := time.ParseDuration(val)
 		if err == nil {
 			return d
 		}
 
-		log.Printf("Invalid KAR_CLEANUP_TIMEOUT value: %q, using default %s", val, defaultCleanupTimeout)
+		utils.GetLogger().Printf("Invalid %s value: %q, using default %s", key, val, defaultValue)
 	}
 
-	return defaultCleanupTimeout
+	return defaultValue
+}
+
+func getCleanupTimeout() time.Duration {
+	return getDurationEnvOrDefault("KAR_CLEANUP_TIMEOUT", defaultCleanupTimeout)
 }
 
 func getWaitTimeout() time.Duration {
-	log := utils.GetLogger()
-
-	if val := os.Getenv("KAR_WAIT_TIMEOUT"); val != "" {
-		d, err := time.ParseDuration(val)
-		if err == nil {
-			return d
-		}
-
-		log.Printf("Invalid KAR_WAIT_TIMEOUT value: %q, using default %v", val, defaultWaitTimeout)
-	}
-
-	return defaultWaitTimeout
+	return getDurationEnvOrDefault("KAR_WAIT_TIMEOUT", defaultWaitTimeout)
 }
 
 func ensureValidCleanupContext(parent context.Context) (context.Context, context.CancelFunc) {

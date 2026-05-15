@@ -22,108 +22,35 @@ import (
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 )
 
-func TestLoggerImplPrintf(t *testing.T) {
+func TestLoggerMethods(t *testing.T) {
 	t.Parallel()
 
 	logger := utils.GetLogger()
-	// Should not panic
-	logger.Printf("test %s", "message")
-}
+	tests := []struct {
+		name string
+		run  func()
+	}{
+		{name: "Printf", run: func() { logger.Printf("test %s", "message") }},
+		{name: "Println", run: func() { logger.Println("test message") }},
+		{name: "Debugf", run: func() { logger.Debugf("test %s", "debug") }},
+		{name: "Debug", run: func() { logger.Debug("test debug") }},
+		{name: "Infof", run: func() { logger.Infof("test %s", "info") }},
+		{name: "Info", run: func() { logger.Info("test info") }},
+		{name: "Infow", run: func() { logger.Infow("test message", "key1", "value1", "key2", "value2") }},
+		{name: "Warnf", run: func() { logger.Warnf("test %s", "warning") }},
+		{name: "Warn", run: func() { logger.Warn("test warning") }},
+		{name: "Warnw", run: func() { logger.Warnw("test message", "key1", "value1") }},
+		{name: "Errorf", run: func() { logger.Errorf("test %s", "error") }},
+		{name: "Error", run: func() { logger.Error("test error") }},
+		{name: "Errorw", run: func() { logger.Errorw("test message", "key1", "value1") }},
+	}
 
-func TestLoggerImplPrintln(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Println("test message")
-}
-
-func TestLoggerImplDebugf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Debugf("test %s", "debug")
-}
-
-func TestLoggerImplDebug(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Debug("test debug")
-}
-
-func TestLoggerImplInfof(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Infof("test %s", "info")
-}
-
-func TestLoggerImplInfo(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Info("test info")
-}
-
-func TestLoggerImplInfow(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Infow("test message", "key1", "value1", "key2", "value2")
-}
-
-func TestLoggerImplWarnf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warnf("test %s", "warning")
-}
-
-func TestLoggerImplWarn(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warn("test warning")
-}
-
-func TestLoggerImplWarnw(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Warnw("test message", "key1", "value1")
-}
-
-func TestLoggerImplErrorf(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Errorf("test %s", "error")
-}
-
-func TestLoggerImplError(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Error("test error")
-}
-
-func TestLoggerImplErrorw(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-	// Should not panic
-	logger.Errorw("test message", "key1", "value1")
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+			test.run()
+		})
+	}
 }
 
 func verifyLoggerImpl(t *testing.T) {
@@ -136,50 +63,28 @@ func verifyLoggerImpl(t *testing.T) {
 	}
 }
 
-func TestGetLoggerDefaultLevel(t *testing.T) {
-	// Clear the environment variable and reset the singleton
-	t.Setenv("KAR_LOG_LEVEL", "")
-	verifyLoggerImpl(t)
-}
+func TestGetLoggerLevels(t *testing.T) {
+	tests := []struct {
+		name  string
+		level string
+	}{
+		{name: "DefaultLevel", level: ""},
+		{name: "DebugLevel", level: "debug"},
+		{name: "InfoLevel", level: "info"},
+		{name: "WarnLevel", level: "warn"},
+		{name: "WarningLevel", level: "warning"},
+		{name: "ErrorLevel", level: "error"},
+		{name: "FatalLevel", level: "fatal"},
+		{name: "UnknownLevel", level: "unknown"},
+		{name: "UppercaseLevel", level: "DEBUG"},
+	}
 
-func TestGetLoggerDebugLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "debug")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerInfoLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "info")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerWarnLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "warn")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerWarningLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "warning")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerErrorLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "error")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerFatalLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "fatal")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerUnknownLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "unknown")
-	verifyLoggerImpl(t)
-}
-
-func TestGetLoggerUppercaseLevel(t *testing.T) {
-	t.Setenv("KAR_LOG_LEVEL", "DEBUG")
-	verifyLoggerImpl(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Setenv("KAR_LOG_LEVEL", test.level)
+			verifyLoggerImpl(t)
+		})
+	}
 }
 
 func TestGetLoggerSingleton(t *testing.T) {
@@ -200,6 +105,5 @@ func TestLoggerInterface(t *testing.T) {
 
 	logger := utils.GetLogger()
 
-	// Verify logger implements Logger interface
 	var _ utils.Logger = logger
 }
