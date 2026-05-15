@@ -131,7 +131,7 @@ jobs:
         run: |
           set -o pipefail
           docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
-      - uses: actions/ai-inference@af6ad2c4ac4edf01884054fc3a6caa6d2567c13a # 2.0.8
+      - uses: actions/ai-inference@17ff458cb182449bbb2e43701fcd98f6af8f6570 # 2.1.0
         id: ai-docker-analysis
         if: failure()
         with:
