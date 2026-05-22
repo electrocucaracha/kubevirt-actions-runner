@@ -45,19 +45,22 @@ func NewRootCommand(ctx context.Context, runner runner.Runner, opts Opts) *cobra
 func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 	log := utils.GetLogger()
 
-	if err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig); err != nil {
+	err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig)
+	if err != nil {
 		return fmt.Errorf("fail to create resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner resources created successfully")
 
-	if err := runner.WaitForVirtualMachineInstance(ctx); err != nil {
+	err = runner.WaitForVirtualMachineInstance(ctx)
+	if err != nil {
 		return fmt.Errorf("fail to wait for resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner completed successfully")
 
-	if err := runner.DeleteResources(ctx); err != nil {
+	err = runner.DeleteResources(ctx)
+	if err != nil {
 		return fmt.Errorf("fail to delete resources: %w", err)
 	}
 

@@ -43,6 +43,11 @@ const (
 	runnerInfoPath       string = "runner-info.json"
 )
 
+var (
+	errWaitTimeout      = errors.New("timeout while waiting for the virtual machine instance")
+	errWatchChannelClosed = errors.New("watch channel closed unexpectedly")
+)
+
 // This file defines the Runner interface and its implementation for managing
 // KubeVirt resources, such as Virtual Machine Instances (VMIs) and Data Volumes.
 
@@ -170,10 +175,10 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	for {
 		select {
 		case <-ctx.Done():
-			return errors.New("timeout while waiting for the virtual machine instance")
+			return errWaitTimeout
 		case event, watchOpen := <-watch.ResultChan():
 			if !watchOpen {
-				return errors.New("watch channel closed unexpectedly")
+				return errWatchChannelClosed
 			}
 
 			done, skip, err := handleWatchEvent(span, vmiName, event, &currentStatus)
