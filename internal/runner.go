@@ -353,7 +353,7 @@ func (rc *KubevirtRunner) createVMI(
 		spanCreateVMI.RecordError(err)
 		span.RecordError(err)
 
-		return nil, fmt.Errorf("fail to create runner instance: %w", err)
+		return nil, fmt.Errorf("failed to create runner instance: %w", err)
 	}
 
 	return createdVMI, nil
@@ -405,7 +405,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
 		ctx, vmTemplate, k8smetav1.GetOptions{})
 	if err != nil {
-		return nil, nil, fmt.Errorf("cannot obtain KubeVirt vm list: %w", err)
+		return nil, nil, fmt.Errorf("failed to get KubeVirt virtual machine template %q: %w", vmTemplate, err)
 	}
 
 	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)
@@ -421,7 +421,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 
 	out, err := json.Marshal(runnerInfo)
 	if err != nil {
-		return nil, nil, fmt.Errorf("cannot marshal jitConfig: %w", err)
+		return nil, nil, fmt.Errorf("cannot marshal runner info annotation payload: %w", err)
 	}
 
 	virtualMachineInstance.Annotations[runnerInfoAnnotation] = string(out)
