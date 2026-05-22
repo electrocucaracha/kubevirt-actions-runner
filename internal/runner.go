@@ -44,7 +44,7 @@ const (
 )
 
 var (
-	errWaitTimeout      = errors.New("timeout while waiting for the virtual machine instance")
+	errWaitTimeout        = errors.New("timeout while waiting for the virtual machine instance")
 	errWatchChannelClosed = errors.New("watch channel closed unexpectedly")
 )
 
