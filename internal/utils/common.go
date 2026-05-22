@@ -26,27 +26,6 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Logger is an interface for structured logging with multiple formatting options.
-//
-//nolint:interfacebloat
-type Logger interface {
-	Printf(format string, args ...any)
-	Println(args ...any)
-	Debugf(format string, args ...any)
-	Debug(args ...any)
-	Infof(format string, args ...any)
-	Info(args ...any)
-	Infow(msg string, keysAndValues ...any)
-	Warnf(format string, args ...any)
-	Warn(args ...any)
-	Warnw(msg string, keysAndValues ...any)
-	Errorf(format string, args ...any)
-	Error(args ...any)
-	Errorw(msg string, keysAndValues ...any)
-	Fatalf(format string, args ...any)
-	Fatal(args ...any)
-}
-
 type LoggerImpl struct {
 	logger *zap.SugaredLogger
 }
@@ -59,52 +38,12 @@ func (l *LoggerImpl) Println(args ...any) {
 	l.logger.Info(args...)
 }
 
-func (l *LoggerImpl) Debugf(format string, args ...any) {
-	l.logger.Debugf(format, args...)
-}
-
-func (l *LoggerImpl) Debug(args ...any) {
-	l.logger.Debug(args...)
-}
-
 func (l *LoggerImpl) Infof(format string, args ...any) {
 	l.logger.Infof(format, args...)
 }
 
-func (l *LoggerImpl) Info(args ...any) {
-	l.logger.Info(args...)
-}
-
-func (l *LoggerImpl) Infow(msg string, keysAndValues ...any) {
-	l.logger.Infow(msg, keysAndValues...)
-}
-
 func (l *LoggerImpl) Warnf(format string, args ...any) {
 	l.logger.Warnf(format, args...)
-}
-
-func (l *LoggerImpl) Warn(args ...any) {
-	l.logger.Warn(args...)
-}
-
-func (l *LoggerImpl) Warnw(msg string, keysAndValues ...any) {
-	l.logger.Warnw(msg, keysAndValues...)
-}
-
-func (l *LoggerImpl) Errorf(format string, args ...any) {
-	l.logger.Errorf(format, args...)
-}
-
-func (l *LoggerImpl) Error(args ...any) {
-	l.logger.Error(args...)
-}
-
-func (l *LoggerImpl) Errorw(msg string, keysAndValues ...any) {
-	l.logger.Errorw(msg, keysAndValues...)
-}
-
-func (l *LoggerImpl) Fatalf(format string, args ...any) {
-	l.logger.Fatalf(format, args...)
 }
 
 func (l *LoggerImpl) Fatal(args ...any) {

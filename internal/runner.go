@@ -19,11 +19,11 @@ package runner
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -41,6 +41,11 @@ const (
 	runnerInfoAnnotation string = "electrocucaracha.kubevirt-actions-runner/runner-info"
 	runnerInfoVolume     string = "runner-info"
 	runnerInfoPath       string = "runner-info.json"
+)
+
+var (
+	errWaitTimeout        = errors.New("timeout while waiting for the virtual machine instance")
+	errWatchChannelClosed = errors.New("watch channel closed unexpectedly")
 )
 
 // This file defines the Runner interface and its implementation for managing
@@ -161,7 +166,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	if err != nil {
 		span.RecordError(err)
 
-		return errors.Wrap(err, "failed to watch the virtual machine instance")
+		return fmt.Errorf("failed to watch the virtual machine instance: %w", err)
 	}
 	defer watch.Stop()
 
@@ -170,10 +175,10 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	for {
 		select {
 		case <-ctx.Done():
-			return errors.New("timeout while waiting for the virtual machine instance")
+			return errWaitTimeout
 		case event, watchOpen := <-watch.ResultChan():
 			if !watchOpen {
-				return errors.New("watch channel closed unexpectedly")
+				return errWatchChannelClosed
 			}
 
 			done, skip, err := handleWatchEvent(span, vmiName, event, &currentStatus)
@@ -348,7 +353,7 @@ func (rc *KubevirtRunner) createVMI(
 		spanCreateVMI.RecordError(err)
 		span.RecordError(err)
 
-		return nil, errors.Wrap(err, "fail to create runner instance")
+		return nil, fmt.Errorf("failed to create runner instance: %w", err)
 	}
 
 	return createdVMI, nil
@@ -388,7 +393,7 @@ func (rc *KubevirtRunner) createDataVolume(
 		spanCreateDV.RecordError(err)
 		span.RecordError(err)
 
-		return errors.Wrap(err, "cannot create data volume")
+		return fmt.Errorf("cannot create data volume: %w", err)
 	}
 
 	return nil
@@ -400,7 +405,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
 		ctx, vmTemplate, k8smetav1.GetOptions{})
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot obtain KubeVirt vm list")
+		return nil, nil, fmt.Errorf("failed to get KubeVirt virtual machine template %q: %w", vmTemplate, err)
 	}
 
 	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)
@@ -416,7 +421,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 
 	out, err := json.Marshal(runnerInfo)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot marshal jitConfig")
+		return nil, nil, fmt.Errorf("cannot marshal runner info annotation payload: %w", err)
 	}
 
 	virtualMachineInstance.Annotations[runnerInfoAnnotation] = string(out)

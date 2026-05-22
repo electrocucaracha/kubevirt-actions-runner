@@ -32,17 +32,8 @@ func TestLoggerMethods(t *testing.T) {
 	}{
 		{name: "Printf", run: func() { logger.Printf("test %s", "message") }},
 		{name: "Println", run: func() { logger.Println("test message") }},
-		{name: "Debugf", run: func() { logger.Debugf("test %s", "debug") }},
-		{name: "Debug", run: func() { logger.Debug("test debug") }},
 		{name: "Infof", run: func() { logger.Infof("test %s", "info") }},
-		{name: "Info", run: func() { logger.Info("test info") }},
-		{name: "Infow", run: func() { logger.Infow("test message", "key1", "value1", "key2", "value2") }},
 		{name: "Warnf", run: func() { logger.Warnf("test %s", "warning") }},
-		{name: "Warn", run: func() { logger.Warn("test warning") }},
-		{name: "Warnw", run: func() { logger.Warnw("test message", "key1", "value1") }},
-		{name: "Errorf", run: func() { logger.Errorf("test %s", "error") }},
-		{name: "Error", run: func() { logger.Error("test error") }},
-		{name: "Errorw", run: func() { logger.Errorw("test message", "key1", "value1") }},
 	}
 
 	for _, test := range tests {
@@ -98,12 +89,4 @@ func TestGetLoggerSingleton(t *testing.T) {
 	if logger1 != logger2 {
 		t.Fatal("GetLogger should return the same instance")
 	}
-}
-
-func TestLoggerInterface(t *testing.T) {
-	t.Parallel()
-
-	logger := utils.GetLogger()
-
-	var _ utils.Logger = logger
 }

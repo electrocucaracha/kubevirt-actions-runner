@@ -18,10 +18,10 @@ package app
 
 import (
 	"context"
+	"fmt"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -47,21 +47,21 @@ func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 
 	err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig)
 	if err != nil {
-		return errors.Wrap(err, "fail to create resources")
+		return fmt.Errorf("failed to create resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner resources created successfully")
 
 	err = runner.WaitForVirtualMachineInstance(ctx)
 	if err != nil {
-		return errors.Wrap(err, "fail to wait for resources")
+		return fmt.Errorf("failed to wait for resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner completed successfully")
 
 	err = runner.DeleteResources(ctx)
 	if err != nil {
-		return errors.Wrap(err, "fail to delete resources")
+		return fmt.Errorf("failed to delete resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner deleted successfully")

@@ -18,6 +18,8 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
 	"os/signal"
 	"runtime/debug"
@@ -27,7 +29,6 @@ import (
 	"github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app"
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-	"github.com/pkg/errors"
 	"github.com/spf13/pflag"
 	"kubevirt.io/client-go/kubecli"
 )
@@ -131,7 +132,7 @@ func ensureValidCleanupContext(parent context.Context) (context.Context, context
 	return context.WithTimeout(parent, getCleanupTimeout())
 }
 
-func setupTelemetry(log utils.Logger) func(context.Context) error {
+func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
 	telemetryCfg := runner.GetTelemetryConfig()
 
 	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background(), telemetryCfg)
@@ -151,22 +152,22 @@ func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
 
 	namespace, _, err := clientConfig.Namespace()
 	if err != nil {
-		return nil, "", errors.Wrap(err, "failed to get namespace")
+		return nil, "", fmt.Errorf("failed to get namespace: %w", err)
 	}
 
 	virtClient, err := kubecli.GetKubevirtClientFromClientConfig(clientConfig)
 	if err != nil {
-		return nil, "", errors.Wrap(err, "cannot obtain KubeVirt client")
+		return nil, "", fmt.Errorf("cannot obtain KubeVirt client: %w", err)
 	}
 
 	return virtClient, namespace, nil
 }
 
-func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log utils.Logger) {
+func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log *utils.LoggerImpl) {
 	rootCmd := app.NewRootCommand(ctx, kr, opts)
 
 	execErr := rootCmd.Execute()
-	if execErr != nil && !errors.Is(errors.Cause(execErr), context.Canceled) {
+	if execErr != nil && !errors.Is(execErr, context.Canceled) {
 		log.Println("execute command failed:", execErr)
 	}
 }
