@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,10 @@ package app
 
 import (
 	"context"
+	"fmt"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -45,23 +45,20 @@ func NewRootCommand(ctx context.Context, runner runner.Runner, opts Opts) *cobra
 func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 	log := utils.GetLogger()
 
-	err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig)
-	if err != nil {
-		return errors.Wrap(err, "fail to create resources")
+	if err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig); err != nil {
+		return fmt.Errorf("fail to create resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner resources created successfully")
 
-	err = runner.WaitForVirtualMachineInstance(ctx)
-	if err != nil {
-		return errors.Wrap(err, "fail to wait for resources")
+	if err := runner.WaitForVirtualMachineInstance(ctx); err != nil {
+		return fmt.Errorf("fail to wait for resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner completed successfully")
 
-	err = runner.DeleteResources(ctx)
-	if err != nil {
-		return errors.Wrap(err, "fail to delete resources")
+	if err := runner.DeleteResources(ctx); err != nil {
+		return fmt.Errorf("fail to delete resources: %w", err)
 	}
 
 	log.Println("Virtual Machine runner deleted successfully")

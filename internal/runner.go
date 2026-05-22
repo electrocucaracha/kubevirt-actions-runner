@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,11 +19,11 @@ package runner
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -161,7 +161,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	if err != nil {
 		span.RecordError(err)
 
-		return errors.Wrap(err, "failed to watch the virtual machine instance")
+		return fmt.Errorf("failed to watch the virtual machine instance: %w", err)
 	}
 	defer watch.Stop()
 
@@ -348,7 +348,7 @@ func (rc *KubevirtRunner) createVMI(
 		spanCreateVMI.RecordError(err)
 		span.RecordError(err)
 
-		return nil, errors.Wrap(err, "fail to create runner instance")
+		return nil, fmt.Errorf("fail to create runner instance: %w", err)
 	}
 
 	return createdVMI, nil
@@ -388,7 +388,7 @@ func (rc *KubevirtRunner) createDataVolume(
 		spanCreateDV.RecordError(err)
 		span.RecordError(err)
 
-		return errors.Wrap(err, "cannot create data volume")
+		return fmt.Errorf("cannot create data volume: %w", err)
 	}
 
 	return nil
@@ -400,7 +400,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
 		ctx, vmTemplate, k8smetav1.GetOptions{})
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot obtain KubeVirt vm list")
+		return nil, nil, fmt.Errorf("cannot obtain KubeVirt vm list: %w", err)
 	}
 
 	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)
@@ -416,7 +416,7 @@ func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerNa
 
 	out, err := json.Marshal(runnerInfo)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "cannot marshal jitConfig")
+		return nil, nil, fmt.Errorf("cannot marshal jitConfig: %w", err)
 	}
 
 	virtualMachineInstance.Annotations[runnerInfoAnnotation] = string(out)
