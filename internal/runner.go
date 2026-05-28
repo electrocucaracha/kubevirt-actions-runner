@@ -165,6 +165,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	span.SetAttributes(attribute.String("vmiName", vmiName))
 
 	var currentStatus v1.VirtualMachineInstancePhase
+
 	vmiInterface := rc.virtClient.VirtualMachineInstance(rc.namespace)
 
 	for {
@@ -182,6 +183,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 		done, watchResultErr := watchVMIEvents(ctx, span, watch, vmiName, &currentStatus)
 		watch.Stop()
+
 		if done {
 			return watchResultErr
 		}
