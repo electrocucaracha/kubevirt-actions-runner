@@ -194,9 +194,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 		if watchResultErr == nil {
 			log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
-			span.AddEvent("watch_reconnect", trace.WithAttributes(
-				attribute.String("reason", errWatchChannelClosed.Error()),
-			))
+			span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", errWatchChannelClosed.Error())))
 
 			timer := time.NewTimer(watchReconnectBackoff)
 			select {
