@@ -39,9 +39,10 @@ import (
 )
 
 const (
-	runnerInfoAnnotation string = "electrocucaracha.kubevirt-actions-runner/runner-info"
-	runnerInfoVolume     string = "runner-info"
-	runnerInfoPath       string = "runner-info.json"
+	runnerInfoAnnotation  string = "electrocucaracha.kubevirt-actions-runner/runner-info"
+	runnerInfoVolume      string = "runner-info"
+	runnerInfoPath        string = "runner-info.json"
+	watchReconnectBackoff        = time.Second
 )
 
 var (
@@ -163,11 +164,16 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	log.Printf("Watching %s Virtual Machine Instance\n", vmiName)
 	span.SetAttributes(attribute.String("vmiName", vmiName))
 
-	var currentStatus v1.VirtualMachineInstancePhase
+	var (
+		currentStatus v1.VirtualMachineInstancePhase
+		readyReported bool
+	)
+
 	vmiInterface := rc.virtClient.VirtualMachineInstance(rc.namespace)
 
 	for {
-		done, resourceVersion, terminalErr := rc.refreshVMIStatus(ctx, span, vmiInterface, vmiName, &currentStatus)
+		done, resourceVersion, terminalErr := rc.refreshVMIStatus(
+			ctx, span, vmiInterface, vmiName, &currentStatus, &readyReported)
 		if done {
 			return terminalErr
 		}
@@ -179,20 +185,24 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 			return fmt.Errorf("failed to watch the virtual machine instance: %w", watchErr)
 		}
 
-		done, watchResultErr := watchVMIEvents(ctx, span, watch, vmiName, &currentStatus)
+		done, watchResultErr := watchVMIEvents(ctx, span, watch, vmiName, &currentStatus, &readyReported)
 		watch.Stop()
+
 		if done {
 			return watchResultErr
 		}
 
 		if watchResultErr == nil {
 			log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
-			span.AddEvent("watch_reconnect", trace.WithAttributes(
-				attribute.String("reason", errWatchChannelClosed.Error()),
-			))
+			span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", errWatchChannelClosed.Error())))
 
-			if ctx.Err() != nil {
+			timer := time.NewTimer(watchReconnectBackoff)
+			select {
+			case <-ctx.Done():
+				timer.Stop()
+
 				return errWaitTimeout
+			case <-timer.C:
 			}
 
 			continue
@@ -200,43 +210,6 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 		return watchResultErr
 	}
-}
-
-func (rc *KubevirtRunner) refreshVMIStatus(
-	ctx context.Context,
-	span trace.Span,
-	vmiInterface kubecli.VirtualMachineInstanceInterface,
-	vmiName string,
-	currentStatus *v1.VirtualMachineInstancePhase,
-) (bool, string, error) {
-	if ctx.Err() != nil {
-		return true, "", errWaitTimeout
-	}
-
-	vmi, err := vmiInterface.Get(ctx, vmiName, k8smetav1.GetOptions{})
-	if err != nil {
-		if ctx.Err() != nil {
-			return true, "", errWaitTimeout
-		}
-
-		span.RecordError(err)
-
-		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
-	}
-
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
-		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
-		span.SetAttributes(attribute.String("phase", "Running+Ready"))
-	}
-
-	if vmi.Status.Phase == *currentStatus {
-		return false, vmi.ResourceVersion, nil
-	}
-
-	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
-	*currentStatus = vmi.Status.Phase
-
-	return done, vmi.ResourceVersion, err
 }
 
 func watchOptions(vmiName, resourceVersion string) k8smetav1.ListOptions {
@@ -252,6 +225,7 @@ func watchVMIEvents(
 	watch k8swatch.Interface,
 	vmiName string,
 	currentStatus *v1.VirtualMachineInstancePhase,
+	readyReported *bool,
 ) (bool, error) {
 	for {
 		select {
@@ -262,7 +236,7 @@ func watchVMIEvents(
 				return false, nil
 			}
 
-			done, skip, err := handleWatchEvent(span, vmiName, event, currentStatus)
+			done, skip, err := handleWatchEvent(span, vmiName, event, currentStatus, readyReported)
 			if skip {
 				continue
 			}
@@ -283,6 +257,7 @@ func handleWatchEvent(
 	vmiName string,
 	event k8swatch.Event,
 	currentStatus *v1.VirtualMachineInstancePhase,
+	readyReported *bool,
 ) (bool, bool, error) {
 	log := utils.GetLogger()
 
@@ -291,9 +266,11 @@ func handleWatchEvent(
 		return false, true, nil
 	}
 
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
 		log.Printf("%s is Running and Ready\n", vmiName)
 		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
+		*readyReported = true
 	}
 
 	if vmi.Status.Phase == *currentStatus {
@@ -396,6 +373,46 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (rc *KubevirtRunner) refreshVMIStatus(
+	ctx context.Context,
+	span trace.Span,
+	vmiInterface kubecli.VirtualMachineInstanceInterface,
+	vmiName string,
+	currentStatus *v1.VirtualMachineInstancePhase,
+	readyReported *bool,
+) (bool, string, error) {
+	if ctx.Err() != nil {
+		return true, "", errWaitTimeout
+	}
+
+	vmi, err := vmiInterface.Get(ctx, vmiName, k8smetav1.GetOptions{})
+	if err != nil {
+		if ctx.Err() != nil {
+			return true, "", errWaitTimeout
+		}
+
+		span.RecordError(err)
+
+		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
+	}
+
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
+		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
+		*readyReported = true
+	}
+
+	if vmi.Status.Phase == *currentStatus {
+		return false, vmi.ResourceVersion, nil
+	}
+
+	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	*currentStatus = vmi.Status.Phase
+
+	return done, vmi.ResourceVersion, err
 }
 
 func (rc *KubevirtRunner) validateResourceInputs(vmTemplate, runnerName, jitConfig string, span trace.Span) error {
