@@ -39,10 +39,10 @@ import (
 )
 
 const (
-	runnerInfoAnnotation  string        = "electrocucaracha.kubevirt-actions-runner/runner-info"
-	runnerInfoVolume      string        = "runner-info"
-	runnerInfoPath        string        = "runner-info.json"
-	watchReconnectBackoff = time.Second
+	runnerInfoAnnotation  string = "electrocucaracha.kubevirt-actions-runner/runner-info"
+	runnerInfoVolume      string = "runner-info"
+	runnerInfoPath        string = "runner-info.json"
+	watchReconnectBackoff        = time.Second
 )
 
 var (
@@ -165,13 +165,13 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	span.SetAttributes(attribute.String("vmiName", vmiName))
 
 	var currentStatus v1.VirtualMachineInstancePhase
-
 	var readyReported bool
 
 	vmiInterface := rc.virtClient.VirtualMachineInstance(rc.namespace)
 
 	for {
-		done, resourceVersion, terminalErr := rc.refreshVMIStatus(ctx, span, vmiInterface, vmiName, &currentStatus, &readyReported)
+		done, resourceVersion, terminalErr := rc.refreshVMIStatus(
+			ctx, span, vmiInterface, vmiName, &currentStatus, &readyReported)
 		if done {
 			return terminalErr
 		}
@@ -200,6 +200,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 			select {
 			case <-ctx.Done():
 				timer.Stop()
+
 				return errWaitTimeout
 			case <-timer.C:
 			}
