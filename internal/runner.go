@@ -164,8 +164,10 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	log.Printf("Watching %s Virtual Machine Instance\n", vmiName)
 	span.SetAttributes(attribute.String("vmiName", vmiName))
 
-	var currentStatus v1.VirtualMachineInstancePhase
-	var readyReported bool
+	var (
+		currentStatus v1.VirtualMachineInstancePhase
+		readyReported bool
+	)
 
 	vmiInterface := rc.virtClient.VirtualMachineInstance(rc.namespace)
 
@@ -269,6 +271,7 @@ func handleWatchEvent(
 	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
 		log.Printf("%s is Running and Ready\n", vmiName)
 		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
 		*readyReported = true
 	}
 
@@ -400,6 +403,7 @@ func (rc *KubevirtRunner) refreshVMIStatus(
 	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
 		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
 		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
 		*readyReported = true
 	}
 
