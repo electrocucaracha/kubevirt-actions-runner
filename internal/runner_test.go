@@ -334,7 +334,8 @@ var _ = Describe("Runner", func() {
 
 		firstWatcher.Stop()
 
-		Eventually(errChan, 3*time.Second).Should(Receive(MatchError(ContainSubstring("failed to get the virtual machine instance"))))
+		Eventually(errChan, 3*time.Second).Should(
+			Receive(MatchError(ContainSubstring("failed to get the virtual machine instance"))))
 	})
 })
 

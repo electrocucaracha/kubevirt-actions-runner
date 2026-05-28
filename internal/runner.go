@@ -205,43 +205,6 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	}
 }
 
-func (rc *KubevirtRunner) refreshVMIStatus(
-	ctx context.Context,
-	span trace.Span,
-	vmiInterface kubecli.VirtualMachineInstanceInterface,
-	vmiName string,
-	currentStatus *v1.VirtualMachineInstancePhase,
-) (bool, string, error) {
-	if ctx.Err() != nil {
-		return true, "", errWaitTimeout
-	}
-
-	vmi, err := vmiInterface.Get(ctx, vmiName, k8smetav1.GetOptions{})
-	if err != nil {
-		if ctx.Err() != nil {
-			return true, "", errWaitTimeout
-		}
-
-		span.RecordError(err)
-
-		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
-	}
-
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && *currentStatus != v1.Running {
-		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
-		span.SetAttributes(attribute.String("phase", "Running+Ready"))
-	}
-
-	if vmi.Status.Phase == *currentStatus {
-		return false, vmi.ResourceVersion, nil
-	}
-
-	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
-	*currentStatus = vmi.Status.Phase
-
-	return done, vmi.ResourceVersion, err
-}
-
 func watchOptions(vmiName, resourceVersion string) k8smetav1.ListOptions {
 	return k8smetav1.ListOptions{
 		FieldSelector:   fields.OneTermEqualSelector("metadata.name", vmiName).String(),
@@ -399,6 +362,43 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (rc *KubevirtRunner) refreshVMIStatus(
+	ctx context.Context,
+	span trace.Span,
+	vmiInterface kubecli.VirtualMachineInstanceInterface,
+	vmiName string,
+	currentStatus *v1.VirtualMachineInstancePhase,
+) (bool, string, error) {
+	if ctx.Err() != nil {
+		return true, "", errWaitTimeout
+	}
+
+	vmi, err := vmiInterface.Get(ctx, vmiName, k8smetav1.GetOptions{})
+	if err != nil {
+		if ctx.Err() != nil {
+			return true, "", errWaitTimeout
+		}
+
+		span.RecordError(err)
+
+		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
+	}
+
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && *currentStatus != v1.Running {
+		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+	}
+
+	if vmi.Status.Phase == *currentStatus {
+		return false, vmi.ResourceVersion, nil
+	}
+
+	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	*currentStatus = vmi.Status.Phase
+
+	return done, vmi.ResourceVersion, err
 }
 
 func (rc *KubevirtRunner) validateResourceInputs(vmTemplate, runnerName, jitConfig string, span trace.Span) error {
