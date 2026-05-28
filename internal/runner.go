@@ -42,7 +42,7 @@ const (
 	runnerInfoAnnotation  string        = "electrocucaracha.kubevirt-actions-runner/runner-info"
 	runnerInfoVolume      string        = "runner-info"
 	runnerInfoPath        string        = "runner-info.json"
-	watchReconnectBackoff time.Duration = time.Second
+	watchReconnectBackoff = time.Second
 )
 
 var (
