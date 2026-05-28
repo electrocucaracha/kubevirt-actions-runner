@@ -192,8 +192,10 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 				attribute.String("reason", errWatchChannelClosed.Error()),
 			))
 
-			if ctx.Err() != nil {
+			select {
+			case <-ctx.Done():
 				return errWaitTimeout
+			case <-time.After(watchReconnectBackoff):
 			}
 
 			continue
@@ -225,7 +227,7 @@ func (rc *KubevirtRunner) refreshVMIStatus(
 		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
 	}
 
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && *currentStatus != v1.Running {
 		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
 		span.SetAttributes(attribute.String("phase", "Running+Ready"))
 	}
