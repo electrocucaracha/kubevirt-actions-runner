@@ -25,7 +25,9 @@ import (
 	. "github.com/onsi/gomega"
 	"go.uber.org/mock/gomock"
 	k8sv1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
 	v1 "kubevirt.io/api/core/v1"
 	cdifake "kubevirt.io/client-go/containerizeddataimporter/fake"
@@ -66,11 +68,21 @@ var _ = Describe("Runner", func() {
 		runner.CancelAppContext()
 	})
 
-	startVMIWatcher := func(karRunner runner.Runner) (*watch.FakeWatcher, chan error) {
-		fakeWatcher := watch.NewFake()
-
+	startVMIWatcherWithGet := func(
+		karRunner runner.Runner,
+		getVMI func() (*v1.VirtualMachineInstance, error),
+		watchers ...*watch.FakeWatcher,
+	) chan error {
 		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
-		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(fakeWatcher, nil).MinTimes(1)
+		vmiInterface.EXPECT().Get(gomock.Any(), vmInstance, gomock.Any()).DoAndReturn(
+			func(_ context.Context, _ string, _ metav1.GetOptions) (*v1.VirtualMachineInstance, error) {
+				return getVMI()
+			}).AnyTimes()
+
+		for _, watcher := range watchers {
+			vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(watcher, nil).Times(1)
+		}
+
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
 		runner.NewAppContext(vmInstance, "")
 
@@ -82,7 +94,26 @@ var _ = Describe("Runner", func() {
 			close(errChan)
 		}()
 
+		return errChan
+	}
+
+	startVMIWatcher := func(karRunner runner.Runner) (*watch.FakeWatcher, chan error) {
+		fakeWatcher := watch.NewFake()
+		errChan := startVMIWatcherWithGet(karRunner, func() (*v1.VirtualMachineInstance, error) {
+			return NewVirtualMachineInstance(vmInstance), nil
+		}, fakeWatcher)
+
 		return fakeWatcher, errChan
+	}
+
+	startReconnectVMIWatcher := func(karRunner runner.Runner) (*watch.FakeWatcher, *watch.FakeWatcher, chan error) {
+		firstWatcher := watch.NewFake()
+		secondWatcher := watch.NewFakeWithChanSize(1, false)
+		errChan := startVMIWatcherWithGet(karRunner, func() (*v1.VirtualMachineInstance, error) {
+			return NewVirtualMachineInstance(vmInstance), nil
+		}, firstWatcher, secondWatcher)
+
+		return firstWatcher, secondWatcher, errChan
 	}
 
 	DescribeTable("create resources", func(shouldSucceed bool, vmTemplate, runnerName, jitConfig string) {
@@ -214,6 +245,96 @@ var _ = Describe("Runner", func() {
 		fakeWatcher.Add(vmi)
 
 		Eventually(errChan, timeout).Should(Receive(MatchError("timeout while waiting for the virtual machine instance")))
+	})
+
+	It("re-establishes the VMI watch when the watch stream closes", func() {
+		const timeout = 3 * time.Second
+
+		firstWatcher, secondWatcher, errChan := startReconnectVMIWatcher(karRunner)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.Running
+		firstWatcher.Add(vmi)
+		firstWatcher.Stop()
+
+		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+
+		vmi.Status.Phase = v1.Succeeded
+		secondWatcher.Modify(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("re-establishes the VMI watch after the Running+Ready milestone", func() {
+		const timeout = 3 * time.Second
+
+		firstWatcher, secondWatcher, errChan := startReconnectVMIWatcher(karRunner)
+
+		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
+		firstWatcher.Modify(readyVMI)
+		firstWatcher.Stop()
+
+		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+
+		readyVMI.Status.Phase = v1.Succeeded
+		secondWatcher.Modify(readyVMI)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("uses the wait timeout as the upper bound for closed watch streams", func() {
+		const waitTimeout = 10 * time.Millisecond
+
+		const timeout = 1 * time.Second
+
+		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Get(gomock.Any(), vmInstance, gomock.Any()).DoAndReturn(
+			func(_ context.Context, _ string, _ metav1.GetOptions) (*v1.VirtualMachineInstance, error) {
+				vmi := NewVirtualMachineInstance(vmInstance)
+				vmi.Status.Phase = v1.Running
+
+				return vmi, nil
+			}).AnyTimes()
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).DoAndReturn(
+			func(_ context.Context, _ metav1.ListOptions) (watch.Interface, error) {
+				fakeWatcher := watch.NewFake()
+				fakeWatcher.Stop()
+
+				return fakeWatcher, nil
+			}).AnyTimes()
+
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		errChan := make(chan error, 1)
+		go func() {
+			errChan <- shortTimeoutRunner.WaitForVirtualMachineInstance(context.TODO())
+
+			close(errChan)
+		}()
+
+		Eventually(errChan, timeout).Should(Receive(MatchError("timeout while waiting for the virtual machine instance")))
+	})
+
+	It("fails when the VMI disappears before a watch can be re-established", func() {
+		firstWatcher := watch.NewFake()
+		getCalls := 0
+		errChan := startVMIWatcherWithGet(karRunner, func() (*v1.VirtualMachineInstance, error) {
+			getCalls++
+			if getCalls > 1 {
+				err := k8serrors.NewNotFound(
+					schema.GroupResource{Group: "kubevirt.io", Resource: "virtualmachineinstances"}, vmInstance)
+
+				return nil, err
+			}
+
+			return NewVirtualMachineInstance(vmInstance), nil
+		}, firstWatcher)
+
+		firstWatcher.Stop()
+
+		Eventually(errChan, 3*time.Second).Should(Receive(MatchError(ContainSubstring("failed to get the virtual machine instance"))))
 	})
 })
 
