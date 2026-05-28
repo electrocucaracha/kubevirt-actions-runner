@@ -15,6 +15,8 @@ below to navigate through the different sections.
 
 - [Enable Telemetry](how-to-guides/enable-telemetry.md): Detailed steps to
   enable and configure telemetry for better observability.
+- [Configure Runner Timeouts](how-to-guides/configure-timeouts.md): Configure
+  wait and cleanup timeouts for VM-backed jobs.
 - [Set Up Testbed](how-to-guides/setup-testbed.md): Instructions to create a
   local test environment for validation and development.
 

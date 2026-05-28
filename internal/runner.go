@@ -30,6 +30,7 @@ import (
 	k8scorev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	k8smetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/types"
 	k8swatch "k8s.io/apimachinery/pkg/watch"
 	v1 "kubevirt.io/api/core/v1"
@@ -162,32 +163,112 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 	log.Printf("Watching %s Virtual Machine Instance\n", vmiName)
 	span.SetAttributes(attribute.String("vmiName", vmiName))
 
-	watch, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Watch(ctx, k8smetav1.ListOptions{})
+	var currentStatus v1.VirtualMachineInstancePhase
+	vmiInterface := rc.virtClient.VirtualMachineInstance(rc.namespace)
+
+	for {
+		done, resourceVersion, terminalErr := rc.refreshVMIStatus(ctx, span, vmiInterface, vmiName, &currentStatus)
+		if done {
+			return terminalErr
+		}
+
+		watch, watchErr := vmiInterface.Watch(ctx, watchOptions(vmiName, resourceVersion))
+		if watchErr != nil {
+			span.RecordError(watchErr)
+
+			return fmt.Errorf("failed to watch the virtual machine instance: %w", watchErr)
+		}
+
+		done, watchResultErr := watchVMIEvents(ctx, span, watch, vmiName, &currentStatus)
+		watch.Stop()
+		if done {
+			return watchResultErr
+		}
+
+		if watchResultErr == nil {
+			log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
+			span.AddEvent("watch_reconnect", trace.WithAttributes(
+				attribute.String("reason", errWatchChannelClosed.Error()),
+			))
+
+			if ctx.Err() != nil {
+				return errWaitTimeout
+			}
+
+			continue
+		}
+
+		return watchResultErr
+	}
+}
+
+func (rc *KubevirtRunner) refreshVMIStatus(
+	ctx context.Context,
+	span trace.Span,
+	vmiInterface kubecli.VirtualMachineInstanceInterface,
+	vmiName string,
+	currentStatus *v1.VirtualMachineInstancePhase,
+) (bool, string, error) {
+	if ctx.Err() != nil {
+		return true, "", errWaitTimeout
+	}
+
+	vmi, err := vmiInterface.Get(ctx, vmiName, k8smetav1.GetOptions{})
 	if err != nil {
+		if ctx.Err() != nil {
+			return true, "", errWaitTimeout
+		}
+
 		span.RecordError(err)
 
-		return fmt.Errorf("failed to watch the virtual machine instance: %w", err)
+		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
 	}
-	defer watch.Stop()
 
-	var currentStatus v1.VirtualMachineInstancePhase
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) {
+		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+	}
 
+	if vmi.Status.Phase == *currentStatus {
+		return false, vmi.ResourceVersion, nil
+	}
+
+	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
+	*currentStatus = vmi.Status.Phase
+
+	return done, vmi.ResourceVersion, err
+}
+
+func watchOptions(vmiName, resourceVersion string) k8smetav1.ListOptions {
+	return k8smetav1.ListOptions{
+		FieldSelector:   fields.OneTermEqualSelector("metadata.name", vmiName).String(),
+		ResourceVersion: resourceVersion,
+	}
+}
+
+func watchVMIEvents(
+	ctx context.Context,
+	span trace.Span,
+	watch k8swatch.Interface,
+	vmiName string,
+	currentStatus *v1.VirtualMachineInstancePhase,
+) (bool, error) {
 	for {
 		select {
 		case <-ctx.Done():
-			return errWaitTimeout
+			return true, errWaitTimeout
 		case event, watchOpen := <-watch.ResultChan():
 			if !watchOpen {
-				return errWatchChannelClosed
+				return false, nil
 			}
 
-			done, skip, err := handleWatchEvent(span, vmiName, event, &currentStatus)
+			done, skip, err := handleWatchEvent(span, vmiName, event, currentStatus)
 			if skip {
 				continue
 			}
 
 			if done {
-				return err
+				return true, err
 			}
 		}
 	}

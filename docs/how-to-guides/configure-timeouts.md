@@ -49,6 +49,18 @@ while the terminal `Succeeded`/`Failed` phase ends the wait.
 The wait timeout (`KAR_WAIT_TIMEOUT`) therefore needs to cover the entire
 expected job duration, not just provisioning time.
 
+## Watch stream reconnection
+
+Kubernetes API watch streams can close during long-running jobs,
+even when the VMI is still running correctly.
+When this happens,
+the runner checks the current VMI phase and opens a new watch stream.
+This avoids treating an API-server watch timeout as a job failure.
+
+The reconnect loop still uses `KAR_WAIT_TIMEOUT` as the total wait budget.
+If the VMI never reaches `Succeeded` or `Failed` before that timeout expires,
+the runner exits with a wait-timeout error.
+
 ## Steps to configure `KAR_WAIT_TIMEOUT`
 
 ### 1. Set the environment variable
