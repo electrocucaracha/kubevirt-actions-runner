@@ -37,11 +37,11 @@ jobs:
           # jscpd:ignore-end
       - name: Run golangci-lint tool
         id: golangci-lint
-        uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # 9.2.1
+        uses: golangci/golangci-lint-action@db582008a42febd596419635a5abc9d9815daa9c # 9.2.1
         with:
           version: latest
           args: --allow-parallel-runners --output.json.path linter-errors.json
-      - uses: actions/ai-inference@17ff458cb182449bbb2e43701fcd98f6af8f6570 # 2.1.0
+      - uses: actions/ai-inference@a7805884c80886efc241e94a5351df715968a0ad # 2.1.1
         id: ai-linter-analysis
         if: failure()
         with:

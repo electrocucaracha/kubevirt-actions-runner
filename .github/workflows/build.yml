@@ -131,7 +131,7 @@ jobs:
         run: |
           set -o pipefail
           docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
-      - uses: actions/ai-inference@17ff458cb182449bbb2e43701fcd98f6af8f6570 # 2.1.0
+      - uses: actions/ai-inference@a7805884c80886efc241e94a5351df715968a0ad # 2.1.1
         id: ai-docker-analysis
         if: failure()
         with:
@@ -194,14 +194,14 @@ jobs:
 
             ${{ steps.ai-docker-analysis.outputs.response }}
       - name: Log in to the Container registry
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # 4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # 6.0.0
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # 6.1.0
         with:
           images: ghcr.io/${{ github.repository }}
       - name: Build and push Docker image
