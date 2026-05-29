@@ -11,8 +11,10 @@ linters:
   default: all
   disable:
     - exhaustruct
+    - gomodguard
     - wsl
   enable:
+    - gomodguard_v2
     - wsl_v5
   settings:
     depguard:
