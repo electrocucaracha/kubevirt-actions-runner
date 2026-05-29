@@ -55,14 +55,23 @@ type buildInfo struct {
 	goVersion       string
 }
 
-// buildInfoVars holds the build-time variables set via ldflags.
-type buildInfoVars struct {
-	gitCommit       string
-	buildDate       string
-	gitTreeModified string
-}
+func getBuildInfo(gitCommit, buildDate, gitTreeModified string) buildInfo {
+	out := buildInfo{
+		gitCommit:       gitCommit,
+		buildDate:       buildDate,
+		gitTreeModified: gitTreeModified,
+	}
 
-func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return out
+	}
+
+	out.goVersion = info.GoVersion
+	if gitCommit != "" && buildDate != "" {
+		return out
+	}
+
 	for _, setting := range info.Settings {
 		switch setting.Key {
 		case "vcs.revision":
@@ -79,26 +88,6 @@ func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
 			}
 		}
 	}
-}
-
-func getBuildInfo(vars buildInfoVars) buildInfo {
-	out := buildInfo{
-		gitCommit:       vars.gitCommit,
-		buildDate:       vars.buildDate,
-		gitTreeModified: vars.gitTreeModified,
-	}
-
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		return out
-	}
-
-	out.goVersion = info.GoVersion
-	if vars.gitCommit != "" && vars.buildDate != "" {
-		return out
-	}
-
-	populateBuildInfoFromVCS(&out, info)
 
 	return out
 }
@@ -140,10 +129,6 @@ func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
 		log.Warnf("failed to initialize telemetry: %v", err)
 	}
 
-	if shutdownTelemetry == nil {
-		return func(_ context.Context) error { return nil }
-	}
-
 	return shutdownTelemetry
 }
 
@@ -178,8 +163,7 @@ func main() {
 	log := utils.GetLogger()
 	// Note: ldflags are set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
 	// -X main.gitTreeModified=<modified>.
-	vars := buildInfoVars{gitCommit: gitCommit, buildDate: buildDate, gitTreeModified: gitTreeModified}
-	buildInfo := getBuildInfo(vars)
+	buildInfo := getBuildInfo(gitCommit, buildDate, gitTreeModified)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
@@ -187,14 +171,11 @@ func main() {
 	shutdownTelemetry := setupTelemetry(log)
 
 	defer func() {
-		if shutdownTelemetry != nil {
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-			defer cancel()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		defer cancel()
 
-			err := shutdownTelemetry(shutdownCtx)
-			if err != nil {
-				log.Warnf("failed to shutdown telemetry: %v", err)
-			}
+		if err := shutdownTelemetry(shutdownCtx); err != nil {
+			log.Warnf("failed to shutdown telemetry: %v", err)
 		}
 	}()
 
