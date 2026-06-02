@@ -55,6 +55,25 @@ type buildInfo struct {
 	goVersion       string
 }
 
+func applyVCSSettings(out *buildInfo, settings []debug.BuildSetting) {
+	for _, setting := range settings {
+		switch setting.Key {
+		case "vcs.revision":
+			if out.gitCommit == "" {
+				out.gitCommit = setting.Value
+			}
+		case "vcs.time":
+			if out.buildDate == "" {
+				out.buildDate = setting.Value
+			}
+		case "vcs.modified":
+			if out.gitTreeModified == "" {
+				out.gitTreeModified = setting.Value
+			}
+		}
+	}
+}
+
 func getBuildInfo(gitCommit, buildDate, gitTreeModified string) buildInfo {
 	out := buildInfo{
 		gitCommit:       gitCommit,
@@ -72,22 +91,7 @@ func getBuildInfo(gitCommit, buildDate, gitTreeModified string) buildInfo {
 		return out
 	}
 
-	for _, setting := range info.Settings {
-		switch setting.Key {
-		case "vcs.revision":
-			if out.gitCommit == "" {
-				out.gitCommit = setting.Value
-			}
-		case "vcs.time":
-			if out.buildDate == "" {
-				out.buildDate = setting.Value
-			}
-		case "vcs.modified":
-			if out.gitTreeModified == "" {
-				out.gitTreeModified = setting.Value
-			}
-		}
-	}
+	applyVCSSettings(&out, info.Settings)
 
 	return out
 }
@@ -128,6 +132,7 @@ func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
 	if err != nil {
 		log.Warnf("failed to initialize telemetry: %v", err)
 	}
+
 	if shutdownTelemetry == nil {
 		return func(_ context.Context) error { return nil }
 	}
@@ -177,7 +182,8 @@ func main() {
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 		defer cancel()
 
-		if err := shutdownTelemetry(shutdownCtx); err != nil {
+		err := shutdownTelemetry(shutdownCtx)
+		if err != nil {
 			log.Warnf("failed to shutdown telemetry: %v", err)
 		}
 	}()
