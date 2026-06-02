@@ -128,6 +128,9 @@ func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
 	if err != nil {
 		log.Warnf("failed to initialize telemetry: %v", err)
 	}
+	if shutdownTelemetry == nil {
+		return func(context.Context) error { return nil }
+	}
 
 	return shutdownTelemetry
 }
