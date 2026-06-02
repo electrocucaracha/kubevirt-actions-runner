@@ -55,15 +55,8 @@ type buildInfo struct {
 	goVersion       string
 }
 
-// buildInfoVars holds the build-time variables set via ldflags.
-type buildInfoVars struct {
-	gitCommit       string
-	buildDate       string
-	gitTreeModified string
-}
-
-func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
-	for _, setting := range info.Settings {
+func applyVCSSettings(out *buildInfo, settings []debug.BuildSetting) {
+	for _, setting := range settings {
 		switch setting.Key {
 		case "vcs.revision":
 			if out.gitCommit == "" {
@@ -81,11 +74,11 @@ func populateBuildInfoFromVCS(out *buildInfo, info *debug.BuildInfo) {
 	}
 }
 
-func getBuildInfo(vars buildInfoVars) buildInfo {
+func getBuildInfo(gitCommit, buildDate, gitTreeModified string) buildInfo {
 	out := buildInfo{
-		gitCommit:       vars.gitCommit,
-		buildDate:       vars.buildDate,
-		gitTreeModified: vars.gitTreeModified,
+		gitCommit:       gitCommit,
+		buildDate:       buildDate,
+		gitTreeModified: gitTreeModified,
 	}
 
 	info, ok := debug.ReadBuildInfo()
@@ -94,11 +87,11 @@ func getBuildInfo(vars buildInfoVars) buildInfo {
 	}
 
 	out.goVersion = info.GoVersion
-	if vars.gitCommit != "" && vars.buildDate != "" {
+	if gitCommit != "" && buildDate != "" {
 		return out
 	}
 
-	populateBuildInfoFromVCS(&out, info)
+	applyVCSSettings(&out, info.Settings)
 
 	return out
 }
@@ -178,8 +171,7 @@ func main() {
 	log := utils.GetLogger()
 	// Note: ldflags are set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
 	// -X main.gitTreeModified=<modified>.
-	vars := buildInfoVars{gitCommit: gitCommit, buildDate: buildDate, gitTreeModified: gitTreeModified}
-	buildInfo := getBuildInfo(vars)
+	buildInfo := getBuildInfo(gitCommit, buildDate, gitTreeModified)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
@@ -187,14 +179,12 @@ func main() {
 	shutdownTelemetry := setupTelemetry(log)
 
 	defer func() {
-		if shutdownTelemetry != nil {
-			shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
-			defer cancel()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+		defer cancel()
 
-			err := shutdownTelemetry(shutdownCtx)
-			if err != nil {
-				log.Warnf("failed to shutdown telemetry: %v", err)
-			}
+		err := shutdownTelemetry(shutdownCtx)
+		if err != nil {
+			log.Warnf("failed to shutdown telemetry: %v", err)
 		}
 	}()
 
