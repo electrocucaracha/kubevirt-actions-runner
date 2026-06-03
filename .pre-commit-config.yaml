@@ -32,7 +32,7 @@ repos:
         files: .*\.sh
         exclude: ".tox/.*"
   - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.15.0
+    rev: v0.16.0
     hooks:
       - id: markdownlint
         # MD013: line length
