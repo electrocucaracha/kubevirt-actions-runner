@@ -119,7 +119,7 @@ func getWaitTimeout() time.Duration {
 
 func ensureValidCleanupContext(parent context.Context) (context.Context, context.CancelFunc) {
 	if parent.Err() != nil {
-		return context.WithTimeout(context.TODO(), getCleanupTimeout())
+		return context.WithTimeout(context.Background(), getCleanupTimeout())
 	}
 
 	return context.WithTimeout(parent, getCleanupTimeout())
@@ -169,13 +169,10 @@ func main() {
 	var opts app.Opts
 
 	log := utils.GetLogger()
-	// Note: ldflags are set during build with -X main.gitCommit=<commit> -X main.buildDate=<date>
-	// -X main.gitTreeModified=<modified>.
 	buildInfo := getBuildInfo(gitCommit, buildDate, gitTreeModified)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
-	// Initialize telemetry
 	shutdownTelemetry := setupTelemetry(log)
 
 	defer func() {

@@ -9,6 +9,7 @@
 
 DOCKER_CMD ?= $(shell which docker 2> /dev/null || which podman 2> /dev/null || echo docker)
 
+.PHONY: test
 test:
 	@go test -v ./...
 

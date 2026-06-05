@@ -55,14 +55,13 @@ func NewAppContext(vmi, dataVolume string) *AppContext {
 // Exits the process if called before NewAppContext.
 func GetAppContext() *AppContext {
 	appContextMu.Lock()
-	curr := instance
-	appContextMu.Unlock()
+	defer appContextMu.Unlock()
 
-	if curr == nil {
+	if instance == nil {
 		utils.GetLogger().Fatal("AppContext not initialized. Call NewAppContext first.")
 	}
 
-	return curr
+	return instance
 }
 
 // HasAppContext reports whether the AppContext has been initialized.
