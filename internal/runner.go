@@ -45,10 +45,9 @@ const (
 	watchReconnectBackoff        = time.Second
 )
 
-var (
-	errWaitTimeout        = errors.New("timeout while waiting for the virtual machine instance")
-	errWatchChannelClosed = errors.New("watch channel closed unexpectedly")
-)
+const watchChannelClosedMsg = "watch channel closed unexpectedly"
+
+var errWaitTimeout = errors.New("timeout while waiting for the virtual machine instance")
 
 type Runner interface {
 	CreateResources(ctx context.Context, vmTemplate string, runnerName string, jitConfig string) error
@@ -188,7 +187,7 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 
 		if watchResultErr == nil {
 			log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
-			span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", errWatchChannelClosed.Error())))
+			span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", watchChannelClosedMsg)))
 
 			timer := time.NewTimer(watchReconnectBackoff)
 			select {

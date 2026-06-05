@@ -18,14 +18,16 @@ package runner
 
 import "errors"
 
-// ErrEmptyVMTemplate indicates that virtual machine template provided is empty.
-var ErrEmptyVMTemplate = errors.New("empty vm template")
+var (
+	// ErrEmptyVMTemplate indicates that virtual machine template provided is empty.
+	ErrEmptyVMTemplate = errors.New("empty vm template")
 
-// ErrEmptyRunnerName indicates that runner name provided is empty.
-var ErrEmptyRunnerName = errors.New("empty runner name")
+	// ErrEmptyRunnerName indicates that runner name provided is empty.
+	ErrEmptyRunnerName = errors.New("empty runner name")
 
-// ErrEmptyJitConfig indicates that Just-in-Time configuration provided is empty.
-var ErrEmptyJitConfig = errors.New("empty jit config")
+	// ErrEmptyJitConfig indicates that Just-in-Time configuration provided is empty.
+	ErrEmptyJitConfig = errors.New("empty jit config")
 
-// ErrRunnerFailed indicates that the runner has a failed during its execution.
-var ErrRunnerFailed = errors.New("runner has failed")
+	// ErrRunnerFailed indicates that the runner has failed during its execution.
+	ErrRunnerFailed = errors.New("runner has failed")
+)
