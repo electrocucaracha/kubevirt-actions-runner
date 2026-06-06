@@ -14,7 +14,83 @@ if [[ ${DEBUG:-false} == "true" ]]; then
     set -o xtrace
 fi
 
-trap "make fmt" EXIT
+has_errors=false
+failed_steps=()
+
+format_changes() {
+    local status=$?
+    # Formatting is best-effort here so earlier successful updates are not discarded.
+    if ! make fmt; then
+        echo "WARNING: formatting failed; keeping generated changes in place" >&2
+    fi
+    exit "${status}"
+}
+
+run_best_effort() {
+    local description=$1
+    shift
+
+    # Record non-critical failures so successful updates can still be committed.
+    if ! "$@"; then
+        echo "WARNING: ${description} failed; keeping generated changes in place" >&2
+        has_errors=true
+        failed_steps+=("${description}")
+    fi
+}
+
+update_github_action_hashes() {
+    local gh_actions action is_pinned pinned commit_hash
+
+    gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[_a-z-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
+    exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action' 'actions/checkout')
+    # Actions pinned to a specific version and excluded from auto-updates.
+    # Remove an entry only once the underlying issue is confirmed resolved.
+    # austenstone/copilot-cli: v3.0+ depends on actions/setup-copilot@v0 which does
+    # not yet exist publicly; keep at v2.0 until that action is released.
+    readonly pinned_actions=('austenstone/copilot-cli')
+    for action in $gh_actions; do
+        is_pinned=false
+        for pinned in "${pinned_actions[@]}"; do
+            if [[ $action == "$pinned" ]]; then
+                is_pinned=true
+                break
+            fi
+        done
+        if [[ $is_pinned == "true" ]]; then
+            echo "Skipping auto-update for pinned action: $action"
+            continue
+        fi
+        if [[ ${exceptions[*]} =~ (^|[^[:alpha:]])$action([^[:alpha:]]|$) ]]; then
+            commit_hash=$(git ls-remote "https://github.com/$action" | grep 'refs/tags/[v]\?[0-9][0-9\.]*\^{}$' | sed 's|refs/tags/[vV]\?[\.]\?||g; s|\^{}$||g' | sort -u -k2 -V | tail -1 | awk '{ printf "%s # %s\n",$1,$2 }')
+        else
+            commit_hash=$(git ls-remote "https://github.com/$action" | grep 'refs/tags/[v]\?[0-9][0-9\.]*$' | sed 's|refs/tags/[vV]\?[\.]\?||g' | sort -u -k2 -V | tail -1 | awk '{ printf "%s # %s\n",$1,$2 }')
+        fi
+        if [[ -z $commit_hash ]]; then
+            echo "WARNING: unable to resolve a tag for $action; skipping update" >&2
+            has_errors=true
+            failed_steps+=("resolving tag for $action")
+            continue
+        fi
+        # The grep output intentionally feeds xargs so the same pinned hash is written
+        # to every matching workflow file.
+        # shellcheck disable=SC2267
+        grep -ElRZ "uses: $action@" .github/ | xargs -0 -L 1 sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
+    done
+}
+
+update_dockerfile_base_image() {
+    local go_docker_tag
+
+    # The || true is intentional: a failed API call or missing jq leaves go_docker_tag empty
+    # and the subsequent if-check skips the update without aborting the script.
+    go_docker_tag=$(curl -sL "https://hub.docker.com/v2/repositories/library/golang/tags?page_size=100&name=${go_version}-alpine" |
+        jq -r '[.results[].name | select(test("^[0-9]+\\.[0-9]+-alpine[0-9]+\\.[0-9]+$"))] | sort | last // empty' 2>/dev/null || true)
+    if [[ -n $go_docker_tag ]]; then
+        sed -i "s|^FROM golang:[^[:space:]]*[[:space:]]AS build|FROM golang:${go_docker_tag} AS build|" Dockerfile
+    fi
+}
+
+trap format_changes EXIT
 
 if ! command -v go >/dev/null; then
     curl -fsSL http://bit.ly/install_pkg | PKG=go-lang bash
@@ -36,11 +112,11 @@ mapfile -t direct_modules < <(
 )
 
 if ((${#direct_modules[@]})); then
-    go get -u "${direct_modules[@]}" || true
+    run_best_effort "updating direct Go modules" go get -u "${direct_modules[@]}"
 fi
 
 echo "==> Tidying modules"
-go mod tidy -go="${go_version}"
+run_best_effort "tidying Go modules" go mod tidy -go="${go_version}"
 
 # Exclude update.yml so its go-version stays "stable" (always installs the latest Go toolchain)
 find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) ! -name 'update.yml' \
@@ -55,44 +131,26 @@ find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) ! -name 'up
 EOF
 
 if ! command -v uvx >/dev/null; then
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    run_best_effort "installing uv" bash -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 fi
-uvx pre-commit autoupdate
+if command -v uvx >/dev/null; then
+    run_best_effort "updating pre-commit hooks" uvx pre-commit autoupdate
+else
+    echo "WARNING: uvx is unavailable; skipping pre-commit updates" >&2
+    has_errors=true
+    failed_steps+=("updating pre-commit hooks")
+fi
+run_best_effort "updating GitHub Action commit hashes" update_github_action_hashes
+run_best_effort "updating the Dockerfile base image" update_dockerfile_base_image
 
-# Update GitHub Action commit hashes
-gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[\_a-z\-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
-exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action' 'actions/checkout')
-# Actions pinned to a specific version and excluded from auto-updates.
-# Remove an entry only once the underlying issue is confirmed resolved.
-# austenstone/copilot-cli: v3.0+ depends on actions/setup-copilot@v0 which does
-# not yet exist publicly; keep at v2.0 until that action is released.
-readonly pinned_actions=('austenstone/copilot-cli')
-for action in $gh_actions; do
-    is_pinned=false
-    for pinned in "${pinned_actions[@]}"; do
-        if [[ $action == "$pinned" ]]; then
-            is_pinned=true
-            break
-        fi
-    done
-    if [[ $is_pinned == "true" ]]; then
-        echo "Skipping auto-update for pinned action: $action"
-        continue
+if [[ $has_errors == "true" ]]; then
+    failed_summary=$(
+        IFS=', '
+        echo "${failed_steps[*]}"
+    )
+    if git diff --quiet; then
+        echo "ERROR: update steps failed (${failed_summary}) and no file changes were produced" >&2
+        exit 1
     fi
-    if [[ ${exceptions[*]} =~ (^|[^[:alpha:]])$action([^[:alpha:]]|$) ]]; then
-        commit_hash=$(git ls-remote "https://github.com/$action" | grep 'refs/tags/[v]\?[0-9][0-9\.]*\^{}$' | sed 's|refs/tags/[vV]\?[\.]\?||g; s|\^{}$||g' | sort -u -k2 -V | tail -1 | awk '{ printf "%s # %s\n",$1,$2 }')
-    else
-        commit_hash=$(git ls-remote "https://github.com/$action" | grep 'refs/tags/[v]\?[0-9][0-9\.]*$' | sed 's|refs/tags/[vV]\?[\.]\?||g' | sort -u -k2 -V | tail -1 | awk '{ printf "%s # %s\n",$1,$2 }')
-    fi
-    # shellcheck disable=SC2267
-    grep -ElRZ "uses: $action@" .github/ | xargs -0 -l sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
-done
-
-# Update Dockerfile base image to the latest golang alpine tag for this Go version
-# The || true is intentional: a failed API call or missing jq leaves go_docker_tag empty
-# and the subsequent if-check skips the update without aborting the script.
-go_docker_tag=$(curl -sL "https://hub.docker.com/v2/repositories/library/golang/tags?page_size=100&name=${go_version}-alpine" |
-    jq -r '[.results[].name | select(test("^[0-9]+\\.[0-9]+-alpine[0-9]+\\.[0-9]+$"))] | sort | last // empty' 2>/dev/null || true)
-if [[ -n $go_docker_tag ]]; then
-    sed -i "s|^FROM golang:[^[:space:]]*[[:space:]]AS build|FROM golang:${go_docker_tag} AS build|" Dockerfile
+    echo "WARNING: some update steps failed (${failed_summary}), but generated changes were kept" >&2
 fi
