@@ -28,8 +28,20 @@ if [[ ! $go_version =~ ^[0-9]+\.[0-9]+$ ]]; then
     echo "ERROR: could not extract a valid Go major.minor version (got: '${go_version}')" >&2
     exit 1
 fi
-go get -u ./... || true
-go mod tidy -go="$go_version"
+# Get direct modules from go.mod and upgrade them
+mapfile -t direct_modules < <(
+    go list -m -f '{{if not .Indirect}}{{.Path}}{{end}}' all |
+        grep -v '^$' |
+        grep -v "$(go list -m)"
+)
+
+if ((${#direct_modules[@]})); then
+    go get -u "${direct_modules[@]}" || true
+fi
+
+echo "==> Tidying modules"
+go mod tidy -go="${go_version}"
+
 # Exclude update.yml so its go-version stays "stable" (always installs the latest Go toolchain)
 find .github/workflows -type f \( -name '*.yml' -o -name '*.yaml' \) ! -name 'update.yml' \
     -exec grep -l 'go-version:' {} + \
@@ -49,7 +61,7 @@ uvx pre-commit autoupdate
 
 # Update GitHub Action commit hashes
 gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[\_a-z\-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
-exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action')
+exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action' 'actions/checkout')
 # Actions pinned to a specific version and excluded from auto-updates.
 # Remove an entry only once the underlying issue is confirmed resolved.
 # austenstone/copilot-cli: v3.0+ depends on actions/setup-copilot@v0 which does
