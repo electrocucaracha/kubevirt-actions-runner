@@ -14,7 +14,8 @@ if [[ ${DEBUG:-false} == "true" ]]; then
     set -o xtrace
 fi
 
-had_errors=false
+has_errors=false
+failed_steps=()
 
 format_changes() {
     local status=$?
@@ -28,9 +29,11 @@ run_best_effort() {
     local description=$1
     shift
 
+    # Record non-critical failures so successful updates can still be committed.
     if ! "$@"; then
         echo "WARNING: ${description} failed; keeping generated changes in place" >&2
-        had_errors=true
+        has_errors=true
+        failed_steps+=("${description}")
     fi
 }
 
@@ -63,9 +66,12 @@ update_github_action_hashes() {
         fi
         if [[ -z $commit_hash ]]; then
             echo "WARNING: unable to resolve a tag for $action; skipping update" >&2
-            had_errors=true
+            has_errors=true
+            failed_steps+=("resolving a tag for $action")
             continue
         fi
+        # The grep output intentionally feeds xargs so the same pinned hash is written
+        # to every matching workflow file.
         # shellcheck disable=SC2267
         grep -ElRZ "uses: $action@" .github/ | xargs -0 -l sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
     done
@@ -130,15 +136,20 @@ if command -v uvx >/dev/null; then
     run_best_effort "updating pre-commit hooks" uvx pre-commit autoupdate
 else
     echo "WARNING: uvx is unavailable; skipping pre-commit updates" >&2
-    had_errors=true
+    has_errors=true
+    failed_steps+=("updating pre-commit hooks")
 fi
 run_best_effort "updating GitHub Action commit hashes" update_github_action_hashes
 run_best_effort "updating the Dockerfile base image" update_dockerfile_base_image
 
-if [[ $had_errors == "true" ]]; then
+if [[ $has_errors == "true" ]]; then
+    failed_summary=$(
+        IFS=', '
+        echo "${failed_steps[*]}"
+    )
     if git diff --quiet; then
-        echo "ERROR: update steps failed and no file changes were produced" >&2
+        echo "ERROR: update steps failed (${failed_summary}) and no file changes were produced" >&2
         exit 1
     fi
-    echo "WARNING: some update steps failed, but generated changes were kept" >&2
+    echo "WARNING: some update steps failed (${failed_summary}), but generated changes were kept" >&2
 fi
