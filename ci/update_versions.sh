@@ -19,6 +19,7 @@ failed_steps=()
 
 format_changes() {
     local status=$?
+    # Formatting is best-effort here so earlier successful updates are not discarded.
     if ! make fmt; then
         echo "WARNING: formatting failed; keeping generated changes in place" >&2
     fi
@@ -40,7 +41,7 @@ run_best_effort() {
 update_github_action_hashes() {
     local gh_actions action is_pinned pinned commit_hash
 
-    gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[\_a-z\-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
+    gh_actions=$(grep -r "uses: [A-Za-z0-9_.-]*/[_a-z-]*@" .github/ | sed 's/@.*//' | awk -F ': ' '{ print $3 }' | sort -u)
     exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action' 'actions/checkout')
     # Actions pinned to a specific version and excluded from auto-updates.
     # Remove an entry only once the underlying issue is confirmed resolved.
@@ -67,13 +68,13 @@ update_github_action_hashes() {
         if [[ -z $commit_hash ]]; then
             echo "WARNING: unable to resolve a tag for $action; skipping update" >&2
             has_errors=true
-            failed_steps+=("resolving a tag for $action")
+            failed_steps+=("resolving tag for $action")
             continue
         fi
         # The grep output intentionally feeds xargs so the same pinned hash is written
         # to every matching workflow file.
         # shellcheck disable=SC2267
-        grep -ElRZ "uses: $action@" .github/ | xargs -0 -l sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
+        grep -ElRZ "uses: $action@" .github/ | xargs -0 -L 1 sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
     done
 }
 
