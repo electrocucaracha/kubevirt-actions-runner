@@ -11,7 +11,7 @@
 set -o pipefail
 set -o errexit
 set -o nounset
-set -o xtrace
+[[ ${DEBUG:-false} != "true" ]] || set -o xtrace
 
 # shellcheck source=./scripts/_utils.sh
 source _utils.sh

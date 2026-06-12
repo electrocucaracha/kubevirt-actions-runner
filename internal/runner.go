@@ -409,19 +409,19 @@ func (rc *KubevirtRunner) refreshVMIStatus(
 }
 
 func (rc *KubevirtRunner) validateResourceInputs(vmTemplate, runnerName, jitConfig string, span trace.Span) error {
-	if len(vmTemplate) == 0 {
+	if vmTemplate == "" {
 		span.SetAttributes(attribute.String("error", "empty vm template"))
 
 		return ErrEmptyVMTemplate
 	}
 
-	if len(runnerName) == 0 {
+	if runnerName == "" {
 		span.SetAttributes(attribute.String("error", "empty runner name"))
 
 		return ErrEmptyRunnerName
 	}
 
-	if len(jitConfig) == 0 {
+	if jitConfig == "" {
 		span.SetAttributes(attribute.String("error", "empty jit config"))
 
 		return ErrEmptyJitConfig
