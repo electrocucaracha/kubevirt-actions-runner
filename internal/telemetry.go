@@ -48,8 +48,8 @@ type TelemetryConfig struct {
 func GetTelemetryConfig() TelemetryConfig {
 	return TelemetryConfig{
 		Enabled:        os.Getenv("KAR_TELEMETRY_ENABLED") == "true",
-		ExportType:     os.Getenv("KAR_TELEMETRY_EXPORT_TYPE"),   // "otlp" or "stdout"
-		OTLPEndpoint:   os.Getenv("KAR_TELEMETRY_OTLP_ENDPOINT"), // e.g., "http://localhost:4318"
+		ExportType:     os.Getenv("KAR_TELEMETRY_EXPORT_TYPE"),
+		OTLPEndpoint:   getEnvOrDefault("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:4318"),
 		ServiceName:    getEnvOrDefault("KAR_TELEMETRY_SERVICE_NAME", "kubevirt-actions-runner"),
 		ServiceVersion: getEnvOrDefault("KAR_TELEMETRY_SERVICE_VERSION", "unknown"),
 	}
@@ -88,7 +88,7 @@ func InitializeTelemetry(ctx context.Context, cfg TelemetryConfig) (func(context
 
 	exporter, err := createExporter(ctx, cfg)
 	if err != nil {
-		return nil, err
+		return func(_ context.Context) error { return nil }, err
 	}
 
 	tracerProvider := trace.NewTracerProvider(
@@ -125,15 +125,10 @@ func createExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporte
 func createOTLPExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporter, error) {
 	log := utils.GetLogger()
 
-	endpoint := cfg.OTLPEndpoint
-	if endpoint == "" {
-		endpoint = "http://localhost:4318"
-	}
-
-	log.Infof("Using OTLP exporter with endpoint: %s", endpoint)
+	log.Infof("Using OTLP exporter with endpoint: %s", cfg.OTLPEndpoint)
 
 	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint(endpoint),
+		otlptracehttp.WithEndpoint(cfg.OTLPEndpoint),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
