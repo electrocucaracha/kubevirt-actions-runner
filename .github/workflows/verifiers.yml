@@ -116,7 +116,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: "Run Copilot CLI"
+      - name: Run Copilot CLI
         uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
@@ -154,4 +154,56 @@ jobs:
                  --body "Summary of changes, rationale, tests passing, and confirmation of no breaking changes." \
                  --base main \
                  --head tech-debt-reduction
+               - Keep the diff focused and reviewable.
+  improve-code-coverage:
+    name: Analyze code coverage and submit improvements
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # jscpd:ignore-start
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # 6.0.3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Run Copilot CLI
+        uses: austenstone/copilot-cli@b5945a4decc5f2662ba475a812da35661e512e81 # 2.0
+        with:
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
+          allow-all-tools: true
+          repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
+          mcp-config: |
+            {
+              "mcpServers": {
+                "github-mcp-server": {
+                  "type": "http",
+                  "url": "https://api.githubcopilot.com/mcp/",
+                  "headers": {
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}",
+                    "X-MCP-Toolsets": "*"
+                  },
+                  "tools": ["*"]
+                }
+              }
+            }
+          # jscpd:ignore-end
+          agent: qa-subagent
+          prompt: |-
+            Increase code coverage and submit a Pull Request with the improvements.
+
+            Workflow:
+            1. Analyze the latest results of unit-test and gremlins-test GitHub Actions jobs to identify uncovered code paths and functions.
+            2. Write new tests to cover those paths, ensuring they are meaningful and validate important edge cases.
+            3. Validate by running: make test
+            4. Create a new branch and push it:
+               - git checkout -b increase-code-coverage
+               - git push origin increase-code-coverage
+            5. Submit Pull Request via GitHub:
+               - Use GitHub CLI: gh pr create \
+                 --title "test: increase code coverage" \
+                 --body "Summary of added tests, rationale for coverage improvement, tests passing, and confirmation of no breaking changes." \
+                 --base main \
+                 --head increase-code-coverage
                - Keep the diff focused and reviewable.
