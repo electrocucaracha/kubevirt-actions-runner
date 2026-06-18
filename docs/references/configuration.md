@@ -41,3 +41,10 @@ the default is used.
   see [Enable telemetry](../how-to-guides/enable-telemetry.md).
 - To tune timeout behavior,
   see [Configure runner timeouts](../how-to-guides/configure-timeouts.md).
+
+## Visual references
+
+- Telemetry export pipeline:
+  ![Telemetry pipeline](../assets/telemetry-pipeline.png)
+- Timeout and wait-loop behavior:
+  ![Timeout behavior](../assets/timeout-behavior.png)

@@ -17,19 +17,10 @@ Before proceeding, ensure you have the following:
 
 ## Deployment Flow
 
-The following flowchart describes the complete deployment and runtime sequence:
+The following diagram summarizes the deployment and runtime sequence
+that this guide walks through.
 
-```mermaid
-flowchart TD
-  A[Start: Prepare environment] --> B[Create VM template]
-  B --> C[Configure RBAC]
-  C --> D[Deploy runner scale set]
-  D --> E[Runner pod mounts runner-info]
-  E --> F[Runner creates VirtualMachineInstance]
-  F --> G[VM boots and executes job]
-  G --> H[Job completes]
-  H --> I[Teardown: delete VMI / pod]
-```
+![Quickstart deployment and job lifecycle](../assets/quickstart-sequence.png)
 
 ## Steps
 

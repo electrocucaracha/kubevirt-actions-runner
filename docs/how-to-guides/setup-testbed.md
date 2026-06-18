@@ -28,6 +28,13 @@ This testbed uses:
 - A VM template that is cloned dynamically by the runner.
 - A demo workload to validate VM lifecycle management.
 
+The following diagram shows the control flow between GitHub,
+the Kubernetes cluster,
+KubeVirt resources,
+and the ephemeral VM.
+
+![Architecture overview for the testbed](../assets/architecture-overview.png)
+
 ## Deployment Flow
 
 For a detailed view of the deployment and runtime sequence, see the

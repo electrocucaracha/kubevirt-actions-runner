@@ -26,6 +26,11 @@ Both variables accept any valid Go duration string,
 for example `30m`, `1h`, or `90s`.
 Invalid values are logged and the default is used instead.
 
+The following diagram shows how `KAR_WAIT_TIMEOUT`
+and `KAR_CLEANUP_TIMEOUT` apply to the runtime lifecycle.
+
+![Timeout behavior and wait loop lifecycle](../assets/timeout-behavior.png)
+
 ## VMI provisioning-success semantics
 
 The runner logs a **provisioning milestone** as soon as

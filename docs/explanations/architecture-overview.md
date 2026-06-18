@@ -17,22 +17,11 @@ and then removes runtime resources.
 
 ## Deployment Flow
 
-The following flowchart describes the complete deployment and runtime sequence:
+The following diagram describes the complete deployment,
+runtime execution,
+and teardown sequence.
 
-```mermaid
-flowchart TD
-  A[Start: Run automation] --> B[Install tools]
-  B --> C[Configure cluster]
-  C --> D[Deploy KubeVirt operator]
-  D --> E[Apply VM template]
-  E --> F[Configure RBAC]
-  F --> G[Deploy runner scale set]
-  G --> H[Runner pod mounts runner-info]
-  H --> I[Runner creates VirtualMachineInstance]
-  I --> J[VM boots and executes job]
-  J --> K[Job completes]
-  K --> L[Teardown: delete VMI / pod]
-```
+![Architecture overview for kubevirt-actions-runner](../assets/architecture-overview.png)
 
 ## Related documentation
 

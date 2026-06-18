@@ -19,6 +19,11 @@ Telemetry in `kubevirt-actions-runner` is powered by OpenTelemetry. It supports 
 - **OTLP Exporter**: Sends traces to an OpenTelemetry Protocol (OTLP) endpoint, such as Jaeger or DataDog.
 - **Stdout Exporter**: Outputs traces to the console for local debugging.
 
+The following diagram summarizes the telemetry flow
+and exporter routing.
+
+![Telemetry pipeline and exporter routing](../assets/telemetry-pipeline.png)
+
 ## Configuration
 
 Telemetry is configured via environment variables. Below is a summary of the available options:
