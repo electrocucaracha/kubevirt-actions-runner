@@ -171,5 +171,9 @@ kubectl get events -n <your-namespace>
 ## Next Steps
 
 - Customize the VM template to match workload and image requirements.
-- Integrate telemetry as described in the [Telemetry Guide](how-to-enable-telemetry.md).
-- Set up a local test environment using the [Testbed Guide](how-to-setup-testbed.md).
+- Integrate telemetry as described in
+  [Enable telemetry](../how-to-guides/enable-telemetry.md).
+- Set up a local test environment using
+  [Set up testbed](../how-to-guides/setup-testbed.md).
+- Use the [Reference section](../references/index.md)
+  for exact flag names and configuration variables.

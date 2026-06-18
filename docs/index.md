@@ -1,33 +1,23 @@
-# Welcome to kubevirt-actions-runner Documentation
+# kubevirt-actions-runner Documentation
 
-This documentation provides all the necessary resources to help you set up,
-configure, and understand the `kubevirt-actions-runner` project. Use the links
-below to navigate through the different sections.
+`kubevirt-actions-runner` runs GitHub Actions jobs in ephemeral
+KubeVirt virtual machines.
+Use this documentation to learn the workflow,
+perform common operational tasks,
+and look up command and configuration details.
 
-## Documentation Overview
+## Documentation sections
 
-### Tutorials
+| Section                                 | Purpose                                            |
+| --------------------------------------- | -------------------------------------------------- |
+| [Tutorials](tutorials/index.md)         | Guided learning path for your first successful run |
+| [How-to guides](how-to-guides/index.md) | Task-focused procedures for setup and operations   |
+| [Reference](references/index.md)        | CLI flags and configuration environment variables  |
+| [Explanations](explanations/index.md)   | Architecture and design rationale                  |
 
-- [Quickstart Guide](tutorials/quickstart.md): Follow this tutorial to quickly
-  set up and start using the `kubevirt-actions-runner`.
+## Suggested reading order
 
-### How-to Guides
-
-- [Enable Telemetry](how-to-guides/enable-telemetry.md): Detailed steps to
-  enable and configure telemetry for better observability.
-- [Configure Runner Timeouts](how-to-guides/configure-timeouts.md): Configure
-  wait and cleanup timeouts for VM-backed jobs.
-- [Set Up Testbed](how-to-guides/setup-testbed.md): Instructions to create a
-  local test environment for validation and development.
-
-### Reference
-
-- [API Reference](reference/api.md) _(Coming Soon)_: Comprehensive technical
-  details about the project's APIs and components.
-
-### Explanations
-
-- [Architecture Overview](explanations/architecture-overview.md): Explore the
-  architecture and design principles of the testbed.
-- [Concepts and Architecture](explanations/concepts.md) _(Coming Soon)_: Explore
-  the underlying architecture and design principles of the project.
+1. Start with the [Quickstart tutorial](tutorials/quickstart.md).
+1. Configure your environment with the [How-to guides](how-to-guides/index.md).
+1. Use [Reference](references/index.md) when you need exact flag or variable details.
+1. Read [Architecture overview](explanations/architecture-overview.md) for system context.
