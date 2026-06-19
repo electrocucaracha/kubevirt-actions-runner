@@ -317,6 +317,135 @@ var _ = Describe("Runner", func() {
 		Eventually(errChan, timeout).Should(Receive(MatchError("timeout while waiting for the virtual machine instance")))
 	})
 
+	It("exits immediately when the context is already cancelled on entry", func() {
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface)
+		runner.NewAppContext(vmInstance, "")
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		err := karRunner.WaitForVirtualMachineInstance(ctx)
+
+		Expect(err).To(MatchError("timeout while waiting for the virtual machine instance"))
+	})
+
+	It("reports Running+Ready milestone when initial VMI Get returns a ready VMI", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher := watch.NewFake()
+		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
+
+		errChan := startVMIWatcherWithGet(karRunner, func() (*v1.VirtualMachineInstance, error) {
+			return readyVMI, nil
+		}, fakeWatcher)
+
+		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+
+		readyVMI.Status.Phase = v1.Succeeded
+		fakeWatcher.Modify(readyVMI)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("ignores non-VMI events in the watch stream", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher, errChan := startVMIWatcher(karRunner)
+
+		// A Pod event should be skipped; the watcher must still process the VMI.
+		pod := &k8sv1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "some-pod", Namespace: k8sv1.NamespaceDefault}}
+		fakeWatcher.Add(pod)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.Succeeded
+		fakeWatcher.Add(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("ignores watch events from VMIs with a different name", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher, errChan := startVMIWatcher(karRunner)
+
+		// An event for a different VMI must not affect the watch outcome.
+		otherVMI := NewVirtualMachineInstance("other-vmi-name")
+		otherVMI.Status.Phase = v1.Failed
+		fakeWatcher.Add(otherVMI)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.Succeeded
+		fakeWatcher.Add(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("handles unrecognized VMI phases as a no-op and continues watching", func() {
+		const timeout = 1 * time.Second
+
+		fakeWatcher, errChan := startVMIWatcher(karRunner)
+
+		vmi := NewVirtualMachineInstance(vmInstance)
+		vmi.Status.Phase = v1.VirtualMachineInstancePhase("UnrecognizedPhase")
+		fakeWatcher.Add(vmi)
+
+		vmi.Status.Phase = v1.Succeeded
+		fakeWatcher.Add(vmi)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	})
+
+	It("returns an error when VMI creation fails", func() {
+		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		mockVMIInterface.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
+			nil, k8serrors.NewServiceUnavailable("simulated create failure"))
+
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, "runner-new", "jitConfig")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err).To(MatchError(ContainSubstring("failed to create runner instance")))
+	})
+
+	It("creates resources that include a data volume template", func() {
+		const dvTemplateName = "boot-disk"
+		const runnerWithDV = "runner-with-dv"
+
+		dvVM := NewVirtualMachineWithDataVolume(vmTemplate, dvTemplateName)
+		dvClientset := kubevirtfake.NewSimpleClientset(dvVM)
+
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			dvClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault))
+
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, runnerWithDV, "jitConfig")
+
+		Expect(err).NotTo(HaveOccurred())
+
+		appCtx := runner.GetAppContext()
+		Expect(appCtx.GetDataVolumeName()).To(ContainSubstring(dvTemplateName))
+	})
+
+	It("logs but does not return an error when VMI delete fails with a non-NotFound error", func() {
+		forbiddenErr := k8serrors.NewForbidden(
+			schema.GroupResource{Group: "kubevirt.io", Resource: "virtualmachineinstances"},
+			vmInstance, nil)
+
+		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		mockVMIInterface.EXPECT().Delete(gomock.Any(), vmInstance, gomock.Any()).Return(forbiddenErr)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+		runner.NewAppContext(vmInstance, "")
+
+		err := karRunner.DeleteResources(context.TODO())
+
+		Expect(err).NotTo(HaveOccurred())
+	})
+
 	It("fails when the VMI disappears before a watch can be re-established", func() {
 		firstWatcher := watch.NewFake()
 		getCalls := 0
@@ -385,6 +514,36 @@ func NewDataVolume(name string) *v1beta1.DataVolume {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: k8sv1.NamespaceDefault,
+		},
+	}
+}
+
+func NewVirtualMachineWithDataVolume(name, dvName string) *v1.VirtualMachine {
+	return &v1.VirtualMachine{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: k8sv1.NamespaceDefault,
+		},
+		Spec: v1.VirtualMachineSpec{
+			DataVolumeTemplates: []v1.DataVolumeTemplateSpec{
+				{
+					ObjectMeta: metav1.ObjectMeta{Name: dvName},
+				},
+			},
+			Template: &v1.VirtualMachineInstanceTemplateSpec{
+				Spec: v1.VirtualMachineInstanceSpec{
+					Volumes: []v1.Volume{
+						{
+							Name: "disk0",
+							VolumeSource: v1.VolumeSource{
+								DataVolume: &v1.DataVolumeSource{
+									Name: dvName,
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
