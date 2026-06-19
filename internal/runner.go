@@ -39,13 +39,13 @@ import (
 )
 
 const (
+	tracerName            = "kubevirt-actions-runner/runner"
 	runnerInfoAnnotation  string = "electrocucaracha.kubevirt-actions-runner/runner-info"
 	runnerInfoVolume      string = "runner-info"
 	runnerInfoPath        string = "runner-info.json"
 	watchReconnectBackoff        = time.Second
+	watchChannelClosedMsg        = "watch channel closed unexpectedly"
 )
-
-const watchChannelClosedMsg = "watch channel closed unexpectedly"
 
 var errWaitTimeout = errors.New("timeout while waiting for the virtual machine instance")
 
@@ -92,7 +92,7 @@ func generateRunnerInfoVolume() v1.Volume {
 func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 	vmTemplate, runnerName, jitConfig string,
 ) error {
-	tracer := otel.Tracer("kubevirt-actions-runner/runner")
+	tracer := otel.Tracer(tracerName)
 
 	ctx, span := tracer.Start(ctx, "CreateResources",
 		trace.WithAttributes(
@@ -143,7 +143,7 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 }
 
 func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) error {
-	tracer := otel.Tracer("kubevirt-actions-runner/runner")
+	tracer := otel.Tracer(tracerName)
 
 	ctx, cancel := context.WithTimeout(ctx, rc.waitTimeout)
 	defer cancel()
@@ -252,19 +252,12 @@ func handleWatchEvent(
 	currentStatus *v1.VirtualMachineInstancePhase,
 	readyReported *bool,
 ) (bool, bool, error) {
-	log := utils.GetLogger()
-
 	vmi, isVMI := event.Object.(*v1.VirtualMachineInstance)
 	if !isVMI || vmi.Name != vmiName {
 		return false, true, nil
 	}
 
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
-		log.Printf("%s is Running and Ready\n", vmiName)
-		span.SetAttributes(attribute.String("phase", "Running+Ready"))
-
-		*readyReported = true
-	}
+	reportReadyMilestone(span, vmiName, vmi, readyReported)
 
 	if vmi.Status.Phase == *currentStatus {
 		return false, false, nil
@@ -320,8 +313,19 @@ func isVMIReady(vmi *v1.VirtualMachineInstance) bool {
 	return false
 }
 
+// reportReadyMilestone logs and records a span attribute when a VMI first reaches Running+Ready.
+// It is a no-op if readyReported is already true.
+func reportReadyMilestone(span trace.Span, vmiName string, vmi *v1.VirtualMachineInstance, readyReported *bool) {
+	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
+		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
+		span.SetAttributes(attribute.String("phase", "Running+Ready"))
+
+		*readyReported = true
+	}
+}
+
 func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
-	tracer := otel.Tracer("kubevirt-actions-runner/runner")
+	tracer := otel.Tracer(tracerName)
 
 	ctx, span := tracer.Start(ctx, "DeleteResources")
 	defer span.End()
@@ -391,12 +395,7 @@ func (rc *KubevirtRunner) refreshVMIStatus(
 		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
 	}
 
-	if vmi.Status.Phase == v1.Running && isVMIReady(vmi) && !*readyReported {
-		utils.GetLogger().Printf("%s is Running and Ready\n", vmiName)
-		span.SetAttributes(attribute.String("phase", "Running+Ready"))
-
-		*readyReported = true
-	}
+	reportReadyMilestone(span, vmiName, vmi, readyReported)
 
 	if vmi.Status.Phase == *currentStatus {
 		return false, vmi.ResourceVersion, nil
