@@ -423,6 +423,7 @@ var _ = Describe("Runner", func() {
 
 	It("creates resources that include a data volume template", func() {
 		const dvTemplateName = "boot-disk"
+
 		const runnerWithDV = "runner-with-dv"
 
 		dvVM := NewVirtualMachineWithDataVolume(vmTemplate, dvTemplateName)
