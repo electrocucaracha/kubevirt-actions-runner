@@ -47,6 +47,8 @@ var _ = Describe("Runner", func() {
 
 	const (
 		defaultWaitTimeout = 5 * time.Minute
+		consistencyTimeout = 100 * time.Millisecond
+		eventuallyTimeout  = time.Second
 		vmTemplate         = "vm-template"
 		vmInstance         = "runner-xyz123"
 		dataVolume         = "dv-xyz123"
@@ -116,6 +118,20 @@ var _ = Describe("Runner", func() {
 		return firstWatcher, secondWatcher, errChan
 	}
 
+	waitForWatchCompletion := func(
+		errChan chan error,
+		timeout time.Duration,
+		readyVMI *v1.VirtualMachineInstance,
+		emitEvent func(*v1.VirtualMachineInstance),
+	) {
+		Consistently(errChan, consistencyTimeout).ShouldNot(Receive())
+
+		readyVMI.Status.Phase = v1.Succeeded
+		emitEvent(readyVMI)
+
+		Eventually(errChan, timeout).Should(Receive(BeNil()))
+	}
+
 	DescribeTable("create resources", func(shouldSucceed bool, vmTemplate, runnerName, jitConfig string) {
 		if shouldSucceed {
 			virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
@@ -183,7 +199,7 @@ var _ = Describe("Runner", func() {
 	})
 
 	DescribeTable("watch resources", func(shouldSucceed bool, lastPhase v1.VirtualMachineInstancePhase) {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
 
@@ -207,7 +223,7 @@ var _ = Describe("Runner", func() {
 	)
 
 	It("logs Running+Ready as a milestone and succeeds when VMI reaches Succeeded", func() {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
 
@@ -224,18 +240,15 @@ var _ = Describe("Runner", func() {
 		fakeWatcher.Modify(readyVMI)
 
 		// Running+Ready is only a milestone; the watcher must continue until Succeeded.
-		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
-
-		readyVMI.Status.Phase = v1.Succeeded
-		fakeWatcher.Modify(readyVMI)
-
-		Eventually(errChan, timeout).Should(Receive(BeNil()))
+		waitForWatchCompletion(errChan, timeout, readyVMI, func(vmi *v1.VirtualMachineInstance) {
+			fakeWatcher.Modify(vmi)
+		})
 	})
 
 	It("times out when no terminal VMI phase is observed within the wait timeout", func() {
 		const waitTimeout = 100 * time.Millisecond
 
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)
 		fakeWatcher, errChan := startVMIWatcher(shortTimeoutRunner)
@@ -257,7 +270,7 @@ var _ = Describe("Runner", func() {
 		firstWatcher.Add(vmi)
 		firstWatcher.Stop()
 
-		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+		Consistently(errChan, consistencyTimeout).ShouldNot(Receive())
 
 		vmi.Status.Phase = v1.Succeeded
 		secondWatcher.Modify(vmi)
@@ -274,7 +287,7 @@ var _ = Describe("Runner", func() {
 		firstWatcher.Modify(readyVMI)
 		firstWatcher.Stop()
 
-		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
+		Consistently(errChan, consistencyTimeout).ShouldNot(Receive())
 
 		readyVMI.Status.Phase = v1.Succeeded
 		secondWatcher.Modify(readyVMI)
@@ -285,7 +298,7 @@ var _ = Describe("Runner", func() {
 	It("uses the wait timeout as the upper bound for closed watch streams", func() {
 		const waitTimeout = 10 * time.Millisecond
 
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		shortTimeoutRunner := runner.NewRunner(k8sv1.NamespaceDefault, virtClient, waitTimeout)
 		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
@@ -331,7 +344,7 @@ var _ = Describe("Runner", func() {
 	})
 
 	It("reports Running+Ready milestone when initial VMI Get returns a ready VMI", func() {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher := watch.NewFake()
 		readyVMI := NewVirtualMachineInstanceReady(vmInstance)
@@ -340,16 +353,13 @@ var _ = Describe("Runner", func() {
 			return readyVMI, nil
 		}, fakeWatcher)
 
-		Consistently(errChan, 100*time.Millisecond).ShouldNot(Receive())
-
-		readyVMI.Status.Phase = v1.Succeeded
-		fakeWatcher.Modify(readyVMI)
-
-		Eventually(errChan, timeout).Should(Receive(BeNil()))
+		waitForWatchCompletion(errChan, timeout, readyVMI, func(vmi *v1.VirtualMachineInstance) {
+			fakeWatcher.Modify(vmi)
+		})
 	})
 
 	It("ignores non-VMI events in the watch stream", func() {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
 
@@ -365,7 +375,7 @@ var _ = Describe("Runner", func() {
 	})
 
 	It("ignores watch events from VMIs with a different name", func() {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
 
@@ -382,7 +392,7 @@ var _ = Describe("Runner", func() {
 	})
 
 	It("handles unrecognized VMI phases as a no-op and continues watching", func() {
-		const timeout = 1 * time.Second
+		const timeout = eventuallyTimeout
 
 		fakeWatcher, errChan := startVMIWatcher(karRunner)
 

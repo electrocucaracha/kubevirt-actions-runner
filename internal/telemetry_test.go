@@ -23,6 +23,20 @@ import (
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 )
 
+const (
+	testServiceName    = "test-service"
+	testServiceVersion = "1.0.0"
+)
+
+func requireShutdownNoError(t *testing.T, shutdown func(context.Context) error) {
+	t.Helper()
+
+	err := shutdown(context.Background())
+	if err != nil {
+		t.Fatalf("shutdown returned unexpected error: %v", err)
+	}
+}
+
 func TestGetTelemetryConfig_Defaults(t *testing.T) {
 	t.Parallel()
 
@@ -99,9 +113,7 @@ func TestInitializeTelemetry_Disabled(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if err := shutdown(context.Background()); err != nil {
-		t.Fatalf("shutdown returned unexpected error: %v", err)
-	}
+	requireShutdownNoError(t, shutdown)
 }
 
 func TestInitializeTelemetry_StdoutExporter(t *testing.T) {
@@ -110,8 +122,8 @@ func TestInitializeTelemetry_StdoutExporter(t *testing.T) {
 	cfg := runner.TelemetryConfig{
 		Enabled:        true,
 		ExportType:     "stdout",
-		ServiceName:    "test-service",
-		ServiceVersion: "1.0.0",
+		ServiceName:    testServiceName,
+		ServiceVersion: testServiceVersion,
 	}
 
 	shutdown, err := runner.InitializeTelemetry(context.Background(), cfg)
@@ -119,9 +131,7 @@ func TestInitializeTelemetry_StdoutExporter(t *testing.T) {
 		t.Fatalf("unexpected error initializing telemetry: %v", err)
 	}
 
-	if err := shutdown(context.Background()); err != nil {
-		t.Fatalf("shutdown returned unexpected error: %v", err)
-	}
+	requireShutdownNoError(t, shutdown)
 }
 
 func TestInitializeTelemetry_UnknownExportType(t *testing.T) {
@@ -130,8 +140,8 @@ func TestInitializeTelemetry_UnknownExportType(t *testing.T) {
 	cfg := runner.TelemetryConfig{
 		Enabled:        true,
 		ExportType:     "unknown-exporter",
-		ServiceName:    "test-service",
-		ServiceVersion: "1.0.0",
+		ServiceName:    testServiceName,
+		ServiceVersion: testServiceVersion,
 	}
 
 	// Unknown exporter falls back to stdout and should not error.
@@ -140,9 +150,7 @@ func TestInitializeTelemetry_UnknownExportType(t *testing.T) {
 		t.Fatalf("unexpected error for unknown exporter: %v", err)
 	}
 
-	if err := shutdown(context.Background()); err != nil {
-		t.Fatalf("shutdown returned unexpected error: %v", err)
-	}
+	requireShutdownNoError(t, shutdown)
 }
 
 func TestInitializeTelemetry_EmptyExportType(t *testing.T) {
@@ -151,8 +159,8 @@ func TestInitializeTelemetry_EmptyExportType(t *testing.T) {
 	cfg := runner.TelemetryConfig{
 		Enabled:        true,
 		ExportType:     "",
-		ServiceName:    "test-service",
-		ServiceVersion: "1.0.0",
+		ServiceName:    testServiceName,
+		ServiceVersion: testServiceVersion,
 	}
 
 	// Empty export type falls back to stdout without a warning log.
@@ -161,9 +169,7 @@ func TestInitializeTelemetry_EmptyExportType(t *testing.T) {
 		t.Fatalf("unexpected error for empty exporter type: %v", err)
 	}
 
-	if err := shutdown(context.Background()); err != nil {
-		t.Fatalf("shutdown returned unexpected error: %v", err)
-	}
+	requireShutdownNoError(t, shutdown)
 }
 
 func TestInitializeTelemetry_OTLPExporter(t *testing.T) {
@@ -175,8 +181,8 @@ func TestInitializeTelemetry_OTLPExporter(t *testing.T) {
 		Enabled:        true,
 		ExportType:     "otlp",
 		OTLPEndpoint:   "http://localhost:19999",
-		ServiceName:    "test-service",
-		ServiceVersion: "1.0.0",
+		ServiceName:    testServiceName,
+		ServiceVersion: testServiceVersion,
 	}
 
 	shutdown, err := runner.InitializeTelemetry(context.Background(), cfg)

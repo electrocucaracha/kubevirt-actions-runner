@@ -39,7 +39,7 @@ import (
 )
 
 const (
-	tracerName            = "kubevirt-actions-runner/runner"
+	tracerName                   = "kubevirt-actions-runner/runner"
 	runnerInfoAnnotation  string = "electrocucaracha.kubevirt-actions-runner/runner-info"
 	runnerInfoVolume      string = "runner-info"
 	runnerInfoPath        string = "runner-info.json"
