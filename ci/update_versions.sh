@@ -55,7 +55,7 @@ update_github_action_hashes() {
         'tcort/github-action-markdown-link-check'
     )
 
-    readonly pinned_actions=('austenstone/copilot-cli')
+    readonly pinned_actions=()
 
     for action in $gh_actions; do
         is_pinned=false
