@@ -1,3 +1,4 @@
+/* jscpd:ignore-start */
 /*
 Copyright © 2026
 
@@ -13,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+/* jscpd:ignore-end */
 
 // Package utils provides utility functions and logging capabilities.
 package utils
