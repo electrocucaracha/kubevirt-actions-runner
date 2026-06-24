@@ -29,7 +29,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Run misspell checker
-        uses: reviewdog/action-misspell@e7ea17f144822818706c7e579de7927d59384575 # v1.27.0
+        uses: reviewdog/action-misspell@d6429416b12b09b4e2768307d53bef58d172e962 # v1.27.0
         with:
           github_token: ${{ secrets.github_token }}
   check-spellcheck:

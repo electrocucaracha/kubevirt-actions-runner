@@ -39,15 +39,24 @@ run_best_effort() {
 }
 
 update_github_action_hashes() {
-    local gh_actions action is_pinned pinned commit_hash
+    local gh_actions action is_pinned pinned commit_hash file
 
-    gh_actions=$(grep -rhoE 'uses: [^@]+@' .github | sed -E 's/uses: ([^@]+)@/\1/' | sort -u)
-    exceptions=('reviewdog/action-misspell' 'actions/attest-build-provenance' 'GrantBirki/git-diff-action' 'golangci/golangci-lint-action' 'actions/checkout' 'actions/upload-artifact' 'tcort/github-action-markdown-link-check')
-    # Actions pinned to a specific version and excluded from auto-updates.
-    # Remove an entry only once the underlying issue is confirmed resolved.
-    # austenstone/copilot-cli: v3.0+ depends on actions/setup-copilot@v0 which does
-    # not yet exist publicly; keep at v2.0 until that action is released.
+    gh_actions=$(grep -rhoE 'uses: [^@]+@' .github |
+        sed -E 's/uses: ([^@]+)@/\1/' |
+        sort -u)
+
+    readonly exceptions=(
+        'reviewdog/action-misspell'
+        'actions/attest-build-provenance'
+        'GrantBirki/git-diff-action'
+        'golangci/golangci-lint-action'
+        'actions/checkout'
+        'actions/upload-artifact'
+        'tcort/github-action-markdown-link-check'
+    )
+
     readonly pinned_actions=('austenstone/copilot-cli')
+
     for action in $gh_actions; do
         is_pinned=false
         for pinned in "${pinned_actions[@]}"; do
@@ -56,61 +65,67 @@ update_github_action_hashes() {
                 break
             fi
         done
-        if [[ $is_pinned == "true" ]]; then
+
+        if [[ $is_pinned == true ]]; then
             echo "Skipping auto-update for pinned action: $action"
             continue
         fi
-        if [[ ${exceptions[*]} =~ (^|[^[:alpha:]])$action([^[:alpha:]]|$) ]]; then
-            commit_hash=$(
-                git ls-remote --tags "https://github.com/$action" |
-                    awk '
-            {
-                sha=$1
-                tag=$2
 
-                sub(/^refs\/tags\//, "", tag)
-                sub(/\^\{\}$/, "", tag)
+        is_exception=false
+        for ex in "${exceptions[@]}"; do
+            if [[ $action == "$ex" ]]; then
+                is_exception=true
+                break
+            fi
+        done
 
-                if (tag ~ /^v?[0-9]+(\.[0-9]+)*$/) {
-                    sortkey=tag
-                    sub(/^v/, "", sortkey)
-                    print sortkey "\t" sha "\t" tag
-                }
-            }' |
-                    sort -V |
-                    tail -1 |
-                    awk -F'\t' '{ printf "%s # %s\n", $2, $3 }'
-            )
-        else
-            commit_hash=$(
-                git ls-remote "https://github.com/$action" |
-                    grep 'refs/tags/[vV]\?[0-9][0-9\.]*$' |
-                    awk '
-            {
-                sha=$1
-                tag=$2
-
-                sortkey=tag
-                sub(/^refs\/tags\//, "", tag)          # preserve original tag
-                sub(/^refs\/tags\/[vV]/, "", sortkey)  # normalize for sorting
-
-                printf "%s\t%s\t%s\n", sortkey, sha, tag
-            }' |
-                    sort -u -k1,1 -V |
-                    tail -1 |
-                    awk -F'\t' '{ printf "%s # %s\n", $2, $3 }'
-            )
-        fi
-        if [[ -z $commit_hash ]]; then
-            echo "WARNING: unable to resolve a tag for $action; skipping update" >&2
-            has_errors=true
-            failed_steps+=("resolving tag for $action")
+        if [[ $is_exception == true ]]; then
             continue
         fi
-        # The grep output intentionally feeds xargs so the same pinned hash is written
-        # to every matching workflow file.
-        # shellcheck disable=SC2267
-        grep -ElRZ "uses: $action@" .github/ | xargs -0 -l sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g"
+
+        commit_hash=$(
+            git ls-remote --tags "https://github.com/$action" |
+                awk '
+            {
+                sha=$1
+                ref=$2
+
+                if (ref ~ /\^\{\}$/) {
+                    tag=ref
+                    sub(/\^\{\}$/, "", tag)
+                    commits[tag]=sha
+                } else {
+                    tags[ref]=sha
+                }
+            }
+            END {
+                for (ref in tags) {
+                    sha = (ref in commits ? commits[ref] : tags[ref])
+
+                    tag = ref
+                    sub(/^refs\/tags\//, "", tag)
+
+                    # semver only
+                    if (tag ~ /^v?[0-9]+(\.[0-9]+)*$/) {
+                        sortkey = tag
+                        sub(/^v/, "", sortkey)
+                        print sortkey "\t" sha "\t" tag
+                    }
+                }
+            }' |
+                sort -V |
+                tail -1 |
+                awk -F'\t' '{ printf "%s # %s\n", $2, $3 }'
+        )
+
+        if [[ -z $commit_hash ]]; then
+            echo "WARNING: unable to resolve tag for $action; skipping" >&2
+            continue
+        fi
+
+        while IFS= read -r -d '' file; do
+            sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g" "$file"
+        done < <(grep -ElRZ "uses: $action@" .github/)
     done
 }
 
