@@ -116,6 +116,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
       - name: Run Copilot CLI
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
@@ -155,6 +160,8 @@ jobs:
                  --base main \
                  --head tech-debt-reduction
                - Keep the diff focused and reviewable.
+      - name: Get rtk stats
+        run: rtk gain
   improve-code-coverage:
     name: Analyze code coverage and submit improvements
     if: github.event_name != 'push'
@@ -168,6 +175,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
       - name: Run Copilot CLI
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
@@ -207,3 +219,5 @@ jobs:
                  --base main \
                  --head increase-code-coverage
                - Keep the diff focused and reviewable.
+      - name: Get rtk stats
+        run: rtk gain

@@ -30,6 +30,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
       - name: Run Copilot CLI for Docker issues
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
@@ -92,6 +97,8 @@ jobs:
               - Confirmation that build and runtime now succeed
 
             Ensure the PR is clean, minimal, and ready for review.
+      - name: Get rtk stats
+        run: rtk gain
   fix-golangci:
     name: Automatically fix Go linting issues
     if: >
@@ -118,6 +125,11 @@ jobs:
         with:
           version: latest
           install-only: true
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
       - name: "Run Copilot CLI"
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
@@ -176,3 +188,5 @@ jobs:
             - Body: Closes #${{ github.event.issue.number }}. Provide a summary of the changes made and the issues resolved.
 
             Ensure the PR is well-documented and ready for review.
+      - name: Get rtk stats
+        run: rtk gain
