@@ -39,6 +39,7 @@ type mock struct {
 	waitCalled   bool
 	deleteCalled bool
 	vmTemplate   string
+	vmTemplateNS string
 	runnerName   string
 	jitConfig    string
 }
@@ -56,9 +57,15 @@ func HasOneOf(f, flag Failure) bool {
 	return f&flag != 0
 }
 
-func (m *mock) CreateResources(_ context.Context, vmTemplate, runnerName, jitConfig string,
+func (m *mock) CreateResources(
+	_ context.Context,
+	vmTemplate,
+	vmTemplateNamespace,
+	runnerName,
+	jitConfig string,
 ) error {
 	m.vmTemplate = vmTemplate
+	m.vmTemplateNS = vmTemplateNamespace
 	m.runnerName = runnerName
 	m.jitConfig = jitConfig
 
@@ -130,6 +137,14 @@ var _ = Describe("Root Command", func() {
 			Expect(runner.vmTemplate).To(Equal(args[slices.Index(args, "-t")+1]), "VM template mismatch")
 		}
 
+		if slices.Contains(args, "-n") {
+			Expect(runner.vmTemplateNS).To(Equal(args[slices.Index(args, "-n")+1]), "VM template namespace mismatch")
+		}
+
+		if !slices.Contains(args, "-n") {
+			Expect(runner.vmTemplateNS).To(Equal("default"), "VM template namespace default mismatch")
+		}
+
 		// Verify method calls
 		Expect(runner.createCalled).Should(BeTrue(), "CreateResources was not called")
 
@@ -148,6 +163,7 @@ var _ = Describe("Root Command", func() {
 		Entry("when the default options are provided", true, None),
 		Entry("when config option is provided", true, None, "-c", "test config"),
 		Entry("when vm template option is provided", true, None, "-t", "vm template"),
+		Entry("when vm template namespace option is provided", true, None, "-n", "kubevirt"),
 		Entry("when runner name option is provided", true, None, "-r", "runner name"),
 		Entry("when the creation failed", false, Create),
 		Entry("when the delete failed", false, Delete),

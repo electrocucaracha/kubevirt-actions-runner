@@ -47,7 +47,7 @@ func NewRootCommand(ctx context.Context, runner runner.Runner, opts Opts) *cobra
 func run(ctx context.Context, runner runner.Runner, opts Opts) error {
 	log := utils.GetLogger()
 
-	err := runner.CreateResources(ctx, opts.VMTemplate, opts.RunnerName, opts.JitConfig)
+	err := runner.CreateResources(ctx, opts.VMTemplate, opts.VMTemplateNamespace, opts.RunnerName, opts.JitConfig)
 	if err != nil {
 		return fmt.Errorf("failed to create resources: %w", err)
 	}

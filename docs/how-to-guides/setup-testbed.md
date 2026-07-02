@@ -82,6 +82,31 @@ This confirms that:
 - KubeVirt is functioning
 - VM creation and teardown work correctly
 
+## Centralize templates in a single namespace
+
+Use a dedicated namespace for your VM templates
+and run runners in separate namespaces.
+This pattern gives you one golden template source,
+reduces copies,
+and makes template updates easier to govern.
+
+Example:
+
+```bash
+kubectl create namespace kar-templates
+kubectl apply -f test-data/vm.yaml -n kar-templates
+
+export KUBEVIRT_VM_TEMPLATE=testvm
+export KUBEVIRT_VM_TEMPLATE_NAMESPACE=kar-templates
+export RUNNER_NAME=test
+
+./kar -t "${KUBEVIRT_VM_TEMPLATE}" -n "${KUBEVIRT_VM_TEMPLATE_NAMESPACE}" -r "${RUNNER_NAME}" -c test-data/runner-info.json
+```
+
+In this setup,
+the template is retrieved from `kar-templates`,
+while runner resources are created in the namespace configured in your active kube context.
+
 ## Verification
 
 Confirm the kind cluster is running and KubeVirt is healthy:

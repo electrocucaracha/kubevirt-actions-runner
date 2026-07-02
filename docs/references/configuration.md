@@ -35,6 +35,22 @@ the default is used.
 | --------------- | ------- | --------------------------------------------- |
 | `KAR_LOG_LEVEL` | `info`  | Log verbosity level used by the runner logger |
 
+## Runner input configuration
+
+These variables map to CLI flags and are commonly injected by the runner Pod spec.
+
+| Variable                         | Default       | Description                                                         |
+| -------------------------------- | ------------- | ------------------------------------------------------------------- |
+| `KUBEVIRT_VM_TEMPLATE`           | `vm-template` | VirtualMachine template name used to create VirtualMachineInstances |
+| `KUBEVIRT_VM_TEMPLATE_NAMESPACE` | `default`     | Namespace where the VirtualMachine template exists                  |
+| `RUNNER_NAME`                    | `runner`      | Runner name used for generated resources                            |
+| `ACTIONS_RUNNER_INPUT_JITCONFIG` | empty         | Opaque just-in-time runner configuration payload                    |
+
+Use `KUBEVIRT_VM_TEMPLATE_NAMESPACE` when you keep templates in a dedicated namespace.
+This enables a single golden template strategy,
+so multiple runner namespaces can clone from one controlled source
+without duplicating template objects.
+
 ## Related guides
 
 - To configure telemetry in practice,

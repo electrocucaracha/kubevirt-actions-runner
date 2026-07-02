@@ -30,6 +30,8 @@ import (
 func installFlags(flags *pflag.FlagSet, cmdOptions *Opts) {
 	flags.StringVarP(&cmdOptions.VMTemplate, "kubevirt-vm-template", "t", "vm-template",
 		"The VirtualMachine resource to use as the template.")
+	flags.StringVarP(&cmdOptions.VMTemplateNamespace, "kubevirt-vm-template-namespace", "n", "default",
+		"The namespace where the VirtualMachine template resource exists.")
 	flags.StringVarP(&cmdOptions.RunnerName, "runner-name", "r", "runner",
 		"The name of the runner.")
 	flags.StringVarP(&cmdOptions.JitConfig, "actions-runner-input-jitconfig", "c", "",

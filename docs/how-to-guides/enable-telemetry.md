@@ -76,7 +76,7 @@ export KAR_TELEMETRY_SERVICE_VERSION=1.0.0
 Start the `kubevirt-actions-runner` application with telemetry enabled:
 
 ```bash
-./kar -t vm-template -r my-runner -c '<jit-config>'
+./kar -t vm-template -n default -r my-runner -c '<jit-config>'
 ```
 
 ## Verification

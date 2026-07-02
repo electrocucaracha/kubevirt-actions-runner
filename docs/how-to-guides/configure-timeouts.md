@@ -85,7 +85,7 @@ export KAR_WAIT_TIMEOUT=3m
 ### 2. Run the application
 
 ```bash
-./kar -t vm-template -r my-runner -c '<jit-config>'
+./kar -t vm-template -n default -r my-runner -c '<jit-config>'
 ```
 
 At startup the runner logs the effective timeout:
@@ -112,7 +112,7 @@ export KAR_CLEANUP_TIMEOUT=10m
 ### 2. Restart the runner
 
 ```bash
-./kar -t vm-template -r my-runner -c '<jit-config>'
+./kar -t vm-template -n default -r my-runner -c '<jit-config>'
 ```
 
 At startup the runner logs the effective timeout:

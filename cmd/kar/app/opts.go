@@ -20,7 +20,8 @@ package app
 
 // Opts stores all the options for configuring the root kar command.
 type Opts struct {
-	VMTemplate string
-	RunnerName string
-	JitConfig  string
+	VMTemplate          string
+	VMTemplateNamespace string
+	RunnerName          string
+	JitConfig           string
 }

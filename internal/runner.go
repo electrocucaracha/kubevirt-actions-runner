@@ -52,7 +52,12 @@ const (
 var errWaitTimeout = errors.New("timeout while waiting for the virtual machine instance")
 
 type Runner interface {
-	CreateResources(ctx context.Context, vmTemplate string, runnerName string, jitConfig string) error
+	CreateResources(ctx context.Context,
+		vmTemplate string,
+		vmTemplateNamespace string,
+		runnerName string,
+		jitConfig string,
+	) error
 	WaitForVirtualMachineInstance(ctx context.Context) error
 	DeleteResources(ctx context.Context) error
 }
@@ -92,13 +97,18 @@ func generateRunnerInfoVolume() v1.Volume {
 }
 
 func (rc *KubevirtRunner) CreateResources(ctx context.Context,
-	vmTemplate, runnerName, jitConfig string,
+	vmTemplate, vmTemplateNamespace, runnerName, jitConfig string,
 ) error {
 	tracer := otel.Tracer(tracerName)
+
+	if vmTemplateNamespace == "" {
+		vmTemplateNamespace = k8scorev1.NamespaceDefault
+	}
 
 	ctx, span := tracer.Start(ctx, "CreateResources",
 		trace.WithAttributes(
 			attribute.String("vmTemplate", vmTemplate),
+			attribute.String("vmTemplateNamespace", vmTemplateNamespace),
 			attribute.String("runnerName", runnerName),
 			attribute.String("namespace", rc.namespace),
 		),
@@ -110,7 +120,13 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 		return err
 	}
 
-	virtualMachineInstance, dataVolume, err := rc.getResources(ctx, vmTemplate, runnerName, jitConfig)
+	virtualMachineInstance, dataVolume, err := rc.getResources(
+		ctx,
+		vmTemplate,
+		vmTemplateNamespace,
+		runnerName,
+		jitConfig,
+	)
 	if err != nil {
 		span.RecordError(err)
 
@@ -491,13 +507,21 @@ func (rc *KubevirtRunner) createDataVolume(
 	return nil
 }
 
-func (rc *KubevirtRunner) getResources(ctx context.Context, vmTemplate, runnerName, jitConfig string) (
+func (rc *KubevirtRunner) getResources(
+	ctx context.Context,
+	vmTemplate, vmTemplateNamespace, runnerName, jitConfig string,
+) (
 	*v1.VirtualMachineInstance, *v1beta1.DataVolume, error,
 ) {
-	virtualMachine, err := rc.virtClient.VirtualMachine(rc.namespace).Get(
+	virtualMachine, err := rc.virtClient.VirtualMachine(vmTemplateNamespace).Get(
 		ctx, vmTemplate, k8smetav1.GetOptions{})
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get KubeVirt virtual machine template %q: %w", vmTemplate, err)
+		return nil, nil, fmt.Errorf(
+			"failed to get KubeVirt virtual machine template %q in namespace %q: %w",
+			vmTemplate,
+			vmTemplateNamespace,
+			err,
+		)
 	}
 
 	virtualMachineInstance := v1.NewVMIReferenceFromNameWithNS(rc.namespace, runnerName)

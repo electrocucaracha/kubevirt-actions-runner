@@ -122,6 +122,8 @@ template:
         env:
           - name: KUBEVIRT_VM_TEMPLATE
             value: ubuntu-jammy-vm
+          - name: KUBEVIRT_VM_TEMPLATE_NAMESPACE
+            value: default
           - name: RUNNER_NAME
             valueFrom:
               fieldRef:

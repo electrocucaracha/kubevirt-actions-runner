@@ -144,7 +144,7 @@ var _ = Describe("Runner", func() {
 			)
 		}
 
-		err := karRunner.CreateResources(context.TODO(), vmTemplate, runnerName, jitConfig)
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, runnerName, jitConfig)
 
 		if shouldSucceed {
 			Expect(err).NotTo(HaveOccurred())
@@ -417,7 +417,7 @@ var _ = Describe("Runner", func() {
 			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
 
-		err := karRunner.CreateResources(context.TODO(), vmTemplate, "runner-new", "jitConfig")
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, "runner-new", "jitConfig")
 
 		Expect(err).To(HaveOccurred())
 		Expect(err).To(MatchError(ContainSubstring("failed to create runner instance")))
@@ -436,7 +436,7 @@ var _ = Describe("Runner", func() {
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
 			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault))
 
-		err := karRunner.CreateResources(context.TODO(), vmTemplate, runnerWithDV, "jitConfig")
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, runnerWithDV, "jitConfig")
 
 		Expect(err).NotTo(HaveOccurred())
 
