@@ -453,6 +453,17 @@ func (rc *KubevirtRunner) createVMI(
 	createdVMI, err := rc.virtClient.VirtualMachineInstance(rc.namespace).Create(ctx,
 		vmi, k8smetav1.CreateOptions{})
 	if err != nil {
+		if k8serrors.IsAlreadyExists(err) {
+			log.Printf("Virtual Machine Instance %s already exists\n", vmi.Name)
+			span.SetAttributes(attribute.String("vmiName", vmi.Name))
+			spanCreateVMI.SetAttributes(attribute.String("vmiName", vmi.Name))
+
+			return createdVMI, nil
+		}
+
+		log.Printf("Failed to create runner instance %s: %v\n", vmi.Name, err)
+		span.SetAttributes(attribute.String("error", err.Error()))
+		spanCreateVMI.SetAttributes(attribute.String("error", err.Error()))
 		spanCreateVMI.RecordError(err)
 		span.RecordError(err)
 
