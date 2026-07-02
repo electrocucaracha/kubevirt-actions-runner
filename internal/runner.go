@@ -145,14 +145,9 @@ func (rc *KubevirtRunner) CreateResources(ctx context.Context,
 		return err
 	}
 
-	dataVolumeName := ""
-	if dataVolume != nil {
-		dataVolumeName = dataVolume.Name
-
-		err := rc.createDataVolume(ctx, tracer, dataVolume, vmi.Name, vmi.UID, span)
-		if err != nil {
-			return err
-		}
+	dataVolumeName, err := rc.createOptionalDataVolume(ctx, tracer, dataVolume, vmi, span)
+	if err != nil {
+		return err
 	}
 
 	NewAppContext(virtualMachineInstance.Name, dataVolumeName)
@@ -505,6 +500,25 @@ func (rc *KubevirtRunner) createDataVolume(
 	}
 
 	return nil
+}
+
+func (rc *KubevirtRunner) createOptionalDataVolume(
+	ctx context.Context,
+	tracer trace.Tracer,
+	dataVolume *v1beta1.DataVolume,
+	vmi *v1.VirtualMachineInstance,
+	span trace.Span,
+) (string, error) {
+	if dataVolume == nil {
+		return "", nil
+	}
+
+	err := rc.createDataVolume(ctx, tracer, dataVolume, vmi.Name, vmi.UID, span)
+	if err != nil {
+		return "", err
+	}
+
+	return dataVolume.Name, nil
 }
 
 func (rc *KubevirtRunner) getResources(
