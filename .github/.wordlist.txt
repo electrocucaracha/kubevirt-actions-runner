@@ -69,6 +69,7 @@ JSX
 KAR
 kcd
 KCD
+kube
 kubectl
 Kubernetes
 KubeVirt
@@ -132,6 +133,7 @@ summarizer
 svg
 Teardown
 testbed
+testvm
 tox
 UI
 unpkg
