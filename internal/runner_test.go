@@ -20,6 +20,7 @@ package runner_test
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
@@ -29,8 +30,10 @@ import (
 	k8sv1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
+	k8stesting "k8s.io/client-go/testing"
 	v1 "kubevirt.io/api/core/v1"
 	cdifake "kubevirt.io/client-go/containerizeddataimporter/fake"
 	"kubevirt.io/client-go/kubecli"
@@ -421,6 +424,67 @@ var _ = Describe("Runner", func() {
 
 		Expect(err).To(HaveOccurred())
 		Expect(err).To(MatchError(ContainSubstring("failed to create runner instance")))
+	})
+
+	It("defaults the vm template namespace when it is empty", func() {
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
+		)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
+		)
+
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, "", "runner-default-ns", "jitConfig")
+
+		Expect(err).NotTo(HaveOccurred())
+
+		appCtx := runner.GetAppContext()
+		Expect(appCtx.GetVMIName()).Should(Equal("runner-default-ns"))
+	})
+
+	It("succeeds when the VMI already exists", func() {
+		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		mockVMIInterface.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
+			nil, k8serrors.NewAlreadyExists(
+				schema.GroupResource{Group: "kubevirt.io", Resource: "virtualmachineinstances"}, "runner-existing"))
+
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+
+		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, "runner-existing", "jitConfig")
+
+		Expect(err).NotTo(HaveOccurred())
+
+		appCtx := runner.GetAppContext()
+		Expect(appCtx.GetVMIName()).Should(Equal("runner-existing"))
+	})
+
+	It("returns an error when the data volume creation fails", func() {
+		const dvTemplateName = "boot-disk"
+
+		const runnerWithDV = "runner-with-dv-failure"
+
+		dvVM := NewVirtualMachineWithDataVolume(vmTemplate, dvTemplateName)
+		dvClientset := kubevirtfake.NewSimpleClientset(dvVM)
+		failingCdiClientset := cdifake.NewSimpleClientset()
+		failingCdiClientset.PrependReactor("create", "datavolumes", func(_ k8stesting.Action) (bool, runtime.Object, error) {
+			return true, nil, errors.New("simulated data volume create failure")
+		})
+
+		failingVirtClient := kubecli.NewMockKubevirtClient(mockCtrl)
+		failingVirtClient.EXPECT().CdiClient().Return(failingCdiClientset).AnyTimes()
+		failingVirtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			dvClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
+		failingVirtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
+			dvClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault))
+
+		failingRunner := runner.NewRunner(k8sv1.NamespaceDefault, failingVirtClient, defaultWaitTimeout)
+
+		err := failingRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, runnerWithDV, "jitConfig")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err).To(MatchError(ContainSubstring("cannot create data volume")))
 	})
 
 	It("creates resources that include a data volume template", func() {

@@ -19,10 +19,41 @@ limitations under the License.
 package utils_test
 
 import (
+	"errors"
+	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 )
+
+// TestFatalExitsProcess verifies that Fatal terminates the process with a
+// non-zero exit code. Since zap's Fatal calls os.Exit(1), the assertion runs
+// in a subprocess to avoid killing the test binary itself.
+func TestFatalExitsProcess(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv("KAR_TEST_INVOKE_FATAL") == "1" {
+		utils.GetLogger().Fatal("simulated fatal error")
+
+		return
+	}
+
+	//nolint:gosec
+	cmd := exec.Command(os.Args[0], "-test.run=TestFatalExitsProcess")
+	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_FATAL=1")
+
+	err := cmd.Run()
+
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) {
+		t.Fatalf("expected process to exit with a non-zero status, got err=%v", err)
+	}
+
+	if exitErr.ExitCode() != 1 {
+		t.Fatalf("expected exit code 1, got %d", exitErr.ExitCode())
+	}
+}
 
 func TestLoggerMethods(t *testing.T) {
 	t.Parallel()

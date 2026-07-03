@@ -19,6 +19,9 @@ limitations under the License.
 package runner_test
 
 import (
+	"errors"
+	"os"
+	"os/exec"
 	"testing"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
@@ -41,5 +44,34 @@ func TestCancelAppContextResetsSingleton(t *testing.T) {
 
 	if got := ctx.GetDataVolumeName(); got != "second-dv" {
 		t.Fatalf("expected reset data volume name, got %q", got)
+	}
+}
+
+// TestGetAppContextExitsWhenUninitialized verifies that GetAppContext exits
+// the process with status 1 when called before NewAppContext. The assertion
+// runs in a subprocess since Fatal terminates the process.
+func TestGetAppContextExitsWhenUninitialized(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv("KAR_TEST_INVOKE_GET_APP_CONTEXT") == "1" {
+		runner.CancelAppContext()
+		runner.GetAppContext()
+
+		return
+	}
+
+	//nolint:gosec
+	cmd := exec.Command(os.Args[0], "-test.run=TestGetAppContextExitsWhenUninitialized")
+	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_GET_APP_CONTEXT=1")
+
+	err := cmd.Run()
+
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) {
+		t.Fatalf("expected process to exit with a non-zero status, got err=%v", err)
+	}
+
+	if exitErr.ExitCode() != 1 {
+		t.Fatalf("expected exit code 1, got %d", exitErr.ExitCode())
 	}
 }
