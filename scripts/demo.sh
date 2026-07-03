@@ -47,28 +47,7 @@ function prepare_demo_namespaces {
     kubectl apply -f test-data/vm.yaml -n "${VM_TEMPLATE_NAMESPACE}"
 }
 
-function exit_trap {
-    printf "CPU usage: "
-    grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage " %"}'
-    printf "Memory free(Kb):"
-    awk -v low="$(grep low /proc/zoneinfo | awk '{k+=$2}END{print k}')" '{a[$1]=$2}  END{ print a["MemFree:"]+a["Active(file):"]+a["Inactive(file):"]+a["SReclaimable:"]-(12*low);}' /proc/meminfo
-    echo "Storage:"
-    sudo df -h
-    sudo lsblk
-    sudo lsmod
-    if command -v kubectl; then
-        echo "Kubernetes Events:"
-        kubectl get events -A --sort-by=".metadata.managedFields[0].time"
-        echo "Kubernetes Resources:"
-        kubectl get all -A -o wide
-        echo "Kubernetes Pods:"
-        kubectl describe pods
-        echo "Kubernetes Nodes:"
-        kubectl describe nodes
-    fi
-}
-
-trap exit_trap ERR
+trap get_status ERR
 
 info "Running a alpine demo instance"
 ensure_distinct_namespaces
