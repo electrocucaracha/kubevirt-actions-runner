@@ -27,6 +27,19 @@ import (
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
 )
 
+func expectExitCode(t *testing.T, err error, expected int) {
+	t.Helper()
+
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) {
+		t.Fatalf("expected process to exit with a non-zero status, got err=%v", err)
+	}
+
+	if exitErr.ExitCode() != expected {
+		t.Fatalf("expected exit code %d, got %d", expected, exitErr.ExitCode())
+	}
+}
+
 func TestCancelAppContextResetsSingleton(t *testing.T) {
 	t.Cleanup(runner.CancelAppContext)
 
@@ -64,14 +77,5 @@ func TestGetAppContextExitsWhenUninitialized(t *testing.T) {
 	cmd := exec.Command(os.Args[0], "-test.run=TestGetAppContextExitsWhenUninitialized")
 	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_GET_APP_CONTEXT=1")
 
-	err := cmd.Run()
-
-	var exitErr *exec.ExitError
-	if !errors.As(err, &exitErr) {
-		t.Fatalf("expected process to exit with a non-zero status, got err=%v", err)
-	}
-
-	if exitErr.ExitCode() != 1 {
-		t.Fatalf("expected exit code 1, got %d", exitErr.ExitCode())
-	}
+	expectExitCode(t, cmd.Run(), 1)
 }
