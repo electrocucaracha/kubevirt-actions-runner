@@ -19,6 +19,7 @@ limitations under the License.
 package utils_test
 
 import (
+	"context"
 	"errors"
 	"os"
 	"os/exec"
@@ -40,7 +41,8 @@ func TestFatalExitsProcess(t *testing.T) {
 	}
 
 	//nolint:gosec
-	cmd := exec.Command(os.Args[0], "-test.run=TestFatalExitsProcess")
+	cmd := exec.CommandContext(context.Background(), os.Args[0], "-test.run=TestFatalExitsProcess")
+
 	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_FATAL=1")
 
 	err := cmd.Run()

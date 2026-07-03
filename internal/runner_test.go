@@ -30,16 +30,18 @@ import (
 	k8sv1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime" //nolint:depguard // required by fake reactor signature
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
-	k8stesting "k8s.io/client-go/testing"
+	k8stesting "k8s.io/client-go/testing" //nolint:depguard // required by fake reactor signature
 	v1 "kubevirt.io/api/core/v1"
 	cdifake "kubevirt.io/client-go/containerizeddataimporter/fake"
 	"kubevirt.io/client-go/kubecli"
 	kubevirtfake "kubevirt.io/client-go/kubevirt/fake"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
+
+var errSimulatedDataVolumeCreateFailure = errors.New("simulated data volume create failure")
 
 var _ = Describe("Runner", func() {
 	var virtClient *kubecli.MockKubevirtClient
@@ -57,6 +59,8 @@ var _ = Describe("Runner", func() {
 		vmTemplate         = "vm-template"
 		vmInstance         = "runner-xyz123"
 		dataVolume         = "dv-xyz123"
+		kubevirtGroup      = "kubevirt.io"
+		vmiResource        = "virtualmachineinstances"
 	)
 
 	BeforeEach(func() {
@@ -441,7 +445,7 @@ var _ = Describe("Runner", func() {
 		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
 		mockVMIInterface.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
 			nil, k8serrors.NewAlreadyExists(
-				schema.GroupResource{Group: "kubevirt.io", Resource: "virtualmachineinstances"}, "runner-existing"))
+				schema.GroupResource{Group: kubevirtGroup, Resource: vmiResource}, "runner-existing"))
 
 		expectDefaultNamespaceClients(mockVMIInterface)
 
@@ -462,7 +466,7 @@ var _ = Describe("Runner", func() {
 		dvClientset := kubevirtfake.NewSimpleClientset(dvVM)
 		failingCdiClientset := cdifake.NewSimpleClientset()
 		failingCdiClientset.PrependReactor("create", "datavolumes", func(_ k8stesting.Action) (bool, runtime.Object, error) {
-			return true, nil, errors.New("simulated data volume create failure")
+			return true, nil, errSimulatedDataVolumeCreateFailure
 		})
 
 		failingVirtClient := kubecli.NewMockKubevirtClient(mockCtrl)
@@ -503,7 +507,7 @@ var _ = Describe("Runner", func() {
 
 	It("logs but does not return an error when VMI delete fails with a non-NotFound error", func() {
 		forbiddenErr := k8serrors.NewForbidden(
-			schema.GroupResource{Group: "kubevirt.io", Resource: "virtualmachineinstances"},
+			schema.GroupResource{Group: kubevirtGroup, Resource: vmiResource},
 			vmInstance, nil)
 
 		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)

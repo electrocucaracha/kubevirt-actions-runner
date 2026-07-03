@@ -19,6 +19,7 @@ limitations under the License.
 package runner_test
 
 import (
+	"context"
 	"errors"
 	"os"
 	"os/exec"
@@ -74,7 +75,8 @@ func TestGetAppContextExitsWhenUninitialized(t *testing.T) {
 	}
 
 	//nolint:gosec
-	cmd := exec.Command(os.Args[0], "-test.run=TestGetAppContextExitsWhenUninitialized")
+	cmd := exec.CommandContext(context.Background(), os.Args[0], "-test.run=TestGetAppContextExitsWhenUninitialized")
+
 	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_GET_APP_CONTEXT=1")
 
 	expectExitCode(t, cmd.Run(), 1)
