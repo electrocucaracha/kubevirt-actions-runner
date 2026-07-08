@@ -47,6 +47,7 @@ jobs:
               - Dockerfile
   code-coverage:
     name: Check Go Coverage Threshold
+    if: needs.changes.outputs.golang == 'true'
     needs: changes
     runs-on: ubuntu-latest
     permissions:
@@ -70,6 +71,7 @@ jobs:
           coverage-threshold: 45
   unit-test:
     name: Run Go Unit Tests
+    if: needs.changes.outputs.golang == 'true'
     needs: changes
     runs-on: ubuntu-latest
     permissions:
@@ -97,6 +99,7 @@ jobs:
           if-no-files-found: error
   gremlins-test:
     name: Run Go Mutation Tests
+    if: needs.changes.outputs.golang == 'true'
     needs: [changes, unit-test]
     runs-on: ubuntu-latest
     permissions:
@@ -126,12 +129,14 @@ jobs:
       id-token: write
     needs: [code-coverage, unit-test, gremlins-test, changes]
     if: |
-      needs.code-coverage.result == 'success' &&
-      needs.unit-test.result == 'success' &&
-      needs.gremlins-test.result == 'success' &&
+      always() &&
       (
-        needs.changes.outputs.golang == 'true' ||
-        needs.changes.outputs.docker == 'true'
+        (
+          needs.changes.outputs.golang == 'true' &&
+          needs.code-coverage.result == 'success' &&
+          needs.unit-test.result == 'success' &&
+          needs.gremlins-test.result == 'success'
+        ) || needs.changes.outputs.docker == 'true'
       )
     steps:
       - name: Checkout repository
