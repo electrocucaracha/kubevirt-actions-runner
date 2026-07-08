@@ -6,20 +6,20 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Spelling Checks for Documentation
+name: "Docs: Spelling Validation"
 # yamllint disable-line rule:truthy
 on:
   push:
     paths:
       - "**.md"
-      - "!.github/*"
+      - "!.github/**"
   pull_request_review:
     types:
       - submitted
 permissions: read-all
 jobs:
   check-reviewdog:
-    name: Check spelling using reviewdog
+    name: Check Spelling with reviewdog
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,7 +33,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
   check-spellcheck:
-    name: Check spelling using pyspelling
+    name: Check Spelling with pyspelling
     runs-on: ubuntu-latest
     permissions:
       contents: read

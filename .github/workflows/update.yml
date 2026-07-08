@@ -6,16 +6,19 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Scheduled Version Updates
+name: "Maintenance: Scheduled Dependency Version Updates"
 # yamllint disable-line rule:truthy
 on:
   schedule:
     - cron: "0 0 * * 5"
   workflow_dispatch:
 permissions: read-all
+concurrency:
+  group: scheduled-version-updates
+  cancel-in-progress: true
 jobs:
   check-versions:
-    name: Verify and update version files
+    name: Update Managed Version Files
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -29,7 +32,7 @@ jobs:
       - name: Setup Go environment
         uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
-          go-version: "stable"
+          go-version: "1.26.0"
           cache: false
       - name: Create pull request for version updates
         uses: technote-space/create-pr-action@91114507cf92349bec0a9a501c2edf1635427bc5 # v2.1.4

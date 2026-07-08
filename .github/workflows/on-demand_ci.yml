@@ -6,14 +6,14 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: On-Demand End-to-End Tests
+name: "CI: End-to-End Validation"
 # yamllint disable-line rule:truthy
 on:
   push:
     paths:
       - "**.go"
       - "**.sh"
-      - "!.github/*"
+      - "!.github/**"
   pull_request:
     types:
       - opened
@@ -23,6 +23,9 @@ on:
     types:
       - submitted
 permissions: read-all
+concurrency:
+  group: on-demand-ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   check-scripts-format:
     name: Validate shell script formatting
@@ -43,7 +46,7 @@ jobs:
         with:
           sh_checker_shellcheck_disable: true
   functional-test:
-    name: Execute functional tests on self-hosted runner
+    name: Run Functional Tests on Self-Hosted Runner
     needs: check-scripts-format
     runs-on: vm-self-hosted
     permissions:
@@ -61,9 +64,7 @@ jobs:
       - name: Export logs
         if: always()
         run: |
-          newgrp docker <<EONG
           kind export logs --name k8s -v 4 ./_artifacts/logs
-          EONG
       - name: Upload cluster logs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

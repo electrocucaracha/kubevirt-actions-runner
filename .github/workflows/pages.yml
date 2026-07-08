@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Deploy Documentation to GitHub Pages
+name: "Docs: Build and Deploy GitHub Pages"
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: Build and prepare GitHub Pages artifact
+    name: Build GitHub Pages Artifact
     runs-on: ubuntu-latest
     permissions:
       contents: read

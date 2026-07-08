@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-name: Code Quality Verifiers
+name: "Maintenance: Go Quality Verification and Improvements"
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -16,9 +16,12 @@ on:
     - cron: "0 0 * * 5"
   workflow_dispatch:
 permissions: read-all
+concurrency:
+  group: code-quality-verifiers-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   check-golangci:
-    name: Run Go linter checks
+    name: Run golangci-lint Checks
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,14 +35,14 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
-          go-version: "^1.26"
+          go-version: "1.26.0"
           cache: false
           # jscpd:ignore-end
       - name: Run golangci-lint tool
         id: golangci-lint
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
         with:
-          version: latest
+          version: v2.12.2
           args: --allow-parallel-runners --output.json.path linter-errors.json
       - uses: actions/ai-inference@a7805884c80886efc241e94a5351df715968a0ad # v2.1.1
         id: ai-linter-analysis
@@ -104,7 +107,7 @@ jobs:
 
             ${{ steps.get-analysis-output.outputs.response }}
   reduce-tech-debt:
-    name: Analyze and reduce technical debt
+    name: Reduce Technical Debt
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -118,14 +121,14 @@ jobs:
           persist-credentials: false
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.43.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: true
+          allow-all-tools: false
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
@@ -134,10 +137,8 @@ jobs:
                   "type": "http",
                   "url": "https://api.githubcopilot.com/mcp/",
                   "headers": {
-                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}",
-                    "X-MCP-Toolsets": "*"
-                  },
-                  "tools": ["*"]
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}"
+                  }
                 }
               }
             }
@@ -157,13 +158,13 @@ jobs:
                - Use GitHub CLI: gh pr create \
                  --title "chore: reduce technical debt" \
                  --body "Summary of changes, rationale, tests passing, and confirmation of no breaking changes." \
-                 --base main \
+                 --base ${{ github.event.repository.default_branch }} \
                  --head tech-debt-reduction
                - Keep the diff focused and reviewable.
       - name: Get rtk stats
         run: rtk gain
   improve-code-coverage:
-    name: Analyze code coverage and submit improvements
+    name: Improve Code Coverage
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -177,14 +178,14 @@ jobs:
           persist-credentials: false
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.43.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: true
+          allow-all-tools: false
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
@@ -193,10 +194,8 @@ jobs:
                   "type": "http",
                   "url": "https://api.githubcopilot.com/mcp/",
                   "headers": {
-                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}",
-                    "X-MCP-Toolsets": "*"
-                  },
-                  "tools": ["*"]
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}"
+                  }
                 }
               }
             }
@@ -216,7 +215,7 @@ jobs:
                - Use GitHub CLI: gh pr create \
                  --title "test: increase code coverage" \
                  --body "Summary of added tests, rationale for coverage improvement, tests passing, and confirmation of no breaking changes." \
-                 --base main \
+                 --base ${{ github.event.repository.default_branch }} \
                  --head increase-code-coverage
                - Keep the diff focused and reviewable.
       - name: Get rtk stats
