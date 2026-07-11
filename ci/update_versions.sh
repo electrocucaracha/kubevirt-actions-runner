@@ -129,6 +129,93 @@ update_github_action_hashes() {
     done
 }
 
+update_golangci_lint_version() {
+    local version file
+
+    version=$(
+        git ls-remote --tags "https://github.com/golangci/golangci-lint" |
+            awk '$2 !~ /\^\{\}$/ {
+                tag = $2
+                sub(/^refs\/tags\//, "", tag)
+                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
+                    sortkey = tag
+                    sub(/^v/, "", sortkey)
+                    print sortkey "\t" tag
+                }
+            }' |
+            sort -V |
+            tail -1 |
+            awk -F'\t' '{ print $2 }'
+    )
+
+    if [[ -z $version ]]; then
+        echo "WARNING: unable to resolve latest golangci-lint version; skipping" >&2
+        return 1
+    fi
+
+    while IFS= read -r -d '' file; do
+        sed -i "s|^\([[:space:]]*version:[[:space:]]*\)v[0-9][^ ]*|\1${version}|" "$file"
+    done < <(grep -ElRZ "golangci/golangci-lint-action" .github/workflows/)
+}
+
+update_gremlins_version() {
+    local version file
+
+    version=$(
+        git ls-remote --tags "https://github.com/go-gremlins/gremlins" |
+            awk '$2 !~ /\^\{\}$/ {
+                tag = $2
+                sub(/^refs\/tags\//, "", tag)
+                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
+                    sortkey = tag
+                    sub(/^v/, "", sortkey)
+                    print sortkey "\t" tag
+                }
+            }' |
+            sort -V |
+            tail -1 |
+            awk -F'\t' '{ print $2 }'
+    )
+
+    if [[ -z $version ]]; then
+        echo "WARNING: unable to resolve latest gremlins version; skipping" >&2
+        return 1
+    fi
+
+    while IFS= read -r -d '' file; do
+        sed -i "s|^\([[:space:]]*version:[[:space:]]*\)v[0-9][^ ]*|\1${version}|" "$file"
+    done < <(grep -ElRZ "go-gremlins/gremlins-action" .github/workflows/)
+}
+
+update_rtk_version() {
+    local version file
+
+    version=$(
+        git ls-remote --tags "https://github.com/rtk-ai/rtk" |
+            awk '$2 !~ /\^\{\}$/ {
+                tag = $2
+                sub(/^refs\/tags\//, "", tag)
+                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
+                    sortkey = tag
+                    sub(/^v/, "", sortkey)
+                    print sortkey "\t" tag
+                }
+            }' |
+            sort -V |
+            tail -1 |
+            awk -F'\t' '{ print $2 }'
+    )
+
+    if [[ -z $version ]]; then
+        echo "WARNING: unable to resolve latest rtk version; skipping" >&2
+        return 1
+    fi
+
+    while IFS= read -r -d '' file; do
+        sed -i "s|rtk-ai/rtk/refs/tags/v[0-9][^/]*|rtk-ai/rtk/refs/tags/${version}|g" "$file"
+    done < <(grep -ElRZ "rtk-ai/rtk/refs/tags/" .github/workflows/)
+}
+
 update_dockerfile_base_image() {
     local go_docker_tag
 
@@ -193,6 +280,9 @@ else
 fi
 run_best_effort "updating GitHub Action commit hashes" update_github_action_hashes
 run_best_effort "updating the Dockerfile base image" update_dockerfile_base_image
+run_best_effort "updating golangci-lint version" update_golangci_lint_version
+run_best_effort "updating gremlins version" update_gremlins_version
+run_best_effort "updating rtk version" update_rtk_version
 
 if [[ $has_errors == "true" ]]; then
     failed_summary=$(
