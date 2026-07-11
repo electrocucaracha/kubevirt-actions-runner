@@ -64,7 +64,7 @@ jobs:
       - name: Export logs
         if: always()
         run: |
-          kind export logs --name k8s -v 4 ./_artifacts/logs
+          sudo -E kind export logs --name k8s -v 4 ./_artifacts/logs
       - name: Upload cluster logs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
