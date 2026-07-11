@@ -129,24 +129,28 @@ update_github_action_hashes() {
     done
 }
 
+latest_semver_tag() {
+    local repository=$1
+
+    git ls-remote --tags "https://github.com/${repository}" |
+        awk '$2 !~ /\^\{\}$/ {
+            tag = $2
+            sub(/^refs\/tags\//, "", tag)
+            if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
+                sortkey = tag
+                sub(/^v/, "", sortkey)
+                print sortkey "\t" tag
+            }
+        }' |
+        sort -V |
+        tail -1 |
+        awk -F'\t' '{ print $2 }'
+}
+
 update_golangci_lint_version() {
     local version file
 
-    version=$(
-        git ls-remote --tags "https://github.com/golangci/golangci-lint" |
-            awk '$2 !~ /\^\{\}$/ {
-                tag = $2
-                sub(/^refs\/tags\//, "", tag)
-                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
-                    sortkey = tag
-                    sub(/^v/, "", sortkey)
-                    print sortkey "\t" tag
-                }
-            }' |
-            sort -V |
-            tail -1 |
-            awk -F'\t' '{ print $2 }'
-    )
+    version=$(latest_semver_tag "golangci/golangci-lint")
 
     if [[ -z $version ]]; then
         echo "WARNING: unable to resolve latest golangci-lint version; skipping" >&2
@@ -161,21 +165,7 @@ update_golangci_lint_version() {
 update_gremlins_version() {
     local version file
 
-    version=$(
-        git ls-remote --tags "https://github.com/go-gremlins/gremlins" |
-            awk '$2 !~ /\^\{\}$/ {
-                tag = $2
-                sub(/^refs\/tags\//, "", tag)
-                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
-                    sortkey = tag
-                    sub(/^v/, "", sortkey)
-                    print sortkey "\t" tag
-                }
-            }' |
-            sort -V |
-            tail -1 |
-            awk -F'\t' '{ print $2 }'
-    )
+    version=$(latest_semver_tag "go-gremlins/gremlins")
 
     if [[ -z $version ]]; then
         echo "WARNING: unable to resolve latest gremlins version; skipping" >&2
@@ -190,21 +180,7 @@ update_gremlins_version() {
 update_rtk_version() {
     local version file
 
-    version=$(
-        git ls-remote --tags "https://github.com/rtk-ai/rtk" |
-            awk '$2 !~ /\^\{\}$/ {
-                tag = $2
-                sub(/^refs\/tags\//, "", tag)
-                if (tag ~ /^v[0-9]+(\.[0-9]+)*$/) {
-                    sortkey = tag
-                    sub(/^v/, "", sortkey)
-                    print sortkey "\t" tag
-                }
-            }' |
-            sort -V |
-            tail -1 |
-            awk -F'\t' '{ print $2 }'
-    )
+    version=$(latest_semver_tag "rtk-ai/rtk")
 
     if [[ -z $version ]]; then
         echo "WARNING: unable to resolve latest rtk version; skipping" >&2
