@@ -51,7 +51,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # NOTE: gwatts/go-coverage-action uses git notes during the analysis
       issues: write
       pull-requests: write
     steps:
