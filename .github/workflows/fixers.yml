@@ -42,7 +42,12 @@ jobs:
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: false
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: false
+          disallow-temp-dir: true
+          allow-all-urls: false
+          allowed-urls: "github.com,api.github.com,raw.githubusercontent.com,docs.github.com,ghcr.io,registry-1.docker.io,index.docker.io,proxy.golang.org,sum.golang.org,go.dev"
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
@@ -135,7 +140,12 @@ jobs:
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: false
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: false
+          disallow-temp-dir: true
+          allow-all-urls: false
+          allowed-urls: "github.com,api.github.com,raw.githubusercontent.com,docs.github.com,ghcr.io,proxy.golang.org,sum.golang.org,go.dev"
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
