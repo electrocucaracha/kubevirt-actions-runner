@@ -128,7 +128,10 @@ jobs:
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: false
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: true
+          allow-all-urls: true
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
@@ -185,7 +188,10 @@ jobs:
         uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
-          allow-all-tools: false
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: true
+          allow-all-urls: true
           repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
           mcp-config: |
             {
