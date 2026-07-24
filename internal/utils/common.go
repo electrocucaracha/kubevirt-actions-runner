@@ -32,8 +32,9 @@ type LoggerImpl struct {
 	logger *zap.SugaredLogger
 }
 
+// Printf is an alias for Infof, kept for call-site readability.
 func (l *LoggerImpl) Printf(format string, args ...any) {
-	l.logger.Infof(format, args...)
+	l.Infof(format, args...)
 }
 
 func (l *LoggerImpl) Println(args ...any) {
