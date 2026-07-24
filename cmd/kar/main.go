@@ -39,6 +39,9 @@ const (
 	defaultCleanupTimeout = 5 * time.Minute
 	defaultWaitTimeout    = 1 * time.Hour
 	shutdownTimeout       = 5 * time.Second
+	vcsRevisionSetting    = "vcs.revision"
+	vcsTimeSetting        = "vcs.time"
+	vcsModifiedSetting    = "vcs.modified"
 )
 
 //nolint:gochecknoglobals
@@ -60,15 +63,15 @@ type buildInfo struct {
 func applyVCSSettings(out *buildInfo, settings []debug.BuildSetting) {
 	for _, setting := range settings {
 		switch setting.Key {
-		case "vcs.revision":
+		case vcsRevisionSetting:
 			if out.gitCommit == "" {
 				out.gitCommit = setting.Value
 			}
-		case "vcs.time":
+		case vcsTimeSetting:
 			if out.buildDate == "" {
 				out.buildDate = setting.Value
 			}
-		case "vcs.modified":
+		case vcsModifiedSetting:
 			if out.gitTreeModified == "" {
 				out.gitTreeModified = setting.Value
 			}
@@ -154,8 +157,8 @@ func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
 	return virtClient, namespace, nil
 }
 
-func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log *utils.LoggerImpl) {
-	rootCmd := app.NewRootCommand(ctx, kr, opts)
+func runMainApp(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl) {
+	rootCmd := app.NewRootCommand(ctx, kr, app.Opts{})
 
 	execErr := rootCmd.Execute()
 	if execErr != nil && !errors.Is(execErr, context.Canceled) {
@@ -164,8 +167,6 @@ func runMainApp(ctx context.Context, opts app.Opts, kr runner.Runner, log *utils
 }
 
 func main() {
-	var opts app.Opts
-
 	log := utils.GetLogger()
 	buildInfo := getBuildInfo(gitCommit, buildDate, gitTreeModified)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
@@ -211,5 +212,5 @@ func main() {
 		}
 	}()
 
-	runMainApp(ctx, opts, kubevirtRunner, log)
+	runMainApp(ctx, kubevirtRunner, log)
 }

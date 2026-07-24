@@ -16,7 +16,6 @@ limitations under the License.
 */
 /* jscpd:ignore-end */
 
-//nolint:testpackage // tests unexported helpers directly
 package main
 
 import (
@@ -26,8 +25,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app"
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
+)
+
+const (
+	testVCSRevision = "abc123"
+	testVCSTime     = "2026-01-01T00:00:00Z"
+	testVCSModified = "true"
 )
 
 var errMainTestFailure = errors.New("simulated failure")
@@ -64,23 +68,23 @@ func TestApplyVCSSettings(t *testing.T) {
 		{
 			name: "populates empty fields",
 			settings: []debug.BuildSetting{
-				{Key: "vcs.revision", Value: "abc123"},
-				{Key: "vcs.time", Value: "2026-01-01T00:00:00Z"},
-				{Key: "vcs.modified", Value: "true"},
+				{Key: vcsRevisionSetting, Value: testVCSRevision},
+				{Key: vcsTimeSetting, Value: testVCSTime},
+				{Key: vcsModifiedSetting, Value: testVCSModified},
 			},
 			initial: buildInfo{},
 			want: buildInfo{
-				gitCommit:       "abc123",
-				buildDate:       "2026-01-01T00:00:00Z",
-				gitTreeModified: "true",
+				gitCommit:       testVCSRevision,
+				buildDate:       testVCSTime,
+				gitTreeModified: testVCSModified,
 			},
 		},
 		{
 			name: "does not override pre-populated fields",
 			settings: []debug.BuildSetting{
-				{Key: "vcs.revision", Value: "abc123"},
-				{Key: "vcs.time", Value: "2026-01-01T00:00:00Z"},
-				{Key: "vcs.modified", Value: "true"},
+				{Key: vcsRevisionSetting, Value: testVCSRevision},
+				{Key: vcsTimeSetting, Value: testVCSTime},
+				{Key: vcsModifiedSetting, Value: testVCSModified},
 			},
 			initial: buildInfo{
 				gitCommit:       "preset-commit",
@@ -155,8 +159,14 @@ func TestGetDurationEnvOrDefault(t *testing.T) {
 		want       time.Duration
 		defaultVal time.Duration
 	}{
-		{name: "returns default when env unset", setEnv: false, defaultVal: 42 * time.Second, want: 42 * time.Second},
-		{name: "returns default when env empty", setEnv: true, envVal: "", defaultVal: 42 * time.Second, want: 42 * time.Second},
+		{
+			name: "returns default when env unset", setEnv: false,
+			defaultVal: 42 * time.Second, want: 42 * time.Second,
+		},
+		{
+			name: "returns default when env empty", setEnv: true, envVal: "",
+			defaultVal: 42 * time.Second, want: 42 * time.Second,
+		},
 		{
 			name: "returns parsed duration when valid", setEnv: true, envVal: "10s",
 			defaultVal: 42 * time.Second, want: 10 * time.Second,
@@ -229,7 +239,8 @@ func TestEnsureValidCleanupContext(t *testing.T) {
 		cleanupCtx, cleanupCancel := ensureValidCleanupContext(parentCtx)
 		defer cleanupCancel()
 
-		if err := cleanupCtx.Err(); err != nil {
+		err := cleanupCtx.Err()
+		if err != nil {
 			t.Fatalf("expected fresh context to not be cancelled, got err=%v", err)
 		}
 
@@ -246,7 +257,8 @@ func TestEnsureValidCleanupContext(t *testing.T) {
 		cleanupCtx, cleanupCancel := ensureValidCleanupContext(parentCtx)
 		defer cleanupCancel()
 
-		if err := cleanupCtx.Err(); err != nil {
+		err := cleanupCtx.Err()
+		if err != nil {
 			t.Fatalf("expected context derived from valid parent to not be cancelled, got err=%v", err)
 		}
 
@@ -265,20 +277,16 @@ func TestRunMainApp(t *testing.T) {
 		t.Parallel()
 
 		runner := &mockRunner{}
-		opts := app.Opts{}
-
 		// runMainApp should not panic and should invoke the root command
 		// against the provided runner without requiring a real KubeVirt client.
-		runMainApp(context.Background(), opts, runner, log)
+		runMainApp(context.Background(), runner, log)
 	})
 
 	t.Run("logs failure when execution returns a non-cancellation error", func(t *testing.T) {
 		t.Parallel()
 
 		runner := &mockRunner{createErr: errMainTestFailure}
-		opts := app.Opts{}
-
-		runMainApp(context.Background(), opts, runner, log)
+		runMainApp(context.Background(), runner, log)
 	})
 
 	t.Run("suppresses logging when execution is cancelled", func(t *testing.T) {
@@ -288,8 +296,6 @@ func TestRunMainApp(t *testing.T) {
 		cancel()
 
 		runner := &mockRunner{}
-		opts := app.Opts{}
-
-		runMainApp(ctx, opts, runner, log)
+		runMainApp(ctx, runner, log)
 	})
 }
