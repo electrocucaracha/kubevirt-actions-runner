@@ -417,6 +417,17 @@ var _ = Describe("Runner", func() {
 		Eventually(errChan, timeout).Should(Receive(BeNil()))
 	})
 
+	It("returns an error when the referenced virtual machine template does not exist", func() {
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault))
+
+		err := karRunner.CreateResources(
+			context.TODO(), "nonexistent-template", k8sv1.NamespaceDefault, "runnerName", "jitConfig")
+
+		Expect(err).To(HaveOccurred())
+		Expect(err).To(MatchError(ContainSubstring("failed to get KubeVirt virtual machine template")))
+	})
+
 	It("returns an error when VMI creation fails", func() {
 		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
 		mockVMIInterface.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
@@ -518,6 +529,68 @@ var _ = Describe("Runner", func() {
 		err := karRunner.DeleteResources(context.TODO())
 
 		Expect(err).NotTo(HaveOccurred())
+	})
+
+	It("logs but does not return an error when data volume delete fails with a non-NotFound error", func() {
+		forbiddenErr := k8serrors.NewForbidden(
+			schema.GroupResource{Group: "cdi.kubevirt.io", Resource: "datavolumes"}, dataVolume, nil)
+
+		failingCdiClientset := cdifake.NewSimpleClientset(NewDataVolume(dataVolume))
+		failingCdiClientset.PrependReactor("delete", "datavolumes", func(_ k8stesting.Action) (bool, runtime.Object, error) {
+			return true, nil, forbiddenErr
+		})
+
+		mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		mockVMIInterface.EXPECT().Delete(gomock.Any(), vmInstance, gomock.Any()).Return(nil)
+
+		failingVirtClient := kubecli.NewMockKubevirtClient(mockCtrl)
+		failingVirtClient.EXPECT().CdiClient().Return(failingCdiClientset).AnyTimes()
+		failingVirtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+
+		failingRunner := runner.NewRunner(k8sv1.NamespaceDefault, failingVirtClient, defaultWaitTimeout)
+		runner.NewAppContext(vmInstance, dataVolume)
+
+		err := failingRunner.DeleteResources(context.TODO())
+
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	It("returns an error when watching the virtual machine instance fails", func() {
+		errSimulatedWatch := errors.New("simulated watch failure")
+
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Get(gomock.Any(), vmInstance, gomock.Any()).Return(
+			NewVirtualMachineInstance(vmInstance), nil).AnyTimes()
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(nil, errSimulatedWatch)
+
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		err := karRunner.WaitForVirtualMachineInstance(context.TODO())
+
+		Expect(err).To(MatchError(ContainSubstring("failed to watch the virtual machine instance")))
+	})
+
+	It("treats a context cancellation during the VMI Get call as a timeout", func() {
+		ctx, cancel := context.WithCancel(context.Background())
+
+		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
+		vmiInterface.EXPECT().Get(gomock.Any(), vmInstance, gomock.Any()).DoAndReturn(
+			func(_ context.Context, _ string, _ metav1.GetOptions) (*v1.VirtualMachineInstance, error) {
+				// Simulate the context being cancelled concurrently with the API
+				// call failing, exercising the race between ctx.Done() and the
+				// Get error path.
+				cancel()
+
+				return nil, errors.New("simulated transient get failure")
+			}).AnyTimes()
+
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
+		runner.NewAppContext(vmInstance, "")
+
+		err := karRunner.WaitForVirtualMachineInstance(ctx)
+
+		Expect(err).To(MatchError("timeout while waiting for the virtual machine instance"))
 	})
 
 	It("fails when the VMI disappears before a watch can be re-established", func() {

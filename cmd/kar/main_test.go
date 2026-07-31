@@ -21,6 +21,7 @@ package main
 import (
 	"context"
 	"errors"
+	"os"
 	"runtime/debug"
 	"testing"
 	"time"
@@ -192,11 +193,15 @@ func TestGetDurationEnvOrDefault(t *testing.T) {
 }
 
 func TestGetCleanupTimeout(t *testing.T) {
+	// Compares against a literal duration (rather than the defaultCleanupTimeout
+	// constant itself) so that a mutation to the constant's value is actually
+	// detected by this test instead of trivially passing.
 	t.Run("returns default when env unset", func(t *testing.T) {
 		t.Setenv("KAR_CLEANUP_TIMEOUT", "")
 
-		if got := getCleanupTimeout(); got != defaultCleanupTimeout {
-			t.Fatalf("getCleanupTimeout() = %v, want %v", got, defaultCleanupTimeout)
+		want := 5 * time.Minute
+		if got := getCleanupTimeout(); got != want {
+			t.Fatalf("getCleanupTimeout() = %v, want %v", got, want)
 		}
 	})
 
@@ -210,11 +215,15 @@ func TestGetCleanupTimeout(t *testing.T) {
 }
 
 func TestGetWaitTimeout(t *testing.T) {
+	// Compares against a literal duration (rather than the defaultWaitTimeout
+	// constant itself) so that a mutation to the constant's value is actually
+	// detected by this test instead of trivially passing.
 	t.Run("returns default when env unset", func(t *testing.T) {
 		t.Setenv("KAR_WAIT_TIMEOUT", "")
 
-		if got := getWaitTimeout(); got != defaultWaitTimeout {
-			t.Fatalf("getWaitTimeout() = %v, want %v", got, defaultWaitTimeout)
+		want := 1 * time.Hour
+		if got := getWaitTimeout(); got != want {
+			t.Fatalf("getWaitTimeout() = %v, want %v", got, want)
 		}
 	})
 
@@ -264,6 +273,131 @@ func TestEnsureValidCleanupContext(t *testing.T) {
 
 		if _, ok := cleanupCtx.Deadline(); !ok {
 			t.Fatal("expected cleanup context to have a deadline")
+		}
+	})
+}
+
+// malformedKubeconfig is intentionally invalid YAML so that client config
+// loading fails while parsing, exercising the namespace-resolution error path
+// of getClientAndNamespace.
+const malformedKubeconfig = "not: valid: yaml: content: [\n"
+
+// kubeconfigWithInvalidCA is syntactically valid but contains a
+// certificate-authority-data value that isn't a real PEM certificate, so
+// namespace resolution succeeds but building the KubeVirt client fails.
+const kubeconfigWithInvalidCA = `apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://example.invalid:6443
+    certificate-authority-data: bm90IGEgdmFsaWQgY2VydGlmaWNhdGU=
+  name: test
+contexts:
+- context:
+    cluster: test
+    namespace: mynamespace
+    user: test
+  name: test
+current-context: test
+users:
+- name: test
+  user:
+    token: faketoken
+`
+
+func writeTempKubeconfig(t *testing.T, contents string) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := dir + "/kubeconfig"
+
+	if err := os.WriteFile(path, []byte(contents), 0o600); err != nil {
+		t.Fatalf("failed to write temp kubeconfig: %v", err)
+	}
+
+	return path
+}
+
+func TestGetClientAndNamespace(t *testing.T) {
+	t.Run("returns default namespace and client when no kubeconfig is configured", func(t *testing.T) {
+		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
+
+		client, namespace, err := getClientAndNamespace()
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+
+		if namespace != "default" {
+			t.Fatalf("expected namespace %q, got %q", "default", namespace)
+		}
+
+		if client == nil {
+			t.Fatal("expected a non-nil KubeVirt client")
+		}
+	})
+
+	t.Run("returns an error when the kubeconfig cannot be parsed", func(t *testing.T) {
+		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, malformedKubeconfig))
+
+		client, namespace, err := getClientAndNamespace()
+		if err == nil {
+			t.Fatal("expected an error, got nil")
+		}
+
+		if client != nil {
+			t.Fatalf("expected nil client on error, got %v", client)
+		}
+
+		if namespace != "" {
+			t.Fatalf("expected empty namespace on error, got %q", namespace)
+		}
+	})
+
+	t.Run("returns an error when the KubeVirt client cannot be built", func(t *testing.T) {
+		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, kubeconfigWithInvalidCA))
+
+		client, namespace, err := getClientAndNamespace()
+		if err == nil {
+			t.Fatal("expected an error, got nil")
+		}
+
+		if client != nil {
+			t.Fatalf("expected nil client on error, got %v", client)
+		}
+
+		if namespace != "" {
+			t.Fatalf("expected empty namespace on error, got %q", namespace)
+		}
+	})
+}
+
+func TestSetupTelemetry(t *testing.T) {
+	log := utils.GetLogger()
+
+	t.Run("returns a no-op shutdown function when telemetry is disabled", func(t *testing.T) {
+		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+
+		shutdown := setupTelemetry(log)
+		if shutdown == nil {
+			t.Fatal("expected a non-nil shutdown function")
+		}
+
+		if err := shutdown(context.Background()); err != nil {
+			t.Fatalf("expected no error from shutdown, got %v", err)
+		}
+	})
+
+	t.Run("initializes and shuts down the stdout exporter when enabled", func(t *testing.T) {
+		t.Setenv("KAR_TELEMETRY_ENABLED", "true")
+		t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "stdout")
+
+		shutdown := setupTelemetry(log)
+		if shutdown == nil {
+			t.Fatal("expected a non-nil shutdown function")
+		}
+
+		if err := shutdown(context.Background()); err != nil {
+			t.Fatalf("expected no error from shutdown, got %v", err)
 		}
 	})
 }
