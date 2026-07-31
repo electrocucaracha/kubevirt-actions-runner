@@ -47,7 +47,7 @@ repos:
     hooks:
       - id: codespell
   - repo: https://github.com/electrocucaracha/ai-prepare-commit-msg
-    rev: 36b906055bc054b4f0e7e7488781fcd786ca37aa
+    rev: 8adbb9015eacfbb165d41a51c88ee897230fffb8
     hooks:
       - id: ai-prepare-commit
         stages:
