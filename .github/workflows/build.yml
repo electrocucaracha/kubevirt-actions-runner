@@ -153,7 +153,7 @@ jobs:
         run: |
           set -o pipefail
           docker run --rm test:latest --help 2>&1 | tee -a docker-build.log
-      - uses: actions/ai-inference@a7805884c80886efc241e94a5351df715968a0ad # v2.1.1
+      - uses: actions/ai-inference@2c43c91ae16266ca159d311430343c67a5ffa222 # v3
         id: ai-docker-analysis
         if: failure()
         with:
@@ -216,7 +216,7 @@ jobs:
 
             ${{ steps.ai-docker-analysis.outputs.response }}
       - name: Log in to the Container registry
-        uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c # v4.5.0
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
