@@ -41,7 +41,11 @@ import (
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
-var errSimulatedDataVolumeCreateFailure = errors.New("simulated data volume create failure")
+var (
+	errSimulatedDataVolumeCreateFailure = errors.New("simulated data volume create failure")
+	errSimulatedWatchFailure            = errors.New("simulated watch failure")
+	errSimulatedTransientGetFailure     = errors.New("simulated transient get failure")
+)
 
 var _ = Describe("Runner", func() {
 	var virtClient *kubecli.MockKubevirtClient
@@ -548,6 +552,7 @@ var _ = Describe("Runner", func() {
 		failingVirtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
 
 		failingRunner := runner.NewRunner(k8sv1.NamespaceDefault, failingVirtClient, defaultWaitTimeout)
+
 		runner.NewAppContext(vmInstance, dataVolume)
 
 		err := failingRunner.DeleteResources(context.TODO())
@@ -556,12 +561,10 @@ var _ = Describe("Runner", func() {
 	})
 
 	It("returns an error when watching the virtual machine instance fails", func() {
-		errSimulatedWatch := errors.New("simulated watch failure")
-
 		vmiInterface := kubecli.NewMockVirtualMachineInstanceInterface(mockCtrl)
 		vmiInterface.EXPECT().Get(gomock.Any(), vmInstance, gomock.Any()).Return(
 			NewVirtualMachineInstance(vmInstance), nil).AnyTimes()
-		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(nil, errSimulatedWatch)
+		vmiInterface.EXPECT().Watch(gomock.Any(), gomock.Any()).Return(nil, errSimulatedWatchFailure)
 
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
 		runner.NewAppContext(vmInstance, "")
@@ -582,7 +585,7 @@ var _ = Describe("Runner", func() {
 				// Get error path.
 				cancel()
 
-				return nil, errors.New("simulated transient get failure")
+				return nil, errSimulatedTransientGetFailure
 			}).AnyTimes()
 
 		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()

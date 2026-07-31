@@ -311,7 +311,8 @@ func writeTempKubeconfig(t *testing.T, contents string) string {
 	dir := t.TempDir()
 	path := dir + "/kubeconfig"
 
-	if err := os.WriteFile(path, []byte(contents), 0o600); err != nil {
+	err := os.WriteFile(path, []byte(contents), 0o600)
+	if err != nil {
 		t.Fatalf("failed to write temp kubeconfig: %v", err)
 	}
 
@@ -341,7 +342,8 @@ func assertShutdownNoError(t *testing.T, shutdown func(context.Context) error) {
 		t.Fatal("expected a non-nil shutdown function")
 	}
 
-	if err := shutdown(context.Background()); err != nil {
+	err := shutdown(context.Background())
+	if err != nil {
 		t.Fatalf("expected no error from shutdown, got %v", err)
 	}
 }
