@@ -318,6 +318,34 @@ func writeTempKubeconfig(t *testing.T, contents string) string {
 	return path
 }
 
+func assertClientAndNamespaceError(t *testing.T, client any, namespace string, err error) {
+	t.Helper()
+
+	if err == nil {
+		t.Fatal("expected an error, got nil")
+	}
+
+	if client != nil {
+		t.Fatalf("expected nil client on error, got %v", client)
+	}
+
+	if namespace != "" {
+		t.Fatalf("expected empty namespace on error, got %q", namespace)
+	}
+}
+
+func assertShutdownNoError(t *testing.T, shutdown func(context.Context) error) {
+	t.Helper()
+
+	if shutdown == nil {
+		t.Fatal("expected a non-nil shutdown function")
+	}
+
+	if err := shutdown(context.Background()); err != nil {
+		t.Fatalf("expected no error from shutdown, got %v", err)
+	}
+}
+
 func TestGetClientAndNamespace(t *testing.T) {
 	t.Run("returns default namespace and client when no kubeconfig is configured", func(t *testing.T) {
 		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
@@ -340,34 +368,14 @@ func TestGetClientAndNamespace(t *testing.T) {
 		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, malformedKubeconfig))
 
 		client, namespace, err := getClientAndNamespace()
-		if err == nil {
-			t.Fatal("expected an error, got nil")
-		}
-
-		if client != nil {
-			t.Fatalf("expected nil client on error, got %v", client)
-		}
-
-		if namespace != "" {
-			t.Fatalf("expected empty namespace on error, got %q", namespace)
-		}
+		assertClientAndNamespaceError(t, client, namespace, err)
 	})
 
 	t.Run("returns an error when the KubeVirt client cannot be built", func(t *testing.T) {
 		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, kubeconfigWithInvalidCA))
 
 		client, namespace, err := getClientAndNamespace()
-		if err == nil {
-			t.Fatal("expected an error, got nil")
-		}
-
-		if client != nil {
-			t.Fatalf("expected nil client on error, got %v", client)
-		}
-
-		if namespace != "" {
-			t.Fatalf("expected empty namespace on error, got %q", namespace)
-		}
+		assertClientAndNamespaceError(t, client, namespace, err)
 	})
 }
 
@@ -378,13 +386,7 @@ func TestSetupTelemetry(t *testing.T) {
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 
 		shutdown := setupTelemetry(log)
-		if shutdown == nil {
-			t.Fatal("expected a non-nil shutdown function")
-		}
-
-		if err := shutdown(context.Background()); err != nil {
-			t.Fatalf("expected no error from shutdown, got %v", err)
-		}
+		assertShutdownNoError(t, shutdown)
 	})
 
 	t.Run("initializes and shuts down the stdout exporter when enabled", func(t *testing.T) {
@@ -392,13 +394,7 @@ func TestSetupTelemetry(t *testing.T) {
 		t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "stdout")
 
 		shutdown := setupTelemetry(log)
-		if shutdown == nil {
-			t.Fatal("expected a non-nil shutdown function")
-		}
-
-		if err := shutdown(context.Background()); err != nil {
-			t.Fatalf("expected no error from shutdown, got %v", err)
-		}
+		assertShutdownNoError(t, shutdown)
 	})
 }
 
