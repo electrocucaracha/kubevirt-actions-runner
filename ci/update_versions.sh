@@ -147,34 +147,21 @@ latest_semver_tag() {
         awk -F'\t' '{ print $2 }'
 }
 
-update_golangci_lint_version() {
+update_action_version() {
+    local repository=$1
+    local action_marker=$2
     local version file
 
-    version=$(latest_semver_tag "golangci/golangci-lint")
+    version=$(latest_semver_tag "$repository")
 
     if [[ -z $version ]]; then
-        echo "WARNING: unable to resolve latest golangci-lint version; skipping" >&2
+        echo "WARNING: unable to resolve latest ${repository} version; skipping" >&2
         return 1
     fi
 
     while IFS= read -r -d '' file; do
         sed -i "s|^\([[:space:]]*version:[[:space:]]*\)v[0-9][^ ]*|\1${version}|" "$file"
-    done < <(grep -ElRZ "golangci/golangci-lint-action" .github/workflows/)
-}
-
-update_gremlins_version() {
-    local version file
-
-    version=$(latest_semver_tag "go-gremlins/gremlins")
-
-    if [[ -z $version ]]; then
-        echo "WARNING: unable to resolve latest gremlins version; skipping" >&2
-        return 1
-    fi
-
-    while IFS= read -r -d '' file; do
-        sed -i "s|^\([[:space:]]*version:[[:space:]]*\)v[0-9][^ ]*|\1${version}|" "$file"
-    done < <(grep -ElRZ "go-gremlins/gremlins-action" .github/workflows/)
+    done < <(grep -ElRZ "$action_marker" .github/workflows/)
 }
 
 update_rtk_version() {
@@ -256,8 +243,8 @@ else
 fi
 run_best_effort "updating GitHub Action commit hashes" update_github_action_hashes
 run_best_effort "updating the Dockerfile base image" update_dockerfile_base_image
-run_best_effort "updating golangci-lint version" update_golangci_lint_version
-run_best_effort "updating gremlins version" update_gremlins_version
+run_best_effort "updating golangci-lint version" update_action_version "golangci/golangci-lint" "golangci/golangci-lint-action"
+run_best_effort "updating gremlins version" update_action_version "go-gremlins/gremlins" "go-gremlins/gremlins-action"
 run_best_effort "updating rtk version" update_rtk_version
 
 if [[ $has_errors == "true" ]]; then
