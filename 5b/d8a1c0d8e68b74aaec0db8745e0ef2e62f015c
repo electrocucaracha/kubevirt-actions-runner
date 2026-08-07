@@ -1,0 +1,3 @@
+Category: Added
+
+The fmt target now enforces Go linting standards by installing golangci-lint if missing and running it to auto-fix style issues during formatting, ensuring code quality and consistency across the project. This change improves adherence to linting rules without requiring manual intervention. The installation and execution of golangci-lint are added to the fmt target in the Makefile.
