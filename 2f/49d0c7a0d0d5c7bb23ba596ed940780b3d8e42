@@ -1,0 +1,3 @@
+Category: Changed
+
+The changelog was updated to standardize terminology, capitalization, and phrasing for tools, technologies, and workflow steps, improving readability and professionalism. Terms like "GitHub Actions" and "README" are now consistently capitalized and referenced throughout the document. This update does not introduce any breaking behavior or migration requirements, but rather enhances clarity and consistency in project documentation.
