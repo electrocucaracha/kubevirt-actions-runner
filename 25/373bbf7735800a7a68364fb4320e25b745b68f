@@ -1,0 +1,3 @@
+Category: Fixed
+
+The code was refactored to address issues detected by the Go linter, specifically golangci. The changes involve reorganizing build-time variables into a separate struct and modifying functions that access these variables. This update does not introduce breaking behavior or migration requirements but ensures adherence to linter guidelines for maintainability and consistency.
