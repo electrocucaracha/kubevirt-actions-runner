@@ -1,0 +1,3 @@
+Category: Fixed
+
+Downgrading austenstone/copilot-cli from v3.0 to v2.0 resolves an error in actions/setup-copilot, which is not yet publicly available. The Copilot CLI auto-update has been disabled by adding a pinned_actions list in update_versions.sh to prevent unnecessary updates. This change affects the workflow's behavior and requires no migration steps or API changes.
