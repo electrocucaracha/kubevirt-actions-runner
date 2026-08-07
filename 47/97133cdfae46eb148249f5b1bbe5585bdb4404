@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Actions workflow for on-demand CI jobs now catches all relevant pull requests, including opened, synchronized, and reopened ones, in addition to submitted reviews. This change ensures that the workflow triggers for more types of pull requests, potentially increasing the number of tests run. The updated configuration does not introduce any breaking behavior or migration requirements.
