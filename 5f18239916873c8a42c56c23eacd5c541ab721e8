@@ -1,0 +1,3 @@
+Category: Changed
+
+Code blocks in the QA subagent documentation were updated to use "text" language for clarity, improving readability. Additionally, the heading "Anti-Patterns" was corrected to "Antipatterns" for consistency with standard terminology. These changes align with documentation standards and do not introduce breaking behavior or require migration steps.
