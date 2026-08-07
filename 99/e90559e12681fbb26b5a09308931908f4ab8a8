@@ -1,0 +1,3 @@
+Category: Changed
+
+The Go dependencies were updated to their latest versions, including changes to the `go` version in the build process and updates to various third-party libraries. This change affects the build process and may require migration steps for users who have customized their build configurations. The security impact is unknown without further analysis of the specific library updates.
