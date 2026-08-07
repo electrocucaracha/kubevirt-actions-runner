@@ -1,0 +1,3 @@
+Category: Fixed
+
+Exported logs directory ownership was corrected to prevent permission errors during CI runs, which caused upload-artifact to fail. The change explicitly sets the current user as owner and lists directory contents for future debugging. This improves artifact upload reliability in CI environments by addressing a common issue with root ownership of exported logs.
