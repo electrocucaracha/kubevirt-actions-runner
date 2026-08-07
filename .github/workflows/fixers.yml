@@ -35,7 +35,7 @@ jobs:
           persist-credentials: false
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.44.1/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI for Docker issues
@@ -133,7 +133,7 @@ jobs:
           install-only: true
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.44.1/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: "Run Copilot CLI"
