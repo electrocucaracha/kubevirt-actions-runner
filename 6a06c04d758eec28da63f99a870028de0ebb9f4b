@@ -1,0 +1,3 @@
+Category: Changed
+
+The versions of various dependencies were updated across multiple workflows and configuration files, including GitHub Actions setup, Go version, and Docker images, to align with the latest available releases. This change affects users who rely on these dependencies for their workflows and may require migration steps to ensure compatibility. The updates include changes to GitHub Pages settings and deployment actions.
