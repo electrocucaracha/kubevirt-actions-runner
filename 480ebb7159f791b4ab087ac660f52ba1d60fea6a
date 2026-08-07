@@ -1,0 +1,3 @@
+Category: Fixed
+
+The base image in the Dockerfile was updated from alpine 3.23 to 3.24, which includes the latest security patches and bug fixes without introducing any breaking changes to the build process or application functionality. This change ensures the build environment uses a more secure foundation. The update is part of maintaining a secure development environment.
