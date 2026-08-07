@@ -1,0 +1,3 @@
+Category: Changed
+
+The update_versions.sh script has been improved to increase the reliability of automated action hash updates by enhancing tag resolution logic for GitHub Actions, including annotated and lightweight tags, while restricting updates to semver tags. This change also refactors exception matching to an explicit loop for correctness and uses arrays for exceptions and pinned actions, improving maintainability and clarity. The update affects multiple workflow files, updating action hashes in workflow files to the latest semver tags where applicable.
