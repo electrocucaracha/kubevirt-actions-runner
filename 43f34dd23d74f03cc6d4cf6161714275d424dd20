@@ -1,0 +1,3 @@
+Category: Removed
+
+The documentation for authoring GNU Make Makefiles has been removed from the instructions directory, as it is no longer maintained and its content has been superseded by project-level documentation and inline comments within individual Makefiles. This change reduces duplication and prevents confusion for contributors, but does not affect build or CI behavior.
