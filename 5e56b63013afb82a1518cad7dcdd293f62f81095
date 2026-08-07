@@ -1,0 +1,3 @@
+Category: Fixed
+
+The super-linter configuration was updated to resolve failures in NATURAL_LANGUAGE, MARKDOWN, and JSCPD checks. This involved replacing 'website' with 'site' in README.md and wrapping the overview paragraph to meet character limits. Additionally, markdownlint-disable directives were added around a workflow table in .github/workflows/README.md.
