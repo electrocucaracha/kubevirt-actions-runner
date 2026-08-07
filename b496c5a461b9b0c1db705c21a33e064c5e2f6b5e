@@ -1,0 +1,3 @@
+Category: Added
+
+The README.md file documentation was improved, enhancing the user experience for those using KubeVirt Actions Runner to run GitHub Actions workflows in isolated virtual machines. Key features now more clearly outlined include ephemeral VM creation, increased isolation, customizable system-level configuration support, and seamless integration with Kubernetes-native tooling. This update aims to make it easier for users to understand and utilize the project's capabilities.
