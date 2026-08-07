@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Clarified terminology throughout the changelog to consistently reference tools and technologies such as GitHub Actions, README, Go linter, and spell checking, enhancing readability and professionalism without introducing any breaking behavior or migration requirements. [2f49d0c7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2f49d0c7a0d0d5c7bb23ba596ed940780b3d8e42)
+- Clarified terminology throughout the changelog to consistently reference tools and technologies such as GitHub Actions, readme, Go linter, and spell checking, enhancing readability and professionalism without introducing any breaking behavior or migration requirements. [2f49d0c7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2f49d0c7a0d0d5c7bb23ba596ed940780b3d8e42)
 
 ## [18.8.0] - 2026-08-07
 
@@ -607,7 +607,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Stabilized user understanding of KubeVirt Actions Runner's functionality by adding a diagram image to the README.md file that addresses limitations of GitHub-hosted runners in standard workflows. [d9424fda](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d9424fdacb4f11459f3a4fd7bc51c29221d1fbe2)
+- Stabilized user understanding of KubeVirt Actions Runner's functionality by adding a diagram image to the readme.md file that addresses limitations of GitHub-hosted runners in standard workflows. [d9424fda](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d9424fdacb4f11459f3a4fd7bc51c29221d1fbe2)
 
 ## [7.20.5] - 2026-03-13
 
@@ -625,7 +625,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved super-linter failures in NATURAL_LANGUAGE, Markdown, and JSCPD checks by updating configuration settings and modifying README.md content to conform to textlint and markdownlint rules. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
+- Resolved super-linter failures in NATURAL_LANGUAGE, Markdown, and JSCPD checks by updating configuration settings and modifying readme.md content to conform to textlint and markdownlint rules. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
 
 ## [7.20.2] - 2026-03-13
 
@@ -649,7 +649,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Enhanced documentation for KubeVirt Actions Runner's README.md file now clearly outlines key features including ephemeral VM creation, increased isolation, customizable system-level configuration support, and seamless integration with Kubernetes-native tooling. [b496c5a4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b496c5a461b9b0c1db705c21a33e064c5e2f6b5e)
+- Enhanced documentation for KubeVirt Actions Runner's readme.md file now clearly outlines key features including ephemeral VM creation, increased isolation, customizable system-level configuration support, and seamless integration with Kubernetes-native tooling. [b496c5a4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b496c5a461b9b0c1db705c21a33e064c5e2f6b5e)
 
 ## [7.18.0] - 2026-03-13
 
