@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated, pinning actions/checkout to v6.0.3 to ensure consistent behavior across workflows. This change does not introduce any breaking behavior and does not affect the API or CLI contract. The primary user outcome of this update is improved reliability in GitHub Actions workflows that rely on actions/checkout.
