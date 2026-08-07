@@ -1,0 +1,3 @@
+Category: Added
+
+Go version was set prior to code coverage execution, affecting workflows that rely on this setup. The change involves updating the GitHub Actions workflow for building and testing to use Go 1.25 or later, while also modifying a script to update versions accordingly. This adjustment ensures compatibility with newer Go releases in CI/CD pipelines.
