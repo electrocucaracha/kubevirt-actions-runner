@@ -1,0 +1,3 @@
+Category: Changed
+
+The version files for dependencies have been updated, specifically the super-linter validation step in the linter workflow now uses version 8.2.1 instead of 8.2.0. This change does not break any behavior but may require manual intervention if migration steps are not properly executed to update the dependency versions.
