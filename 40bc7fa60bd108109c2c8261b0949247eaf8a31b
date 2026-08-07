@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions workflows were standardized for consistency, clarity, and maintainability. Workflow names now accurately reflect their purpose and triggers. Concurrency groups prevent duplicate runs, and event triggers and path filters are clarified for CI, docs, and maintenance jobs. Tool versions are pinned for reproducibility and security. Job and step names are improved for readability in workflow logs. Documentation is updated with a quick context section and a workflow execution map to help contributors understand automation coverage and event mapping.
