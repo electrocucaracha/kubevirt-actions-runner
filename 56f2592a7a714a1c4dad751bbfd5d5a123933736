@@ -1,0 +1,3 @@
+Category: Added
+
+The documentation configuration has been updated to use the Cayman theme, which affects how the project's documentation appears online. This change involves updating the theme setting in the `_config.yml` file and does not introduce any breaking behavior, API changes, or security concerns. Users will notice a visual update when viewing the documentation.
