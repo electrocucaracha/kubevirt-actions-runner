@@ -1,0 +1,3 @@
+Category: Changed
+
+Several Go module dependencies were upgraded to their latest versions to address compatibility and security concerns, including github.com/onsi/ginkgo/v2, github.com/onsi/gomega, and google.golang.org/grpc. No breaking changes are expected, but downstream consumers should verify their integration tests. The updates ensure the project remains compatible with upstream libraries and benefits from recent bug fixes and performance improvements.
