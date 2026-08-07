@@ -1,0 +1,3 @@
+Category: Changed
+
+PR creation permissions have been updated in GitHub workflows to persist credentials by default, allowing for smoother PR creation processes. This change affects users who create pull requests with fine-grained PATs and impacts the workflow's ability to write contents and workflows. No breaking behavior or migration requirements are introduced; API or CLI contracts remain unchanged; security implications are minimal as credentials are persisted securely; config schema changes are not relevant in this context.
