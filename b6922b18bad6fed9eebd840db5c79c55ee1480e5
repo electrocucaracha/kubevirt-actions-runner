@@ -1,0 +1,3 @@
+Category: Added
+
+A dedicated QA subagent has been introduced to automate code coverage improvement, analyzing gaps in unit tests and generating targeted tests to submit focused pull requests. The new GitHub Actions workflow job leverages the QA subagent to identify untested code paths and reduce manual oversight and regression risk. This formalizes and automates test planning, bug reporting, and quality standards, keeping improvements reviewable and maintain high test quality.
