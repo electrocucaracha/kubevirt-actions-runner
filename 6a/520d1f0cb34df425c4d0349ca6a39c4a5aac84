@@ -1,0 +1,3 @@
+Category: Added
+
+The default branch for the super-linter has been set to automatically follow the current GitHub head ref or repository name, allowing for streamlined linting across different branches and repositories without manual configuration. This change does not introduce any breaking behavior or migration requirements. The config schema has been updated with a new DEFAULT_BRANCH option that is now enabled by default in the .github/workflows/linter.yml file.
