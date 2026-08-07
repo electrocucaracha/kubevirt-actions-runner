@@ -1,0 +1,3 @@
+Category: Changed
+
+The VMI wait/status flow in the runner has been refactored to address lint violations, improve code organization, and enhance API server protection. Breaking behavior changes include reconnecting VMI watch on stream closure with backoff before reconnection. The `refreshVMIStatus` function now tracks a `readyReported` flag to emit the 'Running and Ready' log only once per phase transition. This change affects the primary user outcome by improving the robustness of the runner's wait/status handling.
