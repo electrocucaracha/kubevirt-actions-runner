@@ -1,0 +1,3 @@
+Category: Added
+
+The wordlist used in spell checks has been updated to include commonly used terms in Kubernetes and testing contexts, specifically "kube", "kubectl", "Kubernetes", and "testvm". This change prevents false positives in spell checks and improves the developer workflow. The update does not affect application logic, but it is essential for accurate spell checking in these specific environments.
