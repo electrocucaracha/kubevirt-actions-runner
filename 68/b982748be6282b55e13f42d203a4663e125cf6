@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated in GitHub workflows, affecting build, linter, and pre-commit configurations. The changes involve upgrading dependencies to newer versions: actions/upload-artifact from 5.0.0 to 6.0.0, actions/attest-build-provenance from 3.0.0 to 3.1.0, super-linter/super-linter from 8.3.0 to 8.3.1, and ai-prepare-commit-msg from b290ac40527a04280263d8967c36743a290a1010 to 3daa7bfddb8023c82528bb786ee2be3b6d34cef3.
