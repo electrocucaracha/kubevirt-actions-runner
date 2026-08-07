@@ -1,0 +1,3 @@
+Category: Changed
+
+The installation of OpenSSL was added before running the linter in Ubuntu platforms to ensure successful validation, as the linter requires these libraries but they are not included by default in the Ubuntu image. This change affects only the CI workflow for Ubuntu and improves pipeline consistency by allowing builds and tests to pass on supported platforms. The linter now runs without errors due to the added OpenSSL installation step.
