@@ -1,0 +1,3 @@
+Category: Changed
+
+Linter configurations were updated to address deprecated rules, remove unused settings, and adjust validation for specific packages, which may require users to review their workflow files and potentially update their project configurations. The changes also include adjustments to the Makefile and test code to reflect these updates. No breaking behavior or API changes are introduced by this change.
