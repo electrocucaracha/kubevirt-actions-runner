@@ -1,0 +1,3 @@
+Category: Changed
+
+The codebase has been refactored to reduce technical debt, aligning comments with fatal exit behavior in the GetAppContext function and resolving gci import grouping issues in telemetry. The changes include removing redundant logging functions, simplifying build info creation, and updating the logger implementation for consistency. These modifications improve maintainability and adherence to best practices without introducing breaking changes or security vulnerabilities.
