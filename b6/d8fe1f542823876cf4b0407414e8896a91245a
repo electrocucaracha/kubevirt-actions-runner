@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions and Go dependencies have been updated to their latest patch versions for compatibility and security reasons. This includes dorny/paths-filter, rtk token saver, OpenTelemetry, kubevirt.io/containerized-data-importer-api, grpc-gateway, and github.com/go-openapi packages. Downstream consumers should verify integration due to potential subtle API or behavior changes in updated dependencies.
