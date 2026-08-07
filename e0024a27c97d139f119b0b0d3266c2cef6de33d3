@@ -1,0 +1,3 @@
+Category: Fixed
+
+The runner now reconnects the VMI watch when the stream closes during long-running jobs, avoiding treating API-server timeouts as job failures. This change affects how users configure wait and cleanup timeouts for VM-backed jobs, and it does not introduce any security risks. The primary outcome is improved resilience in job execution.
