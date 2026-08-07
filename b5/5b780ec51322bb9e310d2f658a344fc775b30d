@@ -1,0 +1,3 @@
+Category: Changed
+
+The default cleanup timeout in the Kar command has been reduced from 30 minutes to 5 minutes, affecting users who rely on this feature for automatic cleanup tasks. This change does not introduce any breaking behavior or API changes but requires migration steps to adjust the timeout value if necessary. The security impact is minimal as this is an internal configuration adjustment. Users must update their scripts and workflows to accommodate the reduced timeout duration.
