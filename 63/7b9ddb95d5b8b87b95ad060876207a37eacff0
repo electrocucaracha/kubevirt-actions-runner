@@ -1,0 +1,3 @@
+Category: Added
+
+Telemetry support has been added to the application, enabling distributed tracing capabilities. The OpenTelemetry integration provides flexible exporters for multiple backends, including OTLP HTTP and stdout for local testing. Environment variables configure telemetry settings, allowing users to enable or disable it and specify the export type. This change introduces no breaking behavior but does modify configuration schema and adds primary user outcome through improved observability features.
