@@ -1,0 +1,3 @@
+Category: Added
+
+A self-hosted runner configuration file was added for the ActionLint tool, which allows users to run ActionLint on their own infrastructure. This change enables users to customize and manage their ActionLint setup more flexibly. The new configuration file does not introduce any breaking behavior or migration requirements.
