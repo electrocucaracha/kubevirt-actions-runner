@@ -1,0 +1,3 @@
+Category: Added
+
+The commit version has been added to the file, including build information such as Git commit hash, tree modification status, build date, and Go version. This change introduces new logging statements that display this information at runtime. The main function now retrieves and prints this build info using a new `getBuildInfo` function.
