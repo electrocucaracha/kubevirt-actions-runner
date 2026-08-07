@@ -1,0 +1,3 @@
+Category: Removed
+
+The unnecessary information in the index.md file has been removed, simplifying the documentation and reducing clutter for users navigating the testbed's sections on architecture and design principles. This change does not impact breaking behavior or migration requirements, nor does it alter API or CLI contracts, config schema, or introduce security concerns. The removal primarily affects the user experience by streamlining access to relevant information.
