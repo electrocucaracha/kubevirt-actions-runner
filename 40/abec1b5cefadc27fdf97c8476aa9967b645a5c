@@ -1,0 +1,3 @@
+Category: Added
+
+The GitHub workflow for updating the repository now securely uses a WORKFLOW_TOKEN secret token to authenticate actions, replacing the previous PAT usage. This change ensures secure access to repository contents and workflows without exposing sensitive credentials. The update does not introduce any breaking behavior or migration requirements.
