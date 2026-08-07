@@ -1,0 +1,3 @@
+Category: Changed
+
+The GitHub Actions workflow for linter checks now uses the Ministral-3B model instead of the previous medium-sized model, which may affect analysis results and accuracy. This change does not introduce any breaking behavior or migration requirements. The API or CLI contract remains unchanged, with no security impact or config schema changes.
