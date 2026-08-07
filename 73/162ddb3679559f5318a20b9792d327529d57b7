@@ -1,0 +1,3 @@
+Category: Changed
+
+The documentation for the `kubevirt-actions-runner` has been updated to provide detailed information on its usage, architecture, and configuration. The update includes changes to the README.md file, adding new sections on key features, prerequisites, and quick start guides. Additionally, the documentation now covers topics such as ephemeral VM creation, increased isolation, custom system-level configuration support, and integration with Actions Runner Controller and Kubernetes-native tooling.
