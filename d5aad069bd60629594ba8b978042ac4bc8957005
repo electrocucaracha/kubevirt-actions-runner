@@ -1,0 +1,3 @@
+Category: Removed
+
+The principal software engineer agent configuration was removed from the workflow, consolidating its responsibilities under a unified engineering guidance agent to reduce duplication and simplify maintenance. This change has no impact on existing automation or engineering processes. The removal eliminates redundant configuration, streamlining the system's complexity and improving maintainability.
