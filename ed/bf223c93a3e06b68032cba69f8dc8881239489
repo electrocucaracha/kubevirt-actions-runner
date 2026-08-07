@@ -1,0 +1,3 @@
+Category: Changed
+
+The super-linter image reference in the Makefile was updated from github/super-linter to ghcr.io/super-linter/super-linter, which may break existing workflows that rely on the old image. This change does not affect the API or CLI contract and does not impact security. The config schema remains unchanged, and users are not required to perform any migration steps.
