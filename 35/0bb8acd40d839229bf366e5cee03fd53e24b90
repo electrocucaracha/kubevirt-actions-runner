@@ -1,0 +1,3 @@
+Category: Changed
+
+The NotifyContext method has been introduced, replacing the previous usage of context.WithCancel in several places. This change affects the way resources are created and deleted, requiring migration to use the new method for proper cleanup. The API contract remains unchanged, but users must update their code to utilize the NotifyContext method correctly.
