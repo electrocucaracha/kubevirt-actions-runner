@@ -1,0 +1,3 @@
+Category: Removed
+
+The Printf method in LoggerImpl now delegates to Infof, eliminating duplicate logic while preserving identical behavior for all callers. This change removes redundant code but does not affect the API contract of the LoggerImpl type. The underlying zap SugaredLogger call remains unchanged.
