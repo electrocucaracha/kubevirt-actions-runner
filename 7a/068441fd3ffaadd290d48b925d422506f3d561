@@ -1,0 +1,3 @@
+Category: Changed
+
+Dockerfile GitHub action permissions were updated to allow write access for specific actions, enabling them to push code and create pull requests. This change affects the workflow's ability to perform certain tasks on Fridays at midnight. The update modifies the `permissions` section in the `.github/workflows/update.yml` file to include `contents: write` and `pull-requests: write`.
