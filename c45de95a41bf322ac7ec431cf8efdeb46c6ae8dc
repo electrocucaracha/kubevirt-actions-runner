@@ -1,0 +1,3 @@
+Category: Changed
+
+Extracted assertion helpers for error and shutdown checks to improve test readability and maintainability, reducing duplication of repeated logic in tests. This change does not introduce breaking behavior, API changes, config schema changes, or security impact. The primary user outcome is improved test clarity and reduced maintenance effort due to the extracted helper functions.
