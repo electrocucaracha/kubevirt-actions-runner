@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated, affecting the build process for Docker images and golangci-lint tool usage in GitHub Actions workflows. The docker/build-push-action was upgraded to version 7.2.0, and the golangci-lint-action was updated to version 9.2.1. This change requires no migration steps or breaking behavior adjustments.
