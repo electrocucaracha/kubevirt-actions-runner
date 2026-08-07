@@ -1,0 +1,3 @@
+Category: Fixed
+
+The demo script now pre-builds the kar binary and waits for the virt-handler to be ready before running the demo, addressing a timeout issue. This change involves adding a temporary directory for building the kar binary and modifying the demo.sh script to wait for the virt-handler's rollout status. The build process is now separate from the demo execution, improving reliability.
