@@ -1,0 +1,3 @@
+Category: Fixed
+
+Linter issues were fixed in the janitor agent documentation, specifically in the section on codebase cleaning. The change removed unnecessary abstractions from the list of tasks, correcting an over-engineering note to simply "overengineering". This update maintains consistency with proper terminology and does not introduce any breaking behavior or migration requirements.
