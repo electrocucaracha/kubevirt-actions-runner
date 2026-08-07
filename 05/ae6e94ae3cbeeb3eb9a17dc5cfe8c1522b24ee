@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated in GitHub workflows, changing dependencies for Go setup to version 1.24 and other actions to newer versions: cache action from 4.2.3 to 4.2.4, login-action from 3.4.0 to 3.5.0, and metadata-action from 5.7.0 to 5.8.0. These updates are likely intended to ensure compatibility with the latest versions of these tools and dependencies.
