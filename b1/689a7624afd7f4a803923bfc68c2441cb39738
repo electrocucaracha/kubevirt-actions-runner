@@ -1,0 +1,3 @@
+Category: Fixed
+
+The janitor prompt task in GitHub workflows has been updated to improve user experience when reducing technical debt. The changes include updating the workflow name, modifying the on: issues types from labeled to opened, and revising the prompt text to encourage users to submit Pull Requests with improvements. Additionally, the steps for creating a new branch and submitting a Pull Request have been clarified with specific commands using GitHub CLI.
