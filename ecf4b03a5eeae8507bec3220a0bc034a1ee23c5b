@@ -1,0 +1,3 @@
+Category: Added
+
+GitHub workflows documentation was added to the repository, providing an overview of available workflows for CI validation, maintenance, and automation. The documentation lists workflow files, their purposes, and triggers, including build, linter, fixers, on-demand CI, spell checking, update, and verifiers workflows. This change does not introduce breaking behavior or API changes but provides essential information for users to understand and utilize the existing GitHub Actions workflows.
