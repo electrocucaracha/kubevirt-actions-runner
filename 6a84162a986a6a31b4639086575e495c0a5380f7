@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions workflows were updated to use newer versions of actions, specifically GoTestTools/gotestfmt-action was updated from 2.2.0 to 2.3.0 and actions/upload-artifact was updated from 7.0.0 to 7.0.1 in multiple workflow files. These updates should not introduce breaking behavior or require migration steps.
