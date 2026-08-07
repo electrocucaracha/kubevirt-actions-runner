@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub action versions were upgraded across multiple workflows, affecting setup actions for Go, Docker login, metadata extraction, build and push, artifact attestation, linter validation, and spell checking. The changes primarily involve upgrading to newer versions of these actions, with some instances moving from 4.x to 5.x or 6.x versions.
