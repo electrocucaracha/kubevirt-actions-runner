@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Docker build process now passes build variables to the Go compiler, allowing for dynamic construction of metadata in the compiled binary. This change affects users who rely on this metadata, requiring them to update their code to read from the ldflags settings if VCS information is not available. The API and CLI contracts remain unchanged, with no security implications or config schema changes. Migration steps involve updating code that accesses buildInfo fields to use the new ldflags settings instead of relying solely on VCS information.
