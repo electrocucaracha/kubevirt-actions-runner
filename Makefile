@@ -33,7 +33,7 @@ fmt:
 	shfmt -l -w -s -i 4 .
 	command -v yamlfmt > /dev/null || curl -s "https://i.jpillora.com/google/yamlfmt!!" | bash
 	yamlfmt -dstar **/*.{yaml,yml}
-	command -v prettier > /dev/null || npm install prettier
-	npx prettier . --write
 	command -v golangci-lint > /dev/null || go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 	golangci-lint run --fix
+	command -v prettier > /dev/null || npm install prettier
+	npx prettier . --write
