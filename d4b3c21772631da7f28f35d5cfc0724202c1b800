@@ -1,0 +1,3 @@
+Category: Fixed
+
+GitHub Actions workflow triggers were updated to improve job filtering and reduce technical debt. The `fixers.yml` file now only runs when the issue already includes the matching remediation label, and the `verifiers.yml` file no longer launches the janitor-style task on push events. Additionally, the `build.yml` file removed a condition that allowed pull request reviews to trigger the workflow.
