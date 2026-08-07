@@ -1,0 +1,3 @@
+Category: Added
+
+The build workflow now includes Gremlins mutation testing to improve code resilience by identifying potential weaknesses in the test suite. This new job runs after unit tests, only when Go files have changed, and integrates into existing workflow dependencies. The Docker image is pushed only after all tests pass, including the new mutation tests, strengthening the testing pipeline with an additional layer of fault detection.
