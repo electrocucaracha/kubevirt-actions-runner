@@ -1,0 +1,3 @@
+Category: Added
+
+The charset checker in the editorconfig-checker has been disabled, affecting users who rely on this feature to enforce character encoding standards. This change does not introduce breaking behavior and maintains compatibility with existing configurations. The config schema has been updated by adding the "Charset" property under the "Disable" section, which can be set to true to disable charset checking.
