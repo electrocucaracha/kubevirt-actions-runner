@@ -1,0 +1,3 @@
+Category: Fixed
+
+Golangci-lint issues in appcontext were resolved by removing redundant dependencies, updating linter configurations, and refactoring the AppContext singleton instance to use a mutex for thread safety. This change fixes exitAfterDefer and paralleltest failures, ensuring consistent behavior during testing. The Docker build was also fixed by removing unnecessary COPY instructions from the Dockerfile.
