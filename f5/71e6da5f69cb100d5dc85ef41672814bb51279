@@ -1,0 +1,3 @@
+Category: Added
+
+This initial commit sets up the foundation for the Kubevirt Actions Runner project, including various configuration files, workflows, and dependencies. The `.github/workflows` directory contains several YAML files defining GitHub Actions, including linter, spellcheck, and update workflows. Additionally, a Makefile is introduced to manage build tasks, and a Dockerfile is created to build the runner image.
