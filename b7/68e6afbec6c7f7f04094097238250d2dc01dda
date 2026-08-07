@@ -1,0 +1,3 @@
+Category: Fixed
+
+Code coverage was increased by adding linter checks for _test.go files, internal/utils/common.go, and internal/utils/common_test.go. The changes include new linter configurations in .golangci.yml and the addition of test cases to verify logging functionality. No breaking behavior or API changes are introduced; however, config schema changes may be required due to updated logger settings.
