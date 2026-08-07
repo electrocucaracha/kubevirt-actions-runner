@@ -1,0 +1,3 @@
+Category: Added
+
+The build process for Docker images has been overhauled to include automated analysis of build failures, producing detailed issue descriptions. A new workflow, docker-build-fixer.yml, uses Copilot CLI to apply minimal fixes directly to the repository and submit pull requests. This change introduces a more robust approach to resolving Docker build and runtime issues, improving developer productivity and reducing manual effort.
