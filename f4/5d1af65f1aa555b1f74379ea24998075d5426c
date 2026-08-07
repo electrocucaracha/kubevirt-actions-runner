@@ -1,0 +1,3 @@
+Category: Fixed
+
+Integration tests were updated to reflect changes in the cluster configuration and environment variables. The update includes modifications to job names, artifact upload, and Kubernetes events retrieval. Additionally, the `useEmulation` flag was enabled for the kubevirt daemonset, and storage information is now collected using `df -h`, `lsblk`, and `lsmod`. These changes aim to improve test reliability and accuracy.
