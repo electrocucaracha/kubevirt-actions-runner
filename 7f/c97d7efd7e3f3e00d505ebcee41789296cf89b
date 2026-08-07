@@ -1,0 +1,3 @@
+Category: Changed
+
+The changelog was updated to consistently reference the README file as "readme.md" instead of "README.md", aligning with project file naming conventions, and improving clarity without affecting functional behavior. This change does not introduce breaking behavior, migration requirements, API changes, security impact, or config schema changes. The update is a minor edit to maintain consistency in documentation.
