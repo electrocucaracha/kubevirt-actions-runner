@@ -1,0 +1,3 @@
+Category: Added
+
+The GitHub Actions workflow for linter checks now notifies failed jobs by sending an issue to the repository, affecting users who rely on this notification feature. The notify step has been added with specific conditions and permissions, ensuring that notifications are only sent when necessary and respecting access controls. This change does not introduce any breaking behavior or migration requirements.
