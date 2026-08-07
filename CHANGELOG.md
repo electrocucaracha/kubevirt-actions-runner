@@ -25,13 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Enabled automatic Go linting and style enforcement during formatting, ensuring code quality and consistency across the project by installing golangci-lint if missing and running it with auto-fix. [5bd8a1c0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5bd8a1c0d8e68b74aaec0db8745e0ef2e62f015c)
+- Enabled automatic Go linting and style enforcement during formatting, ensuring code quality and consistency across the project by installing golangci-lint if missing and running it with autofix. [5bd8a1c0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5bd8a1c0d8e68b74aaec0db8745e0ef2e62f015c)
 
 ## [18.4.0] - 2026-08-07
 
 ### Added
 
-- Enhanced test case clarity by introducing blank lines after os.Args assignments to improve readability and separate setup steps without affecting API or CLI contracts. [ce71f230](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ce71f230ddffff728aa4cee724850626fa571e4b)
+- Enhanced test case clarity by introducing empty lines after os.Args assignments to improve readability and separate setup steps without affecting API or CLI contracts. [ce71f230](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ce71f230ddffff728aa4cee724850626fa571e4b)
 
 ## [18.3.0] - 2026-08-07
 
@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Improved readability of test cases by introducing blank lines after os.Args assignments to enhance visual separation of setup steps without affecting API or CLI contracts and security implications. [8066fc30](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8066fc30e5de25547ab071825c777144e952eda5)
+- Improved readability of test cases by introducing empty lines after os.Args assignments to enhance visual separation of setup steps without affecting API or CLI contracts and security implications. [8066fc30](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8066fc30e5de25547ab071825c777144e952eda5)
 
 ## [18.1.2] - 2026-08-07
 
@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated dependencies to their latest versions, enabling improved compatibility and bug fixes for Go modules including kubevirt.io/api, kubevirt.io/client-go, and github.com/k8snetworkplumbingwg/network-attachment-definition-client, as well as GitHub Actions workflows. [60d1a24b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/60d1a24bc49bb980e4e133c305b4d3e9ae818434)
+- Updated dependencies to their latest versions, enabling improved compatibility and bugfixes for Go modules including kubevirt.io/API, kubevirt.io/client-go, and github.com/k8snetworkplumbingwg/network-attachment-definition-client, as well as GitHub Actions workflows. [60d1a24b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/60d1a24bc49bb980e4e133c305b4d3e9ae818434)
 
 ## [17.1.6] - 2026-07-31
 
@@ -157,13 +157,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Enabled proper coverage reporting by granting write permission to contents for analysis, allowing the gwatts/go-coverage-action to annotate commits during git notes usage without affecting other workflow steps. [43682a91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43682a9162e583d2635cff01804b2156196f512a)
+- Enabled proper coverage reporting by granting write permission to contents for analysis, allowing the gwatts/go-coverage-action to annotate commits during Git notes usage without affecting other workflow steps. [43682a91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43682a9162e583d2635cff01804b2156196f512a)
 
 ## [16.1.2] - 2026-07-11
 
 ### Changed
 
-- Upgraded several Go module dependencies to their latest versions to ensure compatibility and security, including github.com/onsi/ginkgo/v2, github.com/onsi/gomega, and google.golang.org/grpc. [91b83fad](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b83fad0cba07cee037b275e41b245f311807f7)
+- Upgraded several Go module dependencies to their latest versions to ensure compatibility and security, including github.com/onsi/ginkgo/v2, github.com/onsi/gomega, and google.golang.org/gRPC. [91b83fad](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b83fad0cba07cee037b275e41b245f311807f7)
 
 ## [16.1.1] - 2026-07-11
 
@@ -277,7 +277,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Enhanced GitHub Actions to reliably update action hashes for semver tags in workflow files, addressing edge cases and improving overall automation robustness. [8be2c280](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8be2c280b656ebd0f36a96cb1f863e156fa7ca94)
+- Enhanced GitHub Actions to reliably update action hashes for SemVer tags in workflow files, addressing edge cases and improving overall automation robustness. [8be2c280](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8be2c280b656ebd0f36a96cb1f863e156fa7ca94)
 
 ## [10.0.1] - 2026-06-23
 
@@ -307,7 +307,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated the ai-prepare-commit-msg hook to leverage upstream improvements and bug fixes for commit message generation, requiring no configuration changes but monitoring future breaking changes in hook behavior. [3f0464d1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f0464d1e50712a766a6445de1a8df5331fd007a)
+- Updated the ai-prepare-commit-msg hook to leverage upstream improvements and bugfixes for commit message generation, requiring no configuration changes but monitoring future breaking changes in hook behavior. [3f0464d1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f0464d1e50712a766a6445de1a8df5331fd007a)
 
 ## [9.7.1] - 2026-06-18
 
@@ -325,7 +325,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Stabilized documentation clarity by updating QA subagent code blocks to use "text" language and correcting the heading from "Anti-Patterns" to "Antipatterns". [5f182399](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f18239916873c8a42c56c23eacd5c541ab721e8)
+- Stabilized documentation clarity by updating QA subagent code blocks to use "text" language and correcting the heading from "antipatterns" to "Antipatterns". [5f182399](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f18239916873c8a42c56c23eacd5c541ab721e8)
 
 ## [9.6.1] - 2026-06-18
 
@@ -349,7 +349,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Stabilized compatibility for all environments building the application by updating the Dockerfile to utilize the latest version of git, 2.54.0-r0, which includes recent bug fixes and security improvements over the previously used outdated version 2.52.0-r0. [d6535c99](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d6535c99de063288b7b2a656a90ad47e47507649)
+- Stabilized compatibility for all environments building the application by updating the Dockerfile to utilize the latest version of Git, 2.54.0-r0, which includes recent bugfixes and security improvements over the previously used outdated version 2.52.0-r0. [d6535c99](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d6535c99de063288b7b2a656a90ad47e47507649)
 
 ## [9.4.2] - 2026-06-17
 
@@ -361,7 +361,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Stabilized the build environment by updating the base image to alpine 3.24 which includes the latest security patches and bug fixes without introducing any breaking changes to the build process or application functionality. [480ebb71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/480ebb7159f791b4ab087ac660f52ba1d60fea6a)
+- Stabilized the build environment by updating the base image to alpine 3.24 which includes the latest security patches and bugfixes without introducing any breaking changes to the build process or application functionality. [480ebb71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/480ebb7159f791b4ab087ac660f52ba1d60fea6a)
 
 ## [9.4.0] - 2026-06-17
 
@@ -499,7 +499,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved NATURAL_LANGUAGE and GITLEAKS super-linter failures, addressed Go linter issues, applied code review feedback, and added default branch handling for unrecognized VMI phases without introducing any breaking behavior or migration requirements. [9b026b66](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9b026b66a888705b442148cc652ab73b8cc49801)
+- Resolved NATURAL_LANGUAGE and GITLEAKS super-linter failures, addressed Go linting issues, applied code review feedback, and added default branch handling for unrecognized VMI phases without introducing any breaking behavior or migration requirements. [9b026b66](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9b026b66a888705b442148cc652ab73b8cc49801)
 
 ## [9.1.1] - 2026-04-05
 
@@ -589,13 +589,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The Docker build process was resolved by correcting an issue that prevented it from importing the project's git repository correctly during the build process. [3f62f463](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f62f463bb53e081e90330245803ccf69e0c8cca)
+- The Docker build process was resolved by correcting an issue that prevented it from importing the project's Git repository correctly during the build process. [3f62f463](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f62f463bb53e081e90330245803ccf69e0c8cca)
 
 ## [7.20.3] - 2026-03-13
 
 ### Fixed
 
-- Resolved super-linter failures in NATURAL_LANGUAGE, MARKDOWN, and JSCPD checks by updating configuration settings and modifying README.md content to conform to textlint and markdownlint rules. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
+- Resolved super-linter failures in NATURAL_LANGUAGE, Markdown, and JSCPD checks by updating configuration settings and modifying README.md content to conform to textlint and markdownlint rules. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
 
 ## [7.20.2] - 2026-03-13
 
@@ -649,19 +649,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The quickstart documentation is now more accessible and easier to maintain due to its relocation from the README into a separate file. [6c472840](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6c472840477f076c6bfdaded92049d142e55cb21)
+- The quickstart documentation is now more accessible and easier to maintain due to its relocation from the readme into a separate file. [6c472840](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6c472840477f076c6bfdaded92049d142e55cb21)
 
 ## [7.13.2] - 2026-02-28
 
 ### Fixed
 
-- Resolved the markdown linter issues in the docs/how-to-enable-telemetry.md file to ensure consistency across example sections without introducing any breaking behavior or requiring migration steps. [a10c04b7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a10c04b7ff8d10567019a939ed9b3b3da328a421)
+- Resolved the Markdown linting issues in the docs/how-to-enable-telemetry.md file to ensure consistency across example sections without introducing any breaking behavior or requiring migration steps. [a10c04b7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a10c04b7ff8d10567019a939ed9b3b3da328a421)
 
 ## [7.13.1] - 2026-02-28
 
 ### Fixed
 
-- Corrected linting issues to ensure adherence to critical rules and improved code readability by removing duplicated package declarations, adding empty lines between logical code groups, and clarifying documentation requirements in README files. [974b827d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/974b827d41932beae430585a8d2f228b19a63eda)
+- Corrected linting issues to ensure adherence to critical rules and improved code readability by removing duplicated package declarations, adding empty lines between logical code groups, and clarifying documentation requirements in readme files. [974b827d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/974b827d41932beae430585a8d2f228b19a63eda)
 
 ## [7.13.0] - 2026-02-28
 
@@ -679,13 +679,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The documentation for the Diátaxis Documentation Expert skill was updated to correct markdown and natural language issues, improving clarity and consistency in project tone, style, and terminology. [02c8b8d5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/02c8b8d5a2eb56cadcf4805725dd6fa5722a808b)
+- The documentation for the Diátaxis Documentation Expert skill was updated to correct Markdown and natural language issues, improving clarity and consistency in project tone, style, and terminology. [02c8b8d5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/02c8b8d5a2eb56cadcf4805725dd6fa5722a808b)
 
 ## [7.11.1] - 2026-02-27
 
 ### Fixed
 
-- The wordlist used in GitHub actions has been updated to include several new terms without introducing any breaking behavior or migration requirements. [18f94788](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18f9478899af0ba2e4a2b13c96fd97642d3b1e8b)
+- The wordlist used in GitHub Actions has been updated to include several new terms without introducing any breaking behavior or migration requirements. [18f94788](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18f9478899af0ba2e4a2b13c96fd97642d3b1e8b)
 
 ## [7.11.0] - 2026-02-27
 
@@ -709,7 +709,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved inconsistencies in janitor agent documentation by correcting over-engineering terminology to maintain proper consistency and accuracy without introducing any breaking behavior or migration requirements. [a1de3c32](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1de3c325daa17d12a7c6579413925d7cdd57ea9)
+- Resolved inconsistencies in janitor agent documentation by correcting overengineering terminology to maintain proper consistency and accuracy without introducing any breaking behavior or migration requirements. [a1de3c32](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1de3c325daa17d12a7c6579413925d7cdd57ea9)
 
 ## [7.9.1] - 2026-02-14
 
@@ -721,7 +721,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Enabled automated cleanup of unused code elements and tech debt remediation through integration into GitHub workflows for Docker build fixes and Go linter issues. [40df54db](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40df54db7f6d7b0d3a1c1b6ec5f7472910c554f2)
+- Enabled automated cleanup of unused code elements and tech debt remediation through integration into GitHub workflows for Docker build fixes and Go linting issues. [40df54db](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40df54db7f6d7b0d3a1c1b6ec5f7472910c554f2)
 
 ## [7.8.0] - 2026-02-14
 
@@ -781,7 +781,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved an issue in the janitor prompt's natural language linting by correcting the spelling of "over-engineering" to its original form "overengineering", maintaining consistency with the rest of the text without introducing any breaking behavior. [d62d911b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d62d911bbc02efd4c1c0ff381744b095e6cdd197)
+- Resolved an issue in the janitor prompt's natural language linting by correcting the spelling of "overengineering" to its original form "overengineering", maintaining consistency with the rest of the text without introducing any breaking behavior. [d62d911b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d62d911bbc02efd4c1c0ff381744b095e6cdd197)
 
 ## [7.5.1] - 2026-01-23
 
@@ -817,7 +817,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved issues related to the Docker build process by correcting the shell used from /bin/bash to /bin/sh in affected Dockerfiles. [ea0f5947](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ea0f5947f5b909fd03226f6bd88d9bf8b0e1d216)
+- Resolved issues related to the Docker build process by correcting the shell used from /bin/Bash to /bin/sh in affected Dockerfiles. [ea0f5947](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ea0f5947f5b909fd03226f6bd88d9bf8b0e1d216)
 
 ## [7.4.5] - 2026-01-23
 
@@ -853,7 +853,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Improved issue descriptions are now generated by GitHub actions for Go linter and Super-linter, providing developers with more comprehensive and informative issues to implement fixes confidently. [239c941a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/239c941a2c71cdbeca8b7bfe17b3892a47046649)
+- Improved issue descriptions are now generated by GitHub Actions for Go linter and Super-linter, providing developers with more comprehensive and informative issues to implement fixes confidently. [239c941a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/239c941a2c71cdbeca8b7bfe17b3892a47046649)
 
 ## [7.3.2] - 2026-01-23
 
@@ -1009,7 +1009,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded several Kubernetes-related dependencies to their latest versions, including k8s.io/api v0.22.0 and others, which may require migration steps in dependent code due to potential breaking changes. [2eb806cf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb806cf6c7e99cfb300a5801449f05111423be3)
+- Upgraded several Kubernetes-related dependencies to their latest versions, including k8s.io/API v0.22.0 and others, which may require migration steps in dependent code due to potential breaking changes. [2eb806cf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb806cf6c7e99cfb300a5801449f05111423be3)
 
 ## [6.1.0] - 2025-12-19
 
@@ -1171,13 +1171,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The CI update job now correctly retrieves and uses the Go version from the official website for the project's dependencies and GitHub Actions. [4617acff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4617acff424704f404746fcfe5913dbe7d3419fc)
+- The CI update job now correctly retrieves and uses the Go version from the official site for the project's dependencies and GitHub Actions. [4617acff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4617acff424704f404746fcfe5913dbe7d3419fc)
 
 ## [5.1.2] - 2025-08-18
 
 ### Changed
 
-- Aligned bash scripts to consistently use spaces for indentation and set size to 4 characters by updating the `.editorconfig` file and modifying the `shfmt` command in the Makefile's `fmt` target with the `-i 4` option. [7d533f3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7d533f3c22e69a71d33e3d49d89ca0c83184a243)
+- Aligned Bash scripts to consistently use spaces for indentation and set size to 4 characters by updating the `.editorconfig` file and modifying the `shfmt` command in the Makefile's `fmt` target with the `-i 4` option. [7d533f3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7d533f3c22e69a71d33e3d49d89ca0c83184a243)
 
 ## [5.1.1] - 2025-08-07
 
@@ -1195,7 +1195,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded dependencies for GitHub Actions workflows to introduce new linting rules and spellchecking capabilities without requiring any migration steps or breaking changes to existing workflows. [5ee77a6d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5ee77a6d975ba7e66b436468975066e1add81c1e)
+- Upgraded dependencies for GitHub Actions workflows to introduce new linter rules and spell checking capabilities without requiring any migration steps or breaking changes to existing workflows. [5ee77a6d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5ee77a6d975ba7e66b436468975066e1add81c1e)
 
 ## [5.0.3] - 2025-07-18
 
@@ -1207,7 +1207,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded the spellchecking tool versions used in GitHub Actions workflows to 1.0.5 from 1.0.4 without introducing any breaking changes or requiring migration efforts. [2739d1a6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2739d1a6c31d6a4302c6b6cf864ecedcb53ce4d3)
+- Upgraded the spell checking tool versions used in GitHub Actions workflows to 1.0.5 from 1.0.4 without introducing any breaking changes or requiring migration efforts. [2739d1a6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2739d1a6c31d6a4302c6b6cf864ecedcb53ce4d3)
 
 ## [5.0.1] - 2025-06-27
 
@@ -1237,7 +1237,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated the Docker build process to use the latest git version and updated the working directory to `/app`, which may necessitate adjustments in users' build scripts or configurations if they rely on specific behavior from the previous Dockerfile. [2b296ea6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2b296ea68358509d52850d7dc433d71604f61e56)
+- Updated the Docker build process to use the latest Git version and updated the working directory to `/app`, which may necessitate adjustments in users' build scripts or configurations if they rely on specific behavior from the previous Dockerfile. [2b296ea6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2b296ea68358509d52850d7dc433d71604f61e56)
 
 ## [4.0.2] - 2025-06-27
 
@@ -1261,7 +1261,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The workflow's ability to push code and create pull requests on Fridays at midnight has been optimized by updating Dockerfile GitHub action permissions to allow write access for specific actions. [7a068441](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a068441fd3ffaadd290d48b925d422506f3d561)
+- The workflow's ability to push code and create pull requests on Fridays at midnight has been optimized by updating Dockerfile GitHub Action permissions to allow write access for specific actions. [7a068441](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a068441fd3ffaadd290d48b925d422506f3d561)
 
 ## [3.4.3] - 2025-06-26
 
@@ -1315,13 +1315,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgraded GitHub action versions across multiple workflows to newer versions, primarily moving setup actions for Go, Docker login, metadata extraction, build and push, artifact attestation, linter validation, and spell checking from 4.x to 5.x or 6.x. [e5af489c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e5af489c754ce9150f9f143aa322ad9700a9ee85)
+- Upgraded GitHub Action versions across multiple workflows to newer versions, primarily moving setup actions for Go, Docker login, metadata extraction, build and push, artifact attestation, linter validation, and spell checking from 4.x to 5.x or 6.x. [e5af489c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e5af489c754ce9150f9f143aa322ad9700a9ee85)
 
 ## [3.1.0] - 2025-04-09
 
 ### Added
 
-- Enabled developers to continue development without strict adherence to go linting rules by disabling the project's go linter and introducing an option in the Makefile to disable go module validation. [8990975d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8990975d60f45959dd4fcfa10ae16362a586aa49)
+- Enabled developers to continue development without strict adherence to go linter rules by disabling the project's go linter and introducing an option in the Makefile to disable go module validation. [8990975d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8990975d60f45959dd4fcfa10ae16362a586aa49)
 
 ## [3.0.4] - 2025-04-09
 
