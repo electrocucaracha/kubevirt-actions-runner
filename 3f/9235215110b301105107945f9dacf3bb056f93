@@ -1,0 +1,3 @@
+Category: Added
+
+The GitHub workflow for linter checks was updated to address issues related to kubeconform. Specifically, the KUBERNETES_KUBECONFORM_OPTIONS flag was added with an ignore-missing-schemas option. This change does not introduce any breaking behavior and is intended to improve the linter's functionality. The update should be seamless for maintainers and users.
