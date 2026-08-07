@@ -1,0 +1,3 @@
+Category: Fixed
+
+The wordlist used in GitHub actions was updated to include several new terms, including "blockquote", "KVM", "passwordless", "sudo", and "testbed". This change does not introduce any breaking behavior or migration requirements. The API or CLI contract remains unchanged. There is no security impact associated with this update.
