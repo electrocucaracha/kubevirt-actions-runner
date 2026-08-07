@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Actions workflow for building the project now persists Git credentials, which affects users who rely on this feature to authenticate with their repositories. This change introduces no breaking behavior and does not require migration steps. The configuration schema remains unchanged, and there are no implications for security. Users who previously disabled credential persistence will need to adjust their workflows accordingly.
