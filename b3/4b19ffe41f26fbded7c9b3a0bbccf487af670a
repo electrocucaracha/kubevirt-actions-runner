@@ -1,0 +1,3 @@
+Category: Changed
+
+The markdownlint hook has been switched from the Ruby-based implementation to markdownlint-cli, a faster Node.js-based linter that's easier to install and maintain in CI environments. This change improves developer experience by reducing setup friction and provides a more efficient linting process. The configuration now uses the latest available version of markdownlint-cli and removes custom arguments incompatible with the new CLI.
