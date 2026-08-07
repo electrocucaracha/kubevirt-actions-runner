@@ -1,0 +1,3 @@
+Category: Added
+
+Linter failures are now reported in two modes: human-readable Markdown summaries and structured machine-report.json payloads, enabling improved automation and clearer communication for maintainers. The dual-mode reporting system includes concise summaries of failed linters, affected files, and lines, as well as JSON objects containing all relevant error details and AI analysis. This change facilitates easier integration with external tools and richer error categorization in future improvements.
