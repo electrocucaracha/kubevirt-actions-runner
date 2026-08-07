@@ -1,0 +1,3 @@
+Category: Changed
+
+Linting issues were fixed in GitHub workflows, including updating actions for markdown link checking, super-linter syntax validation, and misspell detection. The Makefile was also updated to reflect these changes. No breaking behavior or migration requirements are introduced, but the update may require re-running linters after applying this change.
