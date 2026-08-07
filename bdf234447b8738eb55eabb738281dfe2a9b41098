@@ -1,0 +1,3 @@
+Category: Fixed
+
+Attempts to create a Virtual Machine Instance that already exists now return the existing VMI instead of halting execution, improving idempotency and preventing unnecessary failures when rerunning operations. The "already exists" error is logged and handled separately from other failure cases, which are also logged for additional visibility. This change ensures consistent behavior in scenarios where multiple attempts to create the same VMI occur.
