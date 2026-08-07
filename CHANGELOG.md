@@ -9,6 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.9.1] - 2026-08-07
+
+### Fixed
+
+- Stabilized the fmt target by ensuring that formatting changes from golangci-lint are preserved in the final output through a consistent order of code formatting tool execution. [91b75ef2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b75ef21f20b9d2e6c93f133452f801bf924273)
+
+## [18.9.0] - 2026-08-07
+
+### Added
+
+- Enabled enforcement of consistent terminology usage in documentation and prose by defaulting the terminology rule on in textlint configuration. [41b9df58](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/41b9df58e41171b78d4e7b2829f101783305fd41)
+
+## [18.8.1] - 2026-08-07
+
+### Changed
+
+- Clarified terminology throughout the changelog to consistently reference tools and technologies such as GitHub Actions, README, Go linter, and spell checking, enhancing readability and professionalism without introducing any breaking behavior or migration requirements. [2f49d0c7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2f49d0c7a0d0d5c7bb23ba596ed940780b3d8e42)
+
+## [18.8.0] - 2026-08-07
+
+### Added
+
+- Enabled more accurate spelling and linting tools by expanding the custom wordlist to include new terms, abbreviations, and project-specific identifiers that reduce false positives on domain-specific vocabulary. [643c0806](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/643c08061cf82ee17b14a1a837b851238cecf265)
+
+## [18.7.0] - 2026-08-07
+
+### Added
+
+- Enabled clear and consistent release notes for users and maintainers through the introduction of a comprehensive changelog following the Keep a Changelog format and Semantic Versioning, which includes versioned entries with links to commits, summaries of changes, and context for each release. [224740a1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/224740a1bede9df8c51b7b063079c99934e65395)
+
 ## [18.6.0] - 2026-08-07
 
 ### Added
