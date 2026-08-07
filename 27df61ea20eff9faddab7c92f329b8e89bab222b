@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions were updated to their latest patch versions for improved security, bug fixes, and future-proofing. The changes include updating setup-go to v6.5.0 with go-version set to "^1.26" and bumping other actions such as docker/login-action, docker/metadata-action, and docker/build-push-action to their latest patch releases. This ensures the workflows use recent security and bug fixes, reducing maintenance overhead and improving reliability.
