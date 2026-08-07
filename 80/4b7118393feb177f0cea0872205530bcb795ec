@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Dockerfile and main.go file have been updated to include build-time variables set via ldflags during the build process, allowing for more accurate display of build information in the application. This change enables the display of the Git commit hash, build date, and Git tree modification status within the application. The format of these variables has also been standardized.
