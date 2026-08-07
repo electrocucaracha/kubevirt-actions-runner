@@ -1,0 +1,3 @@
+Category: Removed
+
+A superfluous blank line was removed from the data volume test in runner_test to improve code readability and consistency. The change does not affect API or CLI contracts, config schema, security, or migration requirements. This minor edit aims to enhance clarity by eliminating unnecessary whitespace.
