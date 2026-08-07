@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions workflows were updated to fix linting issues, specifically upgrading actions/checkout from version 4.2.2 to 5.0.0 and adding permissions for contents: write and read in various jobs. This change affects the workflow's behavior when checking out code and may require migration steps to update existing configurations.
