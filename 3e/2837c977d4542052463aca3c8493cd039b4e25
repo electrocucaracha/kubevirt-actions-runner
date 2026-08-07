@@ -1,0 +1,3 @@
+Category: Fixed
+
+Bash linting issues were fixed in the demo script, which now properly sources the system path configuration file to avoid errors when running Alpine demos. This change addresses a critical issue that could cause the demo to fail due to missing environment variables. The fix is included in the updated `demo.sh` script.
