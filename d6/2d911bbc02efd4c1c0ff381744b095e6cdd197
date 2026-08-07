@@ -1,0 +1,3 @@
+Category: Fixed
+
+The natural language linting in the janitor prompt has been updated to correct an issue, specifically changing "over-engineering" back to its original spelling of "overengineering". This change maintains consistency with the rest of the text and does not introduce any breaking behavior. The update is part of a larger effort to address issues identified in pull request #33.
