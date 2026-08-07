@@ -1,0 +1,3 @@
+Category: Changed
+
+The version of the containerized-data-importer-api dependency has been bumped to v1.64.0, which may require migration steps if users are relying on specific features or APIs from previous versions. The change does not introduce any breaking behavior and maintains the existing API contract. This update is likely a routine maintenance task to ensure compatibility with newer dependencies.
