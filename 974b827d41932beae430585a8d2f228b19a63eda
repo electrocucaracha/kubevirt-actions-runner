@@ -1,0 +1,3 @@
+Category: Fixed
+
+The instructions for writing Go code have been updated to correct linting issues, specifically addressing package declaration rules and formatting guidelines. This change affects users by ensuring adherence to critical rules and improving code readability. The updates include removing duplicated `package` declarations, adding empty lines between logical code groups, and clarifying documentation requirements in README files.
