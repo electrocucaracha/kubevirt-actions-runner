@@ -1,0 +1,3 @@
+Category: Changed
+
+VCS build setting keys are now defined as constants to avoid duplication and reduce the risk of typos across the codebase and tests. The runMainApp function signature was simplified by removing an unused parameter, and all call sites were updated accordingly. This reduces cognitive overhead and clarifies the function's contract. No functional changes to application behavior are expected.
