@@ -1,0 +1,3 @@
+Category: Changed
+
+The application context has been implemented, introducing an AppContext struct to store Virtual Machine Instance and Data Volume names. This change affects the KubevirtRunner, removing methods for getting these names in favor of accessing them through the AppContext instance. The NewAppContext function initializes this instance once with provided values, while GetAppContext returns it if already initialized.
