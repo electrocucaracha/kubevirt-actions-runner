@@ -1,0 +1,3 @@
+Category: Added
+
+The Dockerfile now skips the HEALTHCHECK checkov requirement, allowing container images to bypass this security check. This change affects users who need to configure their Docker builds to comply with specific security policies. The migration step for maintainers involves updating existing Dockerfiles to reflect this change and potentially adjusting security settings accordingly.
