@@ -1,0 +1,3 @@
+Category: Changed
+
+The versions of the `actions/ai-inference` action were updated in three GitHub workflows to 2.1.0 from 2.0.8, requiring no changes for users but potentially impacting build and linter analysis results due to API contract changes. The update may affect the accuracy or output of these analyses.
