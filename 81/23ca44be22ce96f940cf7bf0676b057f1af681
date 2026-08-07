@@ -1,0 +1,3 @@
+Category: Fixed
+
+GitHub Actions permissions were updated to remove write access for artifact-metadata, which may break workflows relying on this permission. The change affects the build.yml workflow file, and users should review their configurations to ensure compatibility. This update is necessary due to security considerations.
