@@ -1,0 +1,3 @@
+Category: Added
+
+Devcontainer support was added, allowing contributors to easily set up a development environment without manual configuration. This includes cloud-based development environments through GitHub Codespaces and local Dev Containers via Visual Studio Code. The project's README now provides instructions for setting up both options. No breaking behavior or API changes were introduced.
