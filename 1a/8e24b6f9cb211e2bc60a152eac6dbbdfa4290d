@@ -1,0 +1,3 @@
+Category: Changed
+
+Kubevirt's runner now ignores errors during the cleanup process, instead logging them at the debug level if they're not due to the resource already being deleted. This change affects API behavior and doesn't require migration steps from users. The primary outcome for maintainers is improved error handling in the runner's cleanup process.
