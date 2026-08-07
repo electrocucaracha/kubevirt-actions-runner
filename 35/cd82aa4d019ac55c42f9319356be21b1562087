@@ -1,0 +1,3 @@
+Category: Fixed
+
+The `.codespellrc` file was updated to skip false positives, specifically excluding `go.*` files from spell checking. Additionally, the GitHub Actions workflow and Makefile were modified to disable code spell checking during linting. This change affects users who rely on code spell checking in their development workflows.
