@@ -1,0 +1,3 @@
+Category: Changed
+
+The versions used in the GitHub Actions workflow for spellchecking have been updated to 1.0.5 from 1.0.4, with no changes to breaking behavior or migration requirements, API or CLI contract, security impact, or config schema. This update is likely a minor maintenance change to ensure the workflow continues to function correctly and efficiently.
