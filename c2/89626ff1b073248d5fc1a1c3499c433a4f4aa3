@@ -1,0 +1,3 @@
+Category: Changed
+
+A typo in the log message was corrected, changing "cretead" to "created". This change does not affect API or CLI contracts, nor does it introduce breaking behavior. The correction ensures accurate logging of resource creation status. No migration steps are required due to this minor edit.
