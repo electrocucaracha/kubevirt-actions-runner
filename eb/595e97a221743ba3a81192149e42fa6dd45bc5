@@ -1,0 +1,3 @@
+Category: Removed
+
+The super-linter workflow no longer checks code for linting issues before committing, improving build times by avoiding unnecessary checks while maintaining existing validation processes. This change removes the pre-commit validation step from the job configuration. The config schema has been updated to reflect this change with `VALIDATE_PRE_COMMIT` set to false.
