@@ -1,0 +1,3 @@
+Category: Added
+
+Pre-commit support has been added, enabling automated code checks before commit. This includes hooks for trailing whitespace, YAML syntax, shell script linting with bashate and shellcheck, Markdown linting with markdownlint, and YAML formatting with yamlfmt. The configuration is stored in a .pre-commit-config.yaml file, which specifies the repositories and hooks to run during pre-commit checks.
