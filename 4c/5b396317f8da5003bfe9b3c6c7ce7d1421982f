@@ -1,0 +1,3 @@
+Category: Added
+
+The janitor prompt was added, which enables performing cleanup tasks on any codebase by eliminating tech debt through deletion, simplification, and dependency hygiene. This change affects the CLI contract, introducing new tools for code elimination, simplification, and dependency management. The primary user outcome is improved code quality and reduced technical debt.
