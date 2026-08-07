@@ -1,0 +1,3 @@
+Category: Changed
+
+The version of the project was updated, including dependencies in `go.mod` and `go.sum`. This update affects API clients, Kubernetes APIs, and other external libraries. The main changes are due to updates in Go versions and dependencies such as OpenTelemetry, Kubernetes, and gRPC. No breaking behavior or migration requirements were introduced.
