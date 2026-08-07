@@ -1,0 +1,3 @@
+Category: Changed
+
+DataVolumes now reference their owner, the VirtualMachineInstance, through an OwnerReference field in the DataVolume's metadata. This change introduces no breaking behavior but does modify the internal state of DataVolumes during creation. The API contract remains unchanged; users create and manage DataVolumes as before. No security impact is present, and config schema changes are minimal.
