@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Actions workflow for building the project now fetches sufficient history to enable code coverage analysis, ensuring that all relevant changes are included in the coverage report. This change affects users who rely on code coverage metrics and requires no migration steps. The configuration schema has been updated with a new `fetch-depth` parameter set to 10, which is used by the `actions/checkout` action.
