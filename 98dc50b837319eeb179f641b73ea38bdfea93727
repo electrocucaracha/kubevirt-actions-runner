@@ -1,0 +1,3 @@
+Category: Changed
+
+Code coverage increased from 90.6% to 94.7%. New tests cover previously uncovered code paths, including subprocess tests for Fatal() and GetAppContext(). The tests are deterministic and isolated, verified with go test and make test commands. No production code was modified, and no breaking changes were introduced.
