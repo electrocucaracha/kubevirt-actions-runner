@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated to reflect the latest changes, which affects users who rely on these files for dependency management. The update does not introduce any breaking behavior, API or CLI contract changes, security impact, or config schema changes that require migration steps. This change primarily impacts maintainers who need to ensure their projects are up-to-date with the correct dependencies.
