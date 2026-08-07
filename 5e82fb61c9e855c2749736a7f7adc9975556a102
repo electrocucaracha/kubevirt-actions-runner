@@ -1,0 +1,3 @@
+Category: Fixed
+
+The pinned version of Git in the Dockerfile was updated from 2.49.1-r0 to 2.52.0-r0, which may require users to rebuild their containers if they were relying on the previous version. This change does not affect the API or CLI contract and has no security implications. The update is a minor version bump and should not impact most users' workflows.
