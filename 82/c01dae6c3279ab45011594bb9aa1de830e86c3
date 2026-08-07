@@ -1,0 +1,3 @@
+Category: Added
+
+Added pre-commit and prepare-commit-msg hooks for AI package maintenance, including configuration changes to .pre-commit-config.yaml file. This affects the development process by enforcing code quality checks before committing changes. No breaking behavior or API changes are introduced; however, users must update their commit hooks according to the new configuration.
