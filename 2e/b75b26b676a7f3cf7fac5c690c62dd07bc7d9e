@@ -1,0 +1,3 @@
+Category: Fixed
+
+The build conditions for GitHub Actions have been expanded to include Go module files, allowing for more comprehensive testing of Go projects. This change affects users who rely on code coverage and unit tests in their workflows. The threshold for code coverage has also been increased from 40% to 45%. Users must update their workflows to reflect the new build conditions and adjust their expectations for code coverage results.
