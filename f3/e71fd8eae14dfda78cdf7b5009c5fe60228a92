@@ -1,0 +1,3 @@
+Category: Changed
+
+Go dependencies were updated, adding OpenTelemetry packages for tracing and metrics, and removing indirect references to them. This change affects the application's ability to collect performance data and may require configuration adjustments. The update also includes other minor dependency changes, but their impact is less significant. Users should review the new dependencies and adjust configurations as necessary.
