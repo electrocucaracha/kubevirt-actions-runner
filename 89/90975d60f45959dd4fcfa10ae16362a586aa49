@@ -1,0 +1,3 @@
+Category: Added
+
+The go linter was disabled in the project's workflow, allowing for continued development without strict adherence to go linting rules. This change affects users who relied on the linter to enforce coding standards and maintain code quality. The Makefile now includes an option to disable go module validation, further indicating a shift away from enforcing these rules.
