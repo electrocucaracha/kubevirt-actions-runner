@@ -1,0 +1,3 @@
+Category: Fixed
+
+The markdown linter issues in the docs/how-to-enable-telemetry.md file have been fixed, which affects users who enable telemetry in their observability platforms. The changes include updating an example section from "#### Example: Jaeger" to "# Example: Jaeger", making it consistent with other sections. This update does not introduce any breaking behavior or require migration steps, and there are no API or CLI contract changes, security impact, or config schema modifications.
