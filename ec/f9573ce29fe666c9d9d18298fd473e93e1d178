@@ -1,0 +1,3 @@
+Category: Added
+
+The root command now logs messages at key stages of the Virtual Machine runner process, including creation, completion, and deletion of resources. This change does not introduce breaking behavior or migration requirements, nor does it alter the API or CLI contract. The security impact is minimal as these log messages are informational only.
