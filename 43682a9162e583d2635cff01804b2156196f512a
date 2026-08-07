@@ -1,0 +1,3 @@
+Category: Changed
+
+The workflow now grants write permission to contents for coverage analysis, enabling proper reporting by allowing the gwatts/go-coverage-action to annotate commits during git notes usage. This change affects the permissions section of the build.yml file and requires no migration steps. The action's functionality is restored with this update, which was previously hindered by read-only access.
