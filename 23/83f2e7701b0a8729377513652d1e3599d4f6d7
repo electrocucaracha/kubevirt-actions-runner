@@ -1,0 +1,3 @@
+Category: Changed
+
+golangci-lint version was upgraded, introducing breaking changes to linter settings and configuration. The default linters were updated, and specific rules were disabled or modified. Additionally, the `gomoddirectives` section was replaced with new settings for package maintenance and exclusions. These changes require users to review and adjust their project configurations accordingly.
