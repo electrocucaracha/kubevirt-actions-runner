@@ -1,0 +1,3 @@
+Category: Fixed
+
+The kind export logs command in the CI environment now runs with elevated permissions to resolve permission errors when accessing Kubernetes cluster logs, ensuring successful log exports for debugging purposes and reducing missing log artifacts in failed workflow runs. This change affects the on-demand_ci.yml workflow job that exports logs, where the command is modified to use sudo to access necessary files. The underlying command remains unchanged, but its execution environment has been altered.
