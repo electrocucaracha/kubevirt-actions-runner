@@ -1,0 +1,3 @@
+Category: Changed
+
+The restrictions on tools, paths, and URLs used by Copilot CLI have been relaxed to allow for more comprehensive verification tasks while maintaining security for critical operations. All tools are now enabled by default, with explicit denial of dangerous shell commands like rm and sudo. This change enables greater flexibility for legitimate tool usage but may require further adjustments as new requirements or risks emerge.
