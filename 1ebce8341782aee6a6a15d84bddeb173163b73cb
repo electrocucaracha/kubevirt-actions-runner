@@ -1,0 +1,3 @@
+Category: Changed
+
+The `ci/update_versions.sh` script now preserves partial updates, resolving dependency mismatches that caused test failures. It also keeps updater failures non-fatal and refines failure reporting. The changes aim to improve the reliability of version updates in continuous integration workflows.
