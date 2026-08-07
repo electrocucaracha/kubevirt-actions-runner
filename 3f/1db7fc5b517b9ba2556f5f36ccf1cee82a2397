@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Dockerfile was modified to resolve a lint issue, specifically changing the SHELL command from /bin/sh to /bin/ash to ensure compatibility with the build environment. This change does not introduce any breaking behavior and does not require migration steps. The update ensures that the Docker image can be built successfully without errors related to the shell configuration.
