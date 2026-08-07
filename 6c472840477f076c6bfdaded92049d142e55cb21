@@ -1,0 +1,3 @@
+Category: Added
+
+The quickstart documentation has been moved from the README to its own separate file, making it easier to manage and update. This change does not introduce any breaking behavior, API changes, security impacts, or config schema changes. The primary outcome for users is improved documentation accessibility and maintainability.
