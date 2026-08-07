@@ -1,0 +1,3 @@
+Category: Fixed
+
+Documentation for the Diátaxis Documentation Expert skill was removed from the project, including its guiding principles, workflow, and contextual awareness guidelines. This change affects users who relied on this documentation for creating high-quality software documentation. The removal does not introduce any breaking behavior, API changes, or security impact.
