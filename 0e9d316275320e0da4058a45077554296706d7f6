@@ -1,0 +1,3 @@
+Category: Added
+
+This commit adds custom instructions for GitHub Copilot to ensure code quality and documentation standards in the repository. The instructions cover general guidelines, workflow for contributions, review process, references, and project-specific customizations. They emphasize testing, validation, documentation updates, and code changes, with a focus on clean code practices, test automation, and quality attributes.
