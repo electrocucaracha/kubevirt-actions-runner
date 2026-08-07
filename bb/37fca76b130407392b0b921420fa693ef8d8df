@@ -1,0 +1,3 @@
+Category: Added
+
+A Go linter reporter has been added to the GitHub Actions workflow, enabling automated analysis of Go code for linting issues and generating detailed issue descriptions. This change introduces no breaking behavior but modifies the workflow's configuration to include golangci-lint tool runs and AI-driven analysis of output. The reporter generates Markdown-formatted issue descriptions with technical details for developers to fix problems without additional context.
