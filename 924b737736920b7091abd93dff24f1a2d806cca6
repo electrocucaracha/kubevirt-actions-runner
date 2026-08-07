@@ -1,0 +1,3 @@
+Category: Changed
+
+The telemetry and runner tests were refactored for clarity and reusability, introducing helper constants to reduce duplication in test cases. Shutdown error handling was extracted into a reusable function in telemetry tests, and watch completion logic was consolidated into a closure in runner tests. These changes improve test maintainability without altering existing behavior or coverage.
