@@ -89,6 +89,7 @@ bfe
 blockquote
 boyter
 brightgreen
+bugfixes
 cadcf
 cae
 caf
@@ -115,6 +116,7 @@ cdfae
 cdi
 cea
 cec
+cecf
 cee
 cef
 cefadc
