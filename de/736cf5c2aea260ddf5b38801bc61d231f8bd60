@@ -1,0 +1,3 @@
+Category: Changed
+
+The pre-commit configuration was updated to use the latest version of the ai-prepare-commit-msg repository, which includes improvements for commit message formatting. This change affects users who rely on this plugin for automated commit message preparation and may require them to update their local configurations accordingly. The upgrade ensures that users benefit from any bug fixes or enhancements introduced in the new version.
