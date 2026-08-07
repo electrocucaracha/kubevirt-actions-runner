@@ -1,0 +1,3 @@
+Category: Added
+
+GitHub Pages organization improved, including documentation restructuring and addition of new resources. The docs index now provides an overview of the project's sections, while tutorials and how-to guides have been reorganized for better navigation. Additionally, the telemetry setup guide has been updated with a corrected step to verify Jaeger UI traces.
