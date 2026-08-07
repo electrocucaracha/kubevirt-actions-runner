@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GoCI configuration has been updated to replace the deprecated `gomodguard` linter with its newer version, `gomodguard_v2`. This change affects users who rely on the GoCI tool for code analysis and may require updating their configurations. The migration is straightforward: disable the old `gomodguard` and enable the new `gomodguard_v2`.
