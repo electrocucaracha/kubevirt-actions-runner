@@ -1,0 +1,3 @@
+Category: Fixed
+
+The wordlist used in the GitHub repository has been updated to correct spelling issues, which may affect users who rely on this list for tasks such as code completion and linting. The changes include additions of new words related to development tools, frameworks, and concepts. No breaking behavior or migration requirements are introduced by these updates, and there is no impact on security or config schema.
