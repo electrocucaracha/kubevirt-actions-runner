@@ -1,0 +1,3 @@
+Category: Changed
+
+The logic for resolving the latest semantic version tag from remote repositories was duplicated across three update functions in the CI script. This change extracts this logic into a reusable function, reducing code duplication and making future maintenance easier. The new `latest_semver_tag` function is used to replace the inlined code in each updater, with no functional changes expected as a result.
