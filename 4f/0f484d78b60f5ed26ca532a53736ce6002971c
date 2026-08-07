@@ -1,0 +1,3 @@
+Category: Removed
+
+The GoLangCI configuration file format was updated to remove unnecessary lines, simplifying the setup process for users. This change does not introduce breaking behavior, API or CLI changes, config schema changes, or security impact. The primary outcome of this update is improved maintainability and reduced clutter in the configuration file.
