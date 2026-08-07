@@ -1,0 +1,3 @@
+Category: Added
+
+Telemetry documentation was improved by adding a new guide on how to enable telemetry for the `kubevirt-actions-runner` application, including configuration options and exporter types. The previous telemetry documentation was removed in favor of this new guide. This change does not introduce breaking behavior or API changes but provides users with better observability and debugging capabilities through distributed tracing.
