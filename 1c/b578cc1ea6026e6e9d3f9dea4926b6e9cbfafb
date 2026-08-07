@@ -1,0 +1,3 @@
+Category: Changed
+
+The Go version in the project has been bumped to 1.24.0, affecting various workflows and dependencies. The change involves updating the specified versions of actions/setup-go and Docker images to match the new Go version. This update requires no migration steps as it is a direct replacement, and there are no API or CLI contract changes.
