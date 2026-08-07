@@ -1,0 +1,3 @@
+Category: Changed
+
+The copilot-cli configuration has been updated to improve security and compliance by restricting tool usage, denying access to certain commands, and limiting path and URL access. The change enables all tools but explicitly denies dangerous shell commands like rm and sudo, while also restricting access to the temp directory and only allowing a curated set of trusted domains. This adjustment maintains necessary functionality for the workflow while enhancing security.
