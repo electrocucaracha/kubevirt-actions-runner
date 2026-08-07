@@ -1,0 +1,3 @@
+Category: Removed
+
+Duplicated status-reporting logic in demo scripts was removed by consolidating the shared code into a single `get_status()` function, eliminating ~20 lines of duplicated shell logic and dead code. This change affects the behavior of the demo scripts but does not introduce any breaking changes or migration requirements. The API and CLI contracts remain unchanged, with no security impact or config schema changes.
