@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions files were updated, including dependencies in go.mod, to upgrade tools and resolve linting issues from the latest CI tools. This change affects several workflows by updating actions/setup-go to version 6.4.0 and super-linter to version 8.6.0. The .golangci.yml file was also modified to replace deprecated linters with new ones, including wsl_v5. A zizmor.yaml configuration file was created to ignore secrets-outside-env findings in workflow files that use secrets.
