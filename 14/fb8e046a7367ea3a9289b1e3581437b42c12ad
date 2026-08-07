@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions versions updated in workflows: docker/login-action from 3.6.0 to 3.7.0, actions/attest-build-provenance from 3.1.0 to 3.2.0, and super-linter/super-linter from 8.3.2 to 8.4.0. These updates are likely for security patches or bug fixes, but no specific migration steps or breaking behavior changes are mentioned.
