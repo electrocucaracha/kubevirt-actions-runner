@@ -431,3 +431,48 @@ func TestRunMainApp(t *testing.T) {
 		runMainApp(ctx, runner, log)
 	})
 }
+
+// TestMain_DirectInvocation exercises the real main() entrypoint directly
+// (in-process) rather than through a re-exec'd subprocess, so that its
+// statements are attributed to this test binary's coverage profile.
+//
+// These subtests intentionally avoid t.Parallel(): main() temporarily
+// overrides the process-wide os.Args so that cobra parses a controlled
+// argument list instead of the `go test` binary's own flags. Top-level tests
+// that call t.Parallel() defer their bodies until every non-parallel
+// top-level test (including this one) has finished, so there is no risk of a
+// concurrent test observing the temporarily mutated os.Args.
+func TestMain_DirectInvocation(t *testing.T) {
+	origArgs := os.Args
+	defer func() { os.Args = origArgs }()
+
+	t.Run("returns early when client/namespace resolution fails", func(t *testing.T) {
+		os.Args = []string{"kar"}
+		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, malformedKubeconfig))
+		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+
+		// main() should log the resolution error and return early, without
+		// panicking or reaching the runner/command-execution setup below it.
+		main()
+	})
+
+	t.Run("proceeds through command execution and signal-triggered cleanup", func(t *testing.T) {
+		os.Args = []string{"kar"}
+		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
+		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+		t.Setenv("KAR_CLEANUP_TIMEOUT", "5s")
+
+		// With no jitconfig flag supplied, the root command's RunE fails fast
+		// (without making any real KubeVirt API call), so main() reaches the
+		// end of its body quickly. Its deferred stop() then cancels the
+		// signal-notification context, unblocking the cleanup goroutine,
+		// which attempts (and fails fast against) a real DeleteResources
+		// call, exercising that goroutine's error-logging path as well.
+		main()
+
+		// Give the cleanup goroutine a brief moment to finish running before
+		// this subtest returns, so its coverage counters are recorded
+		// deterministically rather than racing the test binary's exit.
+		time.Sleep(200 * time.Millisecond)
+	})
+}
