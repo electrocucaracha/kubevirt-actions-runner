@@ -1,0 +1,3 @@
+Category: Changed
+
+The `.editorconfig` file was updated to enforce consistent indentation in bash scripts, specifically setting the indent style to spaces and size to 4 characters. This change affects the `shfmt` command used in the Makefile's `fmt` target, which now uses the `-i 4` option to align with this new configuration. The `.editorconfig-checker.json` file was also updated to reflect these changes.
