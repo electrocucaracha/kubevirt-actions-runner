@@ -1,0 +1,3 @@
+Category: Changed
+
+Runner methods were refactored for improved error handling and consistency across the codebase. The CreateResources, WaitForVirtualMachineInstance, and DeleteResources methods now return errors explicitly, allowing for more precise error propagation and handling in the application. Additionally, a new ErrRunnerFailed error was introduced to indicate when the runner has failed during execution.
