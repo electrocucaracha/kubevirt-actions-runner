@@ -1,0 +1,3 @@
+Category: Removed
+
+The review-and-refactor skill documentation has been removed from the repository, no longer outlining responsibilities and processes for code review and refactoring. This change helps keep the repository up to date by eliminating outdated information about current practices. The removal does not introduce any breaking behavior, API or CLI changes, security impact, or config schema changes.
