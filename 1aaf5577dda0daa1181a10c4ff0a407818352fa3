@@ -1,0 +1,3 @@
+Category: Changed
+
+The default wait timeout for the KAR runner has been increased from 10 minutes to 1 hour, allowing for longer periods of waiting for terminal VMI phases to complete. This change affects users who configure timeouts via environment variables, specifically `KAR_WAIT_TIMEOUT`, which now defaults to 1 hour. The documentation has also been updated to reflect this change.
