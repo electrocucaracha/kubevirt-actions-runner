@@ -1,0 +1,3 @@
+Category: Changed
+
+The runner code has been refactored to reduce technical debt by extracting duplicated strings, consolidating identical checks into a helper function, and removing unused variables. This change does not break any behavior or require migration steps. The API contract remains unchanged, and there is no impact on security or config schema.
