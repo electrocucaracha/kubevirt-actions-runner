@@ -1,0 +1,3 @@
+Category: Changed
+
+The Dockerfile has been updated to use a newer version of Git, changing the RUN command to install git=2.49.1-r0 instead of git=2.49.0-r0. This change does not affect API or CLI contracts and requires no migration steps. The update is likely intended to ensure access to the latest Git features within the Docker container.
