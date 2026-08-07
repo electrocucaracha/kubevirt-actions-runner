@@ -1,0 +1,3 @@
+Category: Added
+
+This commit implements system tests for the project, introducing new workflows and scripts to ensure code quality and functionality. The `.devcontainer.json` file now includes dependencies for testing, while the `.github/workflows/on-demand_ci.yml` workflow has been added to run system tests on demand. Additionally, various scripts have been created to facilitate testing, including `configure.sh`, `demo.sh`, `install.sh`, and `main.sh`.
