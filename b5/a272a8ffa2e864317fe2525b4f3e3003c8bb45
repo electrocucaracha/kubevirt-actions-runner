@@ -1,0 +1,3 @@
+Category: Changed
+
+The kubevirt client-go dependencies were updated, changing the version of k8s.io/kube-openapi from v0.0.0-20240430033511-f0e62f92d13f to v0.0.0-20250610211856-8b98d1ed966a and other related packages. This update likely affects API or CLI contract changes, but no breaking behavior or migration requirements are mentioned. The security impact is unknown without further analysis.
