@@ -1,0 +1,3 @@
+Category: Changed
+
+The AI-inference action version has been updated from 2.0.4 to 2.0.5 in the GitHub workflow, which may require manual migration steps for users running older versions of this action. The change does not affect the API or CLI contract and there is no security impact.
