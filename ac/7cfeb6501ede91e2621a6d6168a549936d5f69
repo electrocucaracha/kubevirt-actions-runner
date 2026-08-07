@@ -1,0 +1,3 @@
+Category: Changed
+
+The GitHub Actions workflow for linter validation now uses the super-linter repository directly, updating to version 7.3.0 from an older version. This change does not introduce breaking behavior, API changes, or security impact, but it may require migration steps if users were relying on specific features of the previous version. The primary outcome is improved linter functionality and consistency with the upstream source.
