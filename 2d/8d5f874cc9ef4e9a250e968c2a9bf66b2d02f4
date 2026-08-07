@@ -1,0 +1,3 @@
+Category: Added
+
+The way Go version updates are handled in the CI workflow has been improved to be more efficient and flexible. The update process now uses a single command to update all relevant workflows, rather than relying on manual sed commands for each file. This change should not break any existing behavior or require migration steps, but it does modify the config schema of .github/workflows/*.yml files by updating their go-version fields.
