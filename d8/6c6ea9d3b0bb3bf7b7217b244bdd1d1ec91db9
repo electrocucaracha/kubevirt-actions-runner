@@ -1,0 +1,3 @@
+Category: Added
+
+A linter for spelling errors, codespell, was added to the project's pre-commit hooks and Makefile configuration. This change enables automatic detection of misspelled words in code, improving overall quality and reducing maintenance efforts. The addition also includes skipping spell checks on go.sum files to avoid false positives.
