@@ -1,0 +1,3 @@
+Category: Added
+
+A contributing file was created to provide clear guidelines for developers contributing to the Kubevirt Actions Runner project, ensuring consistency across development setups and facilitating collaboration. The new file outlines setup instructions, code standards, commit messages, and pull request processes to ensure smooth contributions. This change aims to improve the contribution process and maintain high-quality code in the project.
