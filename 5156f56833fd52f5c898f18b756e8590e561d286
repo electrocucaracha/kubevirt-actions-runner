@@ -1,0 +1,3 @@
+Category: Added
+
+The wordlist used by linters has been updated to include new terms for consistent terminology across the codebase, specifically Ctrl, jitconfig, ParseDuration, and SIGTERM. This change aims to maintain clarity in documentation and code reviews by standardizing these terms. The updated list will enforce consistent usage of these terms throughout the project.
