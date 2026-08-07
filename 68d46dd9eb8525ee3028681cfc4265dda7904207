@@ -1,0 +1,3 @@
+Category: Added
+
+Code coverage increased from 70.5% to 92.2%. New tests cover previously untested code paths in internal/telemetry_test.go, including GetTelemetryConfig and InitializeTelemetry functions. Additional test cases were added to internal/runner_test.go to improve coverage of VMI creation, deletion, and watch handling. These changes ensure better testing and reliability of the runner's functionality.
