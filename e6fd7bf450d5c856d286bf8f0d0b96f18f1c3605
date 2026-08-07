@@ -1,0 +1,3 @@
+Category: Changed
+
+Tests were added for various scenarios in the cmd/kar and internal runner packages to increase code coverage, including error handling when the referenced virtual machine template does not exist, watching the virtual machine instance fails, and treating context cancellation during VMI Get as a timeout. The tests cover success, kubeconfig parse errors, KubeVirt client construction errors, disabled and enabled telemetry code paths, and more. Coverage increased from 84.9% to 90.1%.
