@@ -1,0 +1,3 @@
+Category: Changed
+
+Code coverage checks have been added to the GitHub Actions workflow, requiring Go projects to meet a 40% code coverage threshold. This change affects Go projects, which must now include unit tests and achieve sufficient code coverage. The new code-coverage job runs after changes are detected and before unit testing.
