@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions workflows were updated to use the latest tagged versions of actions, improving clarity and consistency by adding "v" prefixes where necessary. The update_versions.sh script was enhanced for robust tag parsing, sorting, and pinning. This reduces the risk of using outdated or ambiguous action references and simplifies future maintenance.
