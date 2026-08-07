@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Docker build process was modified to address an issue, removing the requirement for pull requests targeting the master branch to trigger builds. This change does not introduce any breaking behavior and maintains the existing API and CLI contract. The configuration schema remains unchanged, with no migration steps required. The primary outcome is a simplified build process for users submitting changes directly to the master branch.
