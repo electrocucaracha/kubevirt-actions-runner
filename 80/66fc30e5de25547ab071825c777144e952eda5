@@ -1,0 +1,3 @@
+Category: Added
+
+Test cases now include blank lines after os.Args assignments to improve readability, enhancing visual separation of setup steps without introducing functional changes. This change does not affect API or CLI contracts and has no security implications. No migration requirements are needed; users can continue using the existing test cases with minimal visual adjustments for better comprehension.
