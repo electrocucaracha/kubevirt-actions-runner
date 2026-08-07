@@ -1,0 +1,3 @@
+Category: Changed
+
+The duplicated update logic for golangci-lint and gremlins versions in ci/update_versions.sh has been consolidated into a single generic helper function, update_action_version, parameterized by repository and workflow marker. This change does not affect behavior but removes redundant code. The affected actions are now updated using the new helper function.
