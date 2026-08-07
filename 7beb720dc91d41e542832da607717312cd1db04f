@@ -1,0 +1,3 @@
+Category: Changed
+
+The codebase has been refactored to address technical debt, including reverting license indentation and fixing issues with golangci-lint. The changes also correct gofmt alignment in runner.go and address wording issues from the PR review thread. Additionally, package-level sentinel errors have been defined in internal/runner.go to satisfy err113, and error declarations have been moved outside if statements in cmd/kar/app/root.go to satisfy noinlineerr.
