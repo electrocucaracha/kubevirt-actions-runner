@@ -1,0 +1,3 @@
+Category: Changed
+
+Updated dependencies in go.mod file, upgrading several Kubernetes-related packages to newer versions: k8s.io/api v0.22.0, k8s.io/apimachinery v0.22.0, k8s.io/client-go v0.22.0, and others. These updates may require migration steps or breaking changes in code that uses these dependencies.
