@@ -1,0 +1,3 @@
+Category: Changed
+
+GitHub Actions and Go dependencies were updated across all workflows to ensure compatibility with the latest features and security patches. This includes upgrading actions/setup-go to v7.0.0, docker/login-action to v4.5.1, and several Go module dependencies such as go-logr/logr and go.opentelemetry.io/proto/otlp. The codespell pre-commit hook was also bumped to v2.4.3 for improved typo detection.
