@@ -1,0 +1,3 @@
+Category: Added
+
+Code comments were updated, including new metadata variables for build-time information in main.go, improved documentation for appcontext.go to describe its purpose, and clarified logging utility implementation in logger.go. Additionally, internal/runner.go now defines the Runner interface with concrete KubevirtRunner implementation details. These changes aim to enhance code readability and maintainability.
