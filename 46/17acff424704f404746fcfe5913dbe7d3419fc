@@ -1,0 +1,3 @@
+Category: Changed
+
+The CI update job has been fixed by updating the script to correctly retrieve the Go version from the official website, which was previously causing issues due to an incorrect command. This change ensures that the correct Go version is used for the project's dependencies and GitHub Actions. The updated script now uses a more reliable method to fetch the Go version, resolving the previous problem.
