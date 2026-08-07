@@ -1,0 +1,3 @@
+Category: Added
+
+The custom wordlist for linting has been expanded to include new terms, abbreviations, and project-specific identifiers, improving the accuracy of spelling and linting tools by reducing false positives on domain-specific vocabulary. This update includes technology names, internal function names, common acronyms, and future additions may be necessary as new terminology emerges. The updated wordlist is now more comprehensive, enhancing code quality and maintainability.
