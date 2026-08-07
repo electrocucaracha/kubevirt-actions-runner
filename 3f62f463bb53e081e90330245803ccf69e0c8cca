@@ -1,0 +1,3 @@
+Category: Fixed
+
+Docker build process was fixed to import git repository correctly, resolving an issue that prevented the Docker image from being built successfully. The change removed unnecessary copying of the .git directory and updated the SHELL command. This fix ensures the Docker image can now properly import the project's git repository during the build process.
