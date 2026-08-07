@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Actions workflow for super-linter validation now fetches the full Git history, which is required by the tool. This change affects users who rely on super-linter to validate their code, as it may introduce performance implications and potentially reveal sensitive information previously hidden in the repository's commit history. The `fetch-depth` parameter has been set to 0 to enable this behavior.
