@@ -1,0 +1,3 @@
+Category: Changed
+
+The documentation has been restructured into separate sections for tutorials, how-to guides, reference, and explanations to improve discoverability and align with established best practices. This change introduces clear learning paths, task-oriented procedures, exact flag and variable details, and architecture overviews. The quickstart and next steps have been updated to point to the new structure, and no content was removed; all previous guides and overviews are preserved and reorganized.
