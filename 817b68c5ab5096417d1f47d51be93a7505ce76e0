@@ -1,0 +1,3 @@
+Category: Changed
+
+The codebase has been refactored to reduce technical debt, improving readability and maintainability. The changes include replacing len checks with string equality checks, removing dead nil-checks, consolidating OTLP endpoint defaults, and guarding set -o xtrace behind the DEBUG flag in scripts/main.sh. These modifications do not introduce any breaking behavior or API changes, ensuring backwards compatibility.
