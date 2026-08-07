@@ -1,0 +1,3 @@
+Category: Changed
+
+The Makefile has been refactored to add a cleanup step before running linting and formatting targets, ensuring a clean workspace by removing stale dependencies and virtual environments that could lead to inconsistent results across environments. This change may increase execution time but improves reproducibility. The cleanup target removes node_modules, .tox, and .venv directories.
