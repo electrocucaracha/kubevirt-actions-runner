@@ -1,0 +1,3 @@
+Category: Changed
+
+Versions were updated in GitHub Actions, Docker login-action, ai-inference, markdownlint, and pre-commit-config.yaml files to the latest available versions: actions/ai-inference 2.1.1, docker/login-action 4.2.0, docker/metadata-action 6.1.0, and markdownlint v0.16.0. These updates ensure that dependencies are current and compatible with other changes in the project.
