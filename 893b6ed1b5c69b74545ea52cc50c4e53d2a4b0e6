@@ -1,0 +1,3 @@
+Category: Added
+
+Automating version updates for golangci-lint, gremlins, and rtk in GitHub Actions workflows reduces manual intervention and ensures CI uses current dependencies. This change adds functions to automatically resolve and update the latest versions of these tools by querying their upstream repositories. Known limitations include reliance on tag naming conventions and network availability. The script now updates workflow files to use the latest available versions, reducing maintenance overhead and minimizing outdated tool usage risk.
