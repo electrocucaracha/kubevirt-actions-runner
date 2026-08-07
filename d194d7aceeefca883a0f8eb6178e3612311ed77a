@@ -1,0 +1,3 @@
+Category: Changed
+
+The workflow files for GitHub Actions have been updated to include more information in the actions, specifically adding details about the Docker image build process and updating dependencies for various tools. The changes affect multiple workflows, including those for building and publishing Docker images, running code coverage analysis, unit tests, and linter checks.
