@@ -1,0 +1,3 @@
+Category: Changed
+
+The cleanup process in the kubevirt action runner has been improved to handle potential errors during resource deletion and provide a more robust timeout mechanism for cleanup operations. The code now uses a context with a timeout set by an environment variable, allowing users to customize the cleanup duration. Additionally, error handling has been enhanced to log failed cleanups instead of panicking.
