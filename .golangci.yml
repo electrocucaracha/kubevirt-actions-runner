@@ -24,8 +24,6 @@ linters:
             - $gostd
             - github.com/electrocucaracha/kubevirt-actions-runner/cmd/kar/app
             - github.com/electrocucaracha/kubevirt-actions-runner/internal
-            - github.com/golang/mock/gomock
-            - github.com/pkg/errors
             - github.com/spf13/cobra
             - github.com/spf13/pflag
             - github.com/spf13/viper
