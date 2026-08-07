@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Dockerfile has been updated to use the latest version of git, 2.54.0-r0, which ensures compatibility with current build requirements and includes recent bug fixes and security improvements over the previously used outdated version 2.52.0-r0. This change affects all environments that use this Dockerfile for building the application. No migration steps are required as the update is seamless.
