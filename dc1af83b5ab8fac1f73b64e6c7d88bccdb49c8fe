@@ -1,0 +1,3 @@
+Category: Changed
+
+Go-related jobs in the CI workflow now only run when Go files have changed, reducing unnecessary resource usage and build times. This change conditions code-coverage, unit-test, and gremlins-test jobs on the output of the changes job. The publish job logic is updated to require successful Go jobs when Go files are modified, while still allowing Docker-only changes to trigger publishing.
