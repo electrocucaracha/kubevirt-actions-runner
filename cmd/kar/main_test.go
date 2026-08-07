@@ -448,6 +448,7 @@ func TestMain_DirectInvocation(t *testing.T) {
 
 	t.Run("returns early when client/namespace resolution fails", func(t *testing.T) {
 		os.Args = []string{"kar"}
+
 		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, malformedKubeconfig))
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 
@@ -458,6 +459,7 @@ func TestMain_DirectInvocation(t *testing.T) {
 
 	t.Run("proceeds through command execution and signal-triggered cleanup", func(t *testing.T) {
 		os.Args = []string{"kar"}
+
 		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 		t.Setenv("KAR_CLEANUP_TIMEOUT", "5s")
