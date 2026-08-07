@@ -1,0 +1,3 @@
+Category: Added
+
+The update version script now includes running `go mod tidy` to maintain the Go module's integrity, ensuring dependencies are correctly updated when changing versions. This change affects users who rely on automated updates and require accurate dependency management. The addition of this step also assumes a minimum Go version of 1.23 is installed in the environment.
