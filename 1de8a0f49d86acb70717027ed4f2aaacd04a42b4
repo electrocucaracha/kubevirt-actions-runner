@@ -1,0 +1,3 @@
+Category: Changed
+
+License headers in Go source files were modified to prevent jscpd from flagging them as duplicate code, reducing noise in duplication reports. This change does not affect application logic or tests and does not require any migration steps. The security impact of this change is minimal, and the config schema remains unchanged.
