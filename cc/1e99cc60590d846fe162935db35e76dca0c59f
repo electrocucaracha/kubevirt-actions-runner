@@ -1,0 +1,3 @@
+Category: Added
+
+Go linting has been disabled in the project's GitHub Actions workflow and Makefile, impacting users who relied on these checks for code quality. The change affects the `VALIDATE_GO` setting, which is now set to false by default. This modification does not introduce any breaking behavior or require migration steps, nor does it alter the API or CLI contract, config schema, or pose a security risk.
