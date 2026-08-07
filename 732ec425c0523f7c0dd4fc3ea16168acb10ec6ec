@@ -1,0 +1,3 @@
+Category: Changed
+
+The testbed guide documentation was updated to remove duplicate content and simplify the deployment flowchart, improving clarity for users. The removal of redundant mermaid flowcharts and jscpd duplicate content ensures consistency in the documentation. Users can now verify cluster resources using provided commands, with detailed verification steps available in a separate section.
