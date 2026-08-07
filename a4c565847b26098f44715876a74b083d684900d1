@@ -1,0 +1,3 @@
+Category: Added
+
+The ai-prepare-commit-msg hook was re-enabled to suggest commit messages based on changes in the staging area, improving consistency and quality across the project. The repository URL and revision were updated to use the correct electrocucaracha/ai-prepare-commit-msg repository. This change enables automatic commit message suggestions for improved commit hygiene.
