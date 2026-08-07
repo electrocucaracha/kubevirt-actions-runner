@@ -1,0 +1,3 @@
+Category: Changed
+
+The log interval has been increased from the default to every 5 minutes, potentially impacting users who rely on timely logging for monitoring or debugging purposes. This change does not introduce any breaking behavior and does not affect API or CLI contracts. The primary user outcome is a reduced frequency of log messages, which may require adjustments in monitoring tools or scripts that depend on these logs.
