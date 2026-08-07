@@ -1,0 +1,3 @@
+Category: Added
+
+Added setup testbed documentation, including a guide on how to configure a local testing environment for kubevirt-actions-runner. This involves creating a lightweight Kubernetes cluster with KubeVirt and verifying the full execution flow of the runner. The documentation includes prerequisites, architecture overview, deployment flow, automated install script, and demo usage.
