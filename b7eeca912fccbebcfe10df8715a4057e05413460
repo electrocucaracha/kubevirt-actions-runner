@@ -1,0 +1,3 @@
+Category: Added
+
+The rtk token saver has been integrated into both fixer and verifier workflows to enable global Copilot token management and usage tracking, improving observability of token usage and supporting future automation or reporting needs. This addition installs rtk, initializes it for Copilot, and collects stats with rtk gain after the Copilot CLI runs. No impact on existing job logic is expected, but issues with rtk installation or invocation may affect workflow runs.
