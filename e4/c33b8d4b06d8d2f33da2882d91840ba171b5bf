@@ -1,0 +1,3 @@
+Category: Changed
+
+Unit tests were added for the create resources use case, including validation of virtual machine template, runner name, and Just-in-Time configuration. The `CreateResources` method now returns an error if any of these inputs are empty. No breaking changes or API/CLI contract modifications were introduced.
