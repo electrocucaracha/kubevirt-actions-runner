@@ -1,0 +1,3 @@
+Category: Removed
+
+Unused dependencies were removed from the .golangci.yml file, specifically github.com/golang/mock/gomock and github.com/pkg/errors, which are no longer imported in the codebase. This change removes stale configuration debt and does not introduce any breaking behavior or migration requirements. The project uses go.uber.org/mock/gomock instead of golang's mock package, making these entries redundant.
