@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Actions workflow for on-demand CI was updated to resolve a linting issue related to zizimor. The change involves disabling credential persistence in the checkout step, which may require users to reconfigure their workflows if they rely on persisted credentials. This update does not introduce any breaking behavior or API changes and is primarily focused on resolving a specific linting error.
