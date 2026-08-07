@@ -1,0 +1,3 @@
+Category: Added
+
+The introduction of the `--kubevirt-vm-template-namespace` flag allows users to specify the namespace from which to fetch the VM template independently of the runner's namespace, enabling centralized template management and reducing duplication. This change also updates documentation, tests, and demo scripts to reflect the new usage. The default remains "default" for backward compatibility.
