@@ -1,0 +1,3 @@
+Category: Added
+
+Test cases now include blank lines for readability after os.Args assignments, improving setup step separation without introducing functional changes. This style update does not affect API or CLI contracts and requires no migration steps. The change has no security implications and config schema remains unchanged. Overall, this adjustment enhances test case clarity with minimal impact on users or maintainers.
