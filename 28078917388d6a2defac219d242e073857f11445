@@ -1,0 +1,3 @@
+Category: Changed
+
+DataVolume creation logic was refactored to improve code readability and maintainability by extracting the optional creation into a new helper method, createOptionalDataVolume, which clarifies intent and reduces duplication. No functional changes are introduced. The createResources function now uses this helper to create DataVolumes conditionally, simplifying its logic. This change does not affect API or CLI contracts, nor does it introduce any security risks or config schema modifications.
