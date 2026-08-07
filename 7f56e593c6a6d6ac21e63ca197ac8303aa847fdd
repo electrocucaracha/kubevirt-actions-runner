@@ -1,0 +1,3 @@
+Category: Changed
+
+The codebase has been refactored to reduce technical debt by removing redundant code, improving logging functionality, and simplifying configuration handling. The changes include updating the bindFlags function to handle flag binding more efficiently, introducing a getDurationEnvOrDefault function for environment variable parsing, and modifying the createVMI function to remove an unused parameter. These modifications aim to improve maintainability and reduce complexity in the codebase.
