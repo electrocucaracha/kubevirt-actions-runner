@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Docker build process has been fixed to use the correct shell, /bin/sh, instead of /bin/bash, which was causing issues. This change affects users who rely on the Docker image for building and deploying their application. The migration step involves updating any existing Dockerfiles that used the incorrect SHELL command.
