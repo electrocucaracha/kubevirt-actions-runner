@@ -1,0 +1,3 @@
+Category: Changed
+
+Update dependencies for GitHub Actions workflows, upgrading super-linter from version 7.4.0 to 8.0.0 in the linter workflow and pyspelling-any from 1.0.4 to 1.0.5 in the spellcheck workflow. This change affects users by potentially introducing new linting rules or spellchecking capabilities, but does not require any migration steps or breaking changes to existing workflows.
