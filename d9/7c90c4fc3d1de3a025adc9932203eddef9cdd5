@@ -1,0 +1,3 @@
+Category: Changed
+
+Version dependencies updated across workflows and configuration files, including the `actions/checkout` package from 5.x to 6.x, `actions/setup-go` from 6.0.0 to 6.1.0, and several other packages such as markdownlint, yamlfmt, and technote-space repositories. The `.pre-commit-config.yaml` file was also updated with a new repository and hook. A script for updating Go versions now installs uvx if necessary and updates the pre-commit configuration using `uvx pre-commit autoupdate`.
