@@ -1,0 +1,3 @@
+Category: Changed
+
+The review issue feature has been enabled, allowing for automated analysis of linter failures in CI workflows. This change introduces new permissions to read models and write issues, and modifies the GitHub Actions workflow to include AI-driven diagnosis and resolution of linter errors. The primary outcome is improved automation of debugging and fixing processes for developers.
