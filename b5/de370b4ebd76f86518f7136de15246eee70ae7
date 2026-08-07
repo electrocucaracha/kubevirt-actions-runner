@@ -1,0 +1,3 @@
+Category: Fixed
+
+Artifact metadata permissions have been updated to allow write access, enabling users to modify the metadata associated with artifacts in workflows. This change affects build jobs that utilize artifact metadata and requires no migration steps for existing configurations. The update aligns with the existing pattern of granting write permissions for specific actions within workflows.
