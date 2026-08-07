@@ -1,0 +1,3 @@
+Category: Removed
+
+AppContext initialization was made optional in DeleteResources to prevent fatal crashes when the AppContext is uninitialized, which now happens without error. The HasAppContext function checks if the AppContext has been initialized before proceeding with deletion. This change does not affect the API or CLI contract and no migration steps are required.
