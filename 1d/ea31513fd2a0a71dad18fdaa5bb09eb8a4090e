@@ -1,0 +1,3 @@
+Category: Added
+
+The Makefile now includes golangci-lint installation and autofix during formatting, ensuring consistent linting and automatic code quality enforcement. This change streamlines the developer workflow by reducing manual steps for contributors and preventing style issues. The linter is installed if missing and run with autofix to enforce code quality automatically.
