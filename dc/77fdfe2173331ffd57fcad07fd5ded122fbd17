@@ -1,0 +1,3 @@
+Category: Changed
+
+The cron schedule for the verifiers workflow has been adjusted to run only on Fridays that fall between the 15th and 21st of the month, effectively targeting the third Friday. This change reduces unnecessary runs and optimizes resource usage. The updated schedule replaces the previous expression that triggered the workflow every Friday at midnight.
