@@ -1,0 +1,3 @@
+Category: Added
+
+The architecture diagram was moved from the README.md file to its own separate document in the `docs/explanations` directory, allowing for easier maintenance and updates of this complex system overview. This change does not introduce any breaking behavior, API changes, or security impact, but it may require users to update their documentation links if they were previously referencing the diagram in README.md directly.
