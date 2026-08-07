@@ -1,0 +1,3 @@
+Category: Added
+
+Textlint configuration has been added to enforce consistent terminology usage in documentation and prose. The .textlintrc.json file now includes the terminology rule enabled by default, but no other rules are currently configured. This change affects documentation authors who must adapt to this new requirement for consistent terminology.
