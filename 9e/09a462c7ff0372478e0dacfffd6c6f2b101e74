@@ -1,0 +1,3 @@
+Category: Removed
+
+The current status variable was removed from the KubevirtRunner, which may cause issues if users rely on this variable for monitoring or logging purposes. The API contract remains unchanged, but migration steps are required to update code that accessed the removed variable. No security impact is present, and no config schema changes were made. Users must adjust their code to access the current status through other means.
