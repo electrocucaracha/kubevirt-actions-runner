@@ -1,0 +1,3 @@
+Category: Changed
+
+The ai-prepare-commit-msg hook was updated to the latest revision, bringing in upstream improvements and bug fixes for commit message generation. This change does not require configuration updates but will monitor for future breaking changes in hook behavior. The update ensures users benefit from the latest features and stability enhancements provided by the hook's maintainers.
