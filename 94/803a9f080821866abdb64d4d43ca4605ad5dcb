@@ -1,0 +1,3 @@
+Category: Fixed
+
+The setup-go cache was disabled due to a vulnerability, ensuring user safety and preventing potential issues during builds. This change affects the build process by removing cached dependencies, which may require manual adjustments for users relying on cached versions of Go modules. The minimum required Go version has also been updated to 1.25.
