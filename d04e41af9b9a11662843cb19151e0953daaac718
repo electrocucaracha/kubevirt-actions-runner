@@ -1,0 +1,3 @@
+Category: Fixed
+
+The Go version extraction in the CI workflow was made robust to prevent failures during scheduled updates. The change involves updating the `update_versions.sh` script to correctly extract the major.minor version from the Go website and ensuring that the Dockerfile base image is updated to the latest golang alpine tag for this Go version. This should resolve issues with job 2 in the workflow, which previously failed due to a broken ludeeus/dockerfile-updater job.
