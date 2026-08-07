@@ -1,0 +1,3 @@
+Category: Changed
+
+Visual diagrams have been added to clarify key flows in the documentation, including architecture, quickstart, telemetry pipeline, and timeout behavior. These draw.io diagrams are embedded as PNGs and improve onboarding and troubleshooting by making control flow and lifecycle explicit for new users. All affected guides and references now link to the relevant diagrams, enhancing user understanding of complex workflows.
