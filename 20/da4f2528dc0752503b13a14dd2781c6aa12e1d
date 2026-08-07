@@ -1,0 +1,3 @@
+Category: Fixed
+
+The GitHub Action workflow for linting was updated to use a different action, specifically the `git-diff-action`, which now outputs raw diffs instead of processed ones. This change affects users who rely on the previous diff output format and may need to adjust their workflows accordingly. The update also ensures compatibility with newer versions of the action.
