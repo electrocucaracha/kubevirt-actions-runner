@@ -1,0 +1,3 @@
+Category: Added
+
+Logging was improved by switching from the built-in Go `log` package to the Uber's Zap logging library, allowing for more flexible and customizable logging configurations through environment variables. This change does not introduce any breaking behavior or migration requirements. The API and CLI contracts remain unchanged. There is no security impact associated with this update. Additionally, there are no config schema changes.
