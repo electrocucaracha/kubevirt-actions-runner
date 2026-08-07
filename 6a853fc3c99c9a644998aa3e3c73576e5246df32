@@ -1,0 +1,3 @@
+Category: Added
+
+The `KAR_WAIT_TIMEOUT` environment variable has been made configurable, allowing users to set the maximum time to wait for a terminal VMI phase (`Succeeded`/`Failed`). The default timeout remains 10 minutes. Additionally, a new milestone is logged when a VMI reaches the `Running + Ready=True` condition, and the runner continues watching without treating this event as a terminal success. This change affects how users configure timeouts and interpret provisioning milestones in their workflows.
