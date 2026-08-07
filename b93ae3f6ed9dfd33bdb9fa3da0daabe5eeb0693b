@@ -1,0 +1,3 @@
+Category: Fixed
+
+A new GitHub Pages workflow was added to build and deploy the project's site, stripping Runme-specific code fence attributes from documentation before Jekyll rendering. This change introduces a new workflow trigger on push to master when docs changes are detected. The existing workflows for maintenance and repository automation remain unchanged.
