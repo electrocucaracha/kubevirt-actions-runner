@@ -1,0 +1,3 @@
+Category: Changed
+
+Error handling in tests has been improved by introducing shared error variables for simulated failures, such as watch and transient get errors. This change reduces duplication and improves maintainability by centralizing error definitions. No functional behavior is changed, but test cases now use the new shared error variables to handle simulated failures more consistently.
