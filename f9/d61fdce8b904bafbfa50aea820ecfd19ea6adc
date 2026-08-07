@@ -1,0 +1,3 @@
+Category: Removed
+
+The reporting feature has been dropped from the KubevirtRunner, which will break behavior for users who relied on this functionality. The removal of reporting-related code includes changes to the WaitForVirtualMachineInstance function and its associated logging statements. This change does not introduce any API or CLI contract changes, nor does it impact security or config schema. Users should review their workflows to ensure they no longer rely on the removed reporting feature.
