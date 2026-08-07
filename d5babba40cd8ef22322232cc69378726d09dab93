@@ -1,0 +1,3 @@
+Category: Fixed
+
+A timeout was added to the WaitForVirtualMachineInstance method to prevent indefinite blocking, returning an error if the timeout is reached or the watch channel closes unexpectedly. The test for the root command was updated to simulate success for Create, Delete, and Wait failures, aligning with the new timeout behavior. Additionally, GitHub tool access permissions were restricted from "github/*" to "github/repo".
