@@ -1,0 +1,3 @@
+Category: Added
+
+The janitor agent was added, which performs tasks like cleanup, simplification, and tech debt remediation on codebases. This includes deleting unused functions, variables, imports, dependencies, and stripping unnecessary abstractions. The agent's workflow has been integrated into existing GitHub workflows for Docker build fixes and Go linter issues, allowing for automated resolution of these problems.
