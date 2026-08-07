@@ -1,0 +1,3 @@
+Category: Removed
+
+The generic code review instructions template, previously used for projects on GitHub Copilot, has been removed to reduce repository clutter and because project-specific review instructions are now maintained elsewhere. This change does not affect the functionality of any code but aims to streamline documentation and adherence to best practices in code reviews.
