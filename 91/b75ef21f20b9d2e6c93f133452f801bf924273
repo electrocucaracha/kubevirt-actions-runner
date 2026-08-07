@@ -1,0 +1,3 @@
+Category: Fixed
+
+The order in which code formatting tools run has been adjusted to improve reliability and consistency. Prettier commands were previously running before golangci-lint, potentially overwriting its changes. Now, all tools run in a consistent order, ensuring the final output reflects all applied fixes. This change improves the fmt target's reliability by reducing formatting inconsistencies.
