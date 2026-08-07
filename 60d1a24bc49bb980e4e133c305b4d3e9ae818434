@@ -1,0 +1,3 @@
+Category: Changed
+
+Dependencies were updated to their latest versions, including Go modules for kubevirt.io/api, kubevirt.io/client-go, and github.com/k8snetworkplumbingwg/network-attachment-definition-client. Additionally, GitHub Actions workflows now use newer versions of actions/ai-inference, docker/login-action, and the rtk token saver installer. This update addresses upstream bug fixes, security patches, and compatibility improvements with no breaking changes expected for downstream consumers.
