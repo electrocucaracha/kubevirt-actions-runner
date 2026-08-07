@@ -35,3 +35,5 @@ fmt:
 	yamlfmt -dstar **/*.{yaml,yml}
 	command -v prettier > /dev/null || npm install prettier
 	npx prettier . --write
+	command -v golangci-lint > /dev/null || go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+	golangci-lint run --fix
