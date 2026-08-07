@@ -1,0 +1,3 @@
+Category: Added
+
+GitHub Actions for the project were updated to use new commit hashes, specifically for reviewdog/action-misspell and actions/attest-build-provenance. The exceptions list was also modified to ignore updates from attest-build-provenance. This change affects users who rely on these GitHub Actions in their workflows, requiring no migration steps or config schema changes.
