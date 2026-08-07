@@ -1,0 +1,3 @@
+Category: Changed
+
+The telemetry shutdown panic has been fixed in the cmd/kar/main.go file, removing redundant code and improving performance. The buildInfoVars struct has been removed, and getBuildInfo now takes three string parameters directly. Additionally, dead nil-guards have been dropped, and the deferred telemetry shutdown simplified to remove a redundant nil check. All existing tests pass after these changes.
