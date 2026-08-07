@@ -1,0 +1,3 @@
+Category: Added
+
+A comprehensive changelog has been introduced to track notable changes, additions, removals, and fixes throughout the project's history using the Keep a Changelog format and Semantic Versioning. This changelog includes versioned entries with links to commits, summaries of changes, and context for each release, improving transparency and traceability. Future releases can now be documented consistently, reducing confusion and streamlining maintenance.
