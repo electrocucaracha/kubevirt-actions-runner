@@ -1,0 +1,3 @@
+Category: Added
+
+Markdown linting configuration was updated to relax rules for H1 headings and line length, allowing authors to write self-contained documents without violating MD025 and MD013 standards. This change supports more readable Markdown files by giving writers flexibility in structuring their content. The updated config schema now permits a second H1 heading in the body of a document, while also enabling longer lines.
