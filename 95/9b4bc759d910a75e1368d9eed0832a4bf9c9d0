@@ -1,0 +1,3 @@
+Category: Added
+
+Code coverage for the cmd/kar main entrypoint has been increased by adding new tests that exercise previously untested paths, including early return on client/namespace resolution failure and full command execution. This improvement brings statement coverage from 58.9% to 94.5% and mutation testing coverage from 90.91% to 95.45%. No production code was modified, and existing behavior remains unchanged.
