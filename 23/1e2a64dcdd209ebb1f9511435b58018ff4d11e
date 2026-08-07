@@ -1,0 +1,3 @@
+Category: Added
+
+Dockerfile updater added to GitHub Actions workflow, automating version updates in Dockerfiles for PRs. This change introduces a new job, check-dockerfile, which uses the ludeeus/dockerfile-updater action to update Dockerfiles with the latest versions. No breaking behavior or API changes are introduced, but maintainers should note that this update will be triggered automatically on PRs, ensuring consistent Dockerfile versions.
