@@ -1,0 +1,3 @@
+Category: Changed
+
+The changelog documentation was updated for consistency, fixing casing and escaping issues related to "README" and "go.*" references. This change improves clarity in project documentation without affecting functional behavior. The update aligns with project standards but does not introduce any breaking changes, API or CLI modifications, security concerns, or config schema alterations.
