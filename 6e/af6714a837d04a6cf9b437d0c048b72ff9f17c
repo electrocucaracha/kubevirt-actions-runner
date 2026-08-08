@@ -1,0 +1,3 @@
+Category: Added
+
+The wordlist has been updated to include two missing terms: dfa and ebcee, which were causing false positives in automated checks. This change ensures that legitimate identifiers are not flagged during linting or validation. The update does not introduce any breaking behavior, API changes, security risks, or config schema modifications.
