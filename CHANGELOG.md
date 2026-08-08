@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Aligned documentation to project file naming conventions by consistently referencing the README file as "readme.md", improving clarity without affecting functional behavior. [7fc97d7e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7fc97d7efd7e3f3e00d505ebcee41789296cf89b)
+- Aligned documentation to project file naming conventions by consistently referencing the readme file as "readme.md", improving clarity without affecting functional behavior. [7fc97d7e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7fc97d7efd7e3f3e00d505ebcee41789296cf89b)
 
 ## [18.11.0] - 2026-08-07
 
@@ -811,7 +811,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Resolved false positives in code spell checking by excluding go.* files from the `.codespellrc` configuration and disabling code spell checking during linting in GitHub Actions workflows and Makefiles. [35cd82aa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/35cd82aa4d019ac55c42f9319356be21b1562087)
+- Resolved false positives in code spell checking by excluding go.\* files from the `.codespellrc` configuration and disabling code spell checking during linting in GitHub Actions workflows and Makefiles. [35cd82aa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/35cd82aa4d019ac55c42f9319356be21b1562087)
 
 ## [7.5.5] - 2026-02-02
 
