@@ -9,6 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.11.1] - 2026-08-07
+
+### Changed
+
+- Aligned documentation to project file naming conventions by consistently referencing the README file as "readme.md", improving clarity without affecting functional behavior. [7fc97d7e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7fc97d7efd7e3f3e00d505ebcee41789296cf89b)
+
+## [18.11.0] - 2026-08-07
+
+### Added
+
+- Optimized the custom wordlist by introducing missing terms to accurately filter out false positives in spelling and linting checks. [cd9f928f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cd9f928f5392769d7eb0a42d11c739c823692dfa)
+
+## [18.10.1] - 2026-08-07
+
+### Changed
+
+- Stabilized reproducibility of linting and formatting results by removing stale dependencies and virtual environments before running these targets. [b73686da](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b73686da69d98f2d8509a16d0577251b1a1ff73b)
+
+## [18.10.0] - 2026-08-07
+
+### Added
+
+- Introduced detailed changelog entries for versions 18.7.0 through 18.9.1, documenting new features, fixes, and improvements that enhance project transparency and help users track the evolution of features and fixes over time without introducing breaking behavior or migration requirements. [8046630c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8046630cb5e2f5f8e90796225313b82482da29a1)
+
 ## [18.9.1] - 2026-08-07
 
 ### Fixed
