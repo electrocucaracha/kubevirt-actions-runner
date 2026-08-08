@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.13.0] - 2026-08-07
+
+### Added
+
+- Enabled two missing terms: dfa and ebcee, to be recognized by automated checks during linting and validation without triggering false positives. [6eaf6714](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6eaf6714a837d04a6cf9b437d0c048b72ff9f17c)
+
+## [18.12.1] - 2026-08-07
+
+### Changed
+
+- Improved the consistency of project documentation by standardizing casing and escaping in changelog references to README and go.*. [054746c2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/054746c222cb988486d6ca82d100f1723a939154)
+
+## [18.12.0] - 2026-08-07
+
+### Added
+
+- Enabled detailed changelog entries for versions 18.10.0 to 18.11.1, documenting improvements like wordlist optimization, reproducibility enhancements, and documentation alignment without introducing breaking changes or migration requirements. [a9ecba87](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a9ecba87e4b4869f6145c626c397b08f61bc1921)
+
 ## [18.11.1] - 2026-08-07
 
 ### Changed
