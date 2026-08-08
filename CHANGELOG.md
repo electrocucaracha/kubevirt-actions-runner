@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improved the consistency of project documentation by standardizing casing and escaping in changelog references to README and go.*. [054746c2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/054746c222cb988486d6ca82d100f1723a939154)
+- Improved the consistency of project documentation by standardizing casing and escaping in changelog references to readme and go.\*. [054746c2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/054746c222cb988486d6ca82d100f1723a939154)
 
 ## [18.12.0] - 2026-08-07
 
