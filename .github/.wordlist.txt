@@ -28,6 +28,7 @@ ae
 aea
 aee
 aeeffb
+afaa
 afad
 afbec
 afd
@@ -60,6 +61,7 @@ bbccf
 bbe
 bbf
 bbfd
+bca
 bcb
 bcbd
 bccb
@@ -195,6 +197,7 @@ defe
 DeleteDataVolume
 DeleteResources
 dev
+devcontainer
 devs
 df
 dfa
@@ -289,6 +292,7 @@ fec
 ffa
 ffaadd
 ffc
+ffcb
 ffcece
 ffd
 ffdf
@@ -313,6 +317,7 @@ GoLangCI
 gomega
 Gomega
 gomock
+gomoddirectives
 gomodguard
 gotestfmt
 GoTestTools
@@ -320,6 +325,7 @@ GraphQL
 grpc
 gRPC
 gwatts
+hardcoded
 HasAppContext
 HEALTHCHECK
 href
@@ -356,6 +362,7 @@ labelColor
 laobi
 ldflags
 lifecycle
+lifecycles
 linter
 linter's
 linters
@@ -370,11 +377,14 @@ Makefile's
 Makefiles
 markdownlint
 Markdownlint
+matryer
 mcp
 Ministral
 MixedCaps
 namespace
 namespaces
+newgrp
+NewRootCommand
 noinlineerr
 NotifyContext
 npm
@@ -404,6 +414,7 @@ precommit
 PrettierCode
 Printf
 PRs
+pyspelling
 pytest
 quickstart
 RBAC
@@ -413,6 +424,7 @@ reallyLongArg
 reconnection
 repo
 reproducibility
+resync
 reviewdog
 rtk
 runMainApp
@@ -433,6 +445,7 @@ sloc
 snetworkplumbingwg
 src
 Stdout
+struct
 subagent
 subgraph
 subtests
@@ -446,6 +459,7 @@ testbed's
 testvm
 textlint
 tox
+Trivy
 Uber's
 UI
 unpkg
@@ -456,7 +470,9 @@ valueFrom
 VCS
 venv
 verifier
+verifyLoggerImpl
 virt
+virtClient
 virtiofs
 VirtualMachine
 VirtualMachineInstance
