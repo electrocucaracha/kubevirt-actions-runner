@@ -145,14 +145,25 @@ var _ = Describe("Runner", func() {
 		Eventually(errChan, timeout).Should(Receive(BeNil()))
 	}
 
+	expectVirtualMachineAndInstance := func() {
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
+		)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
+		)
+	}
+
+	expectVirtualMachineWithVMIInterface := func(vmiInterface kubecli.VirtualMachineInstanceInterface) {
+		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
+			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
+		)
+		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface)
+	}
+
 	DescribeTable("create resources", func(shouldSucceed bool, vmTemplate, runnerName, jitConfig string) {
 		if shouldSucceed {
-			virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
-				virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
-			)
-			virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
-				virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
-			)
+			expectVirtualMachineAndInstance()
 		}
 
 		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, runnerName, jitConfig)
@@ -435,10 +446,7 @@ var _ = Describe("Runner", func() {
 		mockVMIInterface.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(
 			nil, k8serrors.NewServiceUnavailable("simulated create failure"))
 
-		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
-			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
-		)
-		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+		expectVirtualMachineWithVMIInterface(mockVMIInterface)
 
 		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, "runner-new", "jitConfig")
 
@@ -447,12 +455,7 @@ var _ = Describe("Runner", func() {
 	})
 
 	It("defaults the vm template namespace when it is empty", func() {
-		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
-			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
-		)
-		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
-			virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
-		)
+		expectVirtualMachineAndInstance()
 
 		err := karRunner.CreateResources(context.TODO(), vmTemplate, "", "runner-default-ns", "jitConfig")
 
@@ -468,10 +471,7 @@ var _ = Describe("Runner", func() {
 			nil, k8serrors.NewAlreadyExists(
 				schema.GroupResource{Group: kubevirtGroup, Resource: vmiResource}, "runner-existing"))
 
-		virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
-			virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
-		)
-		virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(mockVMIInterface)
+		expectVirtualMachineWithVMIInterface(mockVMIInterface)
 
 		err := karRunner.CreateResources(context.TODO(), vmTemplate, k8sv1.NamespaceDefault, "runner-existing", "jitConfig")
 
