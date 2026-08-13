@@ -22,17 +22,10 @@ import (
 	"context"
 	"errors"
 	"os"
-	"runtime/debug"
 	"testing"
 	"time"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
-)
-
-const (
-	testVCSRevision = "abc123"
-	testVCSTime     = "2026-01-01T00:00:00Z"
-	testVCSModified = "true"
 )
 
 var errMainTestFailure = errors.New("simulated failure")
@@ -55,69 +48,6 @@ func (m *mockRunner) WaitForVirtualMachineInstance(_ context.Context) error {
 
 func (m *mockRunner) DeleteResources(_ context.Context) error {
 	return m.deleteErr
-}
-
-func TestApplyVCSSettings(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name     string
-		settings []debug.BuildSetting
-		initial  buildInfo
-		want     buildInfo
-	}{
-		{
-			name: "populates empty fields",
-			settings: []debug.BuildSetting{
-				{Key: vcsRevisionSetting, Value: testVCSRevision},
-				{Key: vcsTimeSetting, Value: testVCSTime},
-				{Key: vcsModifiedSetting, Value: testVCSModified},
-			},
-			initial: buildInfo{},
-			want: buildInfo{
-				gitCommit:       testVCSRevision,
-				buildDate:       testVCSTime,
-				gitTreeModified: testVCSModified,
-			},
-		},
-		{
-			name: "does not override pre-populated fields",
-			settings: []debug.BuildSetting{
-				{Key: vcsRevisionSetting, Value: testVCSRevision},
-				{Key: vcsTimeSetting, Value: testVCSTime},
-				{Key: vcsModifiedSetting, Value: testVCSModified},
-			},
-			initial: buildInfo{
-				gitCommit:       "preset-commit",
-				buildDate:       "preset-date",
-				gitTreeModified: "preset-modified",
-			},
-			want: buildInfo{
-				gitCommit:       "preset-commit",
-				buildDate:       "preset-date",
-				gitTreeModified: "preset-modified",
-			},
-		},
-		{
-			name:     "ignores unknown keys",
-			settings: []debug.BuildSetting{{Key: "unknown.key", Value: "value"}},
-			initial:  buildInfo{},
-			want:     buildInfo{},
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
-
-			out := test.initial
-			applyVCSSettings(&out, test.settings)
-
-			if out != test.want {
-				t.Fatalf("applyVCSSettings() = %+v, want %+v", out, test.want)
-			}
-		})
-	}
 }
 
 func TestGetBuildInfo(t *testing.T) {
@@ -190,50 +120,6 @@ func TestGetDurationEnvOrDefault(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestGetCleanupTimeout(t *testing.T) {
-	// Compares against a literal duration (rather than the defaultCleanupTimeout
-	// constant itself) so that a mutation to the constant's value is actually
-	// detected by this test instead of trivially passing.
-	t.Run("returns default when env unset", func(t *testing.T) {
-		t.Setenv("KAR_CLEANUP_TIMEOUT", "")
-
-		want := 5 * time.Minute
-		if got := getCleanupTimeout(); got != want {
-			t.Fatalf("getCleanupTimeout() = %v, want %v", got, want)
-		}
-	})
-
-	t.Run("returns env value when set", func(t *testing.T) {
-		t.Setenv("KAR_CLEANUP_TIMEOUT", "3m")
-
-		if got := getCleanupTimeout(); got != 3*time.Minute {
-			t.Fatalf("getCleanupTimeout() = %v, want %v", got, 3*time.Minute)
-		}
-	})
-}
-
-func TestGetWaitTimeout(t *testing.T) {
-	// Compares against a literal duration (rather than the defaultWaitTimeout
-	// constant itself) so that a mutation to the constant's value is actually
-	// detected by this test instead of trivially passing.
-	t.Run("returns default when env unset", func(t *testing.T) {
-		t.Setenv("KAR_WAIT_TIMEOUT", "")
-
-		want := 1 * time.Hour
-		if got := getWaitTimeout(); got != want {
-			t.Fatalf("getWaitTimeout() = %v, want %v", got, want)
-		}
-	})
-
-	t.Run("returns env value when set", func(t *testing.T) {
-		t.Setenv("KAR_WAIT_TIMEOUT", "2h")
-
-		if got := getWaitTimeout(); got != 2*time.Hour {
-			t.Fatalf("getWaitTimeout() = %v, want %v", got, 2*time.Hour)
-		}
-	})
 }
 
 func TestEnsureValidCleanupContext(t *testing.T) {

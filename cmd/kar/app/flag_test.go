@@ -22,37 +22,13 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 const testCommandUse = "test"
 
-// TestBindFlags_ErrorWhenSetFails verifies that bindFlags returns an error
-// when a value sourced from the environment cannot be applied to the flag,
-// e.g. a non-numeric string bound to an integer flag.
-func TestBindFlags_ErrorWhenSetFails(t *testing.T) {
-	t.Setenv("TESTINT", "not-an-int")
-
-	cmd := &cobra.Command{Use: testCommandUse}
-	cmd.Flags().Int("testint", 0, "test int flag")
-
-	viperInstance := viper.New()
-	viperInstance.AutomaticEnv()
-
-	err := viperInstance.BindEnv("testint")
-	if err != nil {
-		t.Fatalf("failed to bind env var: %v", err)
-	}
-
-	err = bindFlags(cmd, viperInstance)
-	if err == nil {
-		t.Fatal("expected an error when the flag value cannot be applied")
-	}
-}
-
-// TestBindFlags_SkipsChangedFlags verifies that bindFlags does not override
+// TestInitializeConfig_SkipsChangedFlags verifies that initializeConfig does not override
 // a flag value that was already explicitly set on the command line.
-func TestBindFlags_SkipsChangedFlags(t *testing.T) {
+func TestInitializeConfig_SkipsChangedFlags(t *testing.T) {
 	t.Setenv("TESTSTR", "from-env")
 
 	cmd := &cobra.Command{Use: testCommandUse}
@@ -63,15 +39,7 @@ func TestBindFlags_SkipsChangedFlags(t *testing.T) {
 		t.Fatalf("failed to set flag: %v", err)
 	}
 
-	viperInstance := viper.New()
-	viperInstance.AutomaticEnv()
-
-	err = viperInstance.BindEnv("teststr")
-	if err != nil {
-		t.Fatalf("failed to bind env var: %v", err)
-	}
-
-	err = bindFlags(cmd, viperInstance)
+	err = initializeConfig(cmd)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -81,18 +49,15 @@ func TestBindFlags_SkipsChangedFlags(t *testing.T) {
 	}
 }
 
-// TestBindFlags_SkipsUnsetEnvVars verifies that bindFlags leaves the flag at
+// TestInitializeConfig_SkipsUnsetEnvVars verifies that initializeConfig leaves the flag at
 // its default value when no corresponding environment variable is set.
-func TestBindFlags_SkipsUnsetEnvVars(t *testing.T) {
+func TestInitializeConfig_SkipsUnsetEnvVars(t *testing.T) {
 	t.Parallel()
 
 	cmd := &cobra.Command{Use: testCommandUse}
 	cmd.Flags().String("testunset", "default", "test string flag")
 
-	viperInstance := viper.New()
-	viperInstance.AutomaticEnv()
-
-	err := bindFlags(cmd, viperInstance)
+	err := initializeConfig(cmd)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

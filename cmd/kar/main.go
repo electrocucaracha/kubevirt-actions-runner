@@ -60,7 +60,29 @@ type buildInfo struct {
 	goVersion       string
 }
 
-func applyVCSSettings(out *buildInfo, settings []debug.BuildSetting) {
+func getBuildInfo(commit, date, modified string) buildInfo {
+	out := buildInfo{
+		gitCommit:       commit,
+		buildDate:       date,
+		gitTreeModified: modified,
+	}
+
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return out
+	}
+
+	out.goVersion = info.GoVersion
+	if commit != "" && date != "" {
+		return out
+	}
+
+	out.applyVCSSettings(info.Settings)
+
+	return out
+}
+
+func (out *buildInfo) applyVCSSettings(settings []debug.BuildSetting) {
 	for _, setting := range settings {
 		switch setting.Key {
 		case vcsRevisionSetting:
@@ -79,28 +101,6 @@ func applyVCSSettings(out *buildInfo, settings []debug.BuildSetting) {
 	}
 }
 
-func getBuildInfo(gitCommit, buildDate, gitTreeModified string) buildInfo {
-	out := buildInfo{
-		gitCommit:       gitCommit,
-		buildDate:       buildDate,
-		gitTreeModified: gitTreeModified,
-	}
-
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		return out
-	}
-
-	out.goVersion = info.GoVersion
-	if gitCommit != "" && buildDate != "" {
-		return out
-	}
-
-	applyVCSSettings(&out, info.Settings)
-
-	return out
-}
-
 func getDurationEnvOrDefault(key string, defaultValue time.Duration) time.Duration {
 	if val := os.Getenv(key); val != "" {
 		d, err := time.ParseDuration(val)
@@ -114,26 +114,17 @@ func getDurationEnvOrDefault(key string, defaultValue time.Duration) time.Durati
 	return defaultValue
 }
 
-func getCleanupTimeout() time.Duration {
-	return getDurationEnvOrDefault("KAR_CLEANUP_TIMEOUT", defaultCleanupTimeout)
-}
-
-func getWaitTimeout() time.Duration {
-	return getDurationEnvOrDefault("KAR_WAIT_TIMEOUT", defaultWaitTimeout)
-}
-
 func ensureValidCleanupContext(parent context.Context) (context.Context, context.CancelFunc) {
+	cleanupTimeout := getDurationEnvOrDefault("KAR_CLEANUP_TIMEOUT", defaultCleanupTimeout)
 	if parent.Err() != nil {
-		return context.WithTimeout(context.Background(), getCleanupTimeout())
+		return context.WithTimeout(context.Background(), cleanupTimeout)
 	}
 
-	return context.WithTimeout(parent, getCleanupTimeout())
+	return context.WithTimeout(parent, cleanupTimeout)
 }
 
 func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
-	telemetryCfg := runner.GetTelemetryConfig()
-
-	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background(), telemetryCfg)
+	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background())
 	if err != nil {
 		log.Warnf("failed to initialize telemetry: %v", err)
 	}
@@ -191,10 +182,10 @@ func main() {
 		return
 	}
 
-	waitTimeout := getWaitTimeout()
+	waitTimeout := getDurationEnvOrDefault("KAR_WAIT_TIMEOUT", defaultWaitTimeout)
 	kubevirtRunner := runner.NewRunner(namespace, virtClient, waitTimeout)
 
-	log.Printf("cleanup timeout is set to: %v", getCleanupTimeout())
+	log.Printf("cleanup timeout is set to: %v", getDurationEnvOrDefault("KAR_CLEANUP_TIMEOUT", defaultCleanupTimeout))
 	log.Printf("wait timeout is set to: %v", waitTimeout)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

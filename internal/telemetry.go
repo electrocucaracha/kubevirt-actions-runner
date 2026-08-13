@@ -32,31 +32,6 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 )
 
-// TelemetryConfig holds telemetry configuration.
-type TelemetryConfig struct {
-	// Enabled enables or disables telemetry.
-	Enabled bool
-	// ExportType specifies the export type: "otlp", "stdout", or "" for disabled.
-	ExportType string
-	// OTLPEndpoint is the OTLP collector endpoint (e.g., http://localhost:4318).
-	OTLPEndpoint string
-	// ServiceName is the service name for telemetry.
-	ServiceName string
-	// ServiceVersion is the service version for telemetry.
-	ServiceVersion string
-}
-
-// GetTelemetryConfig returns the telemetry configuration from environment variables.
-func GetTelemetryConfig() TelemetryConfig {
-	return TelemetryConfig{
-		Enabled:        os.Getenv("KAR_TELEMETRY_ENABLED") == "true",
-		ExportType:     os.Getenv("KAR_TELEMETRY_EXPORT_TYPE"),
-		OTLPEndpoint:   getEnvOrDefault("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:4318"),
-		ServiceName:    getEnvOrDefault("KAR_TELEMETRY_SERVICE_NAME", "kubevirt-actions-runner"),
-		ServiceVersion: getEnvOrDefault("KAR_TELEMETRY_SERVICE_VERSION", "unknown"),
-	}
-}
-
 func getEnvOrDefault(key, defaultVal string) string {
 	if val := os.Getenv(key); val != "" {
 		return val
@@ -65,30 +40,35 @@ func getEnvOrDefault(key, defaultVal string) string {
 	return defaultVal
 }
 
-// InitializeTelemetry sets up OpenTelemetry tracing based on the configuration.
+// InitializeTelemetry sets up OpenTelemetry tracing from environment variables.
 // Returns a shutdown function that should be called before the application exits.
-func InitializeTelemetry(ctx context.Context, cfg TelemetryConfig) (func(context.Context) error, error) {
+func InitializeTelemetry(ctx context.Context) (func(context.Context) error, error) {
 	log := utils.GetLogger()
 
-	if !cfg.Enabled {
+	enabled := os.Getenv("KAR_TELEMETRY_ENABLED") == "true"
+	if !enabled {
 		log.Infof("Telemetry is disabled")
 
 		return func(_ context.Context) error { return nil }, nil
 	}
 
-	log.Infof("Initializing telemetry with export type: %s", cfg.ExportType)
+	exportType := os.Getenv("KAR_TELEMETRY_EXPORT_TYPE")
+	log.Infof("Initializing telemetry with export type: %s", exportType)
+
+	serviceName := getEnvOrDefault("KAR_TELEMETRY_SERVICE_NAME", "kubevirt-actions-runner")
+	serviceVersion := getEnvOrDefault("KAR_TELEMETRY_SERVICE_VERSION", "unknown")
 
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
-			semconv.ServiceNameKey.String(cfg.ServiceName),
-			semconv.ServiceVersionKey.String(cfg.ServiceVersion),
+			semconv.ServiceNameKey.String(serviceName),
+			semconv.ServiceVersionKey.String(serviceVersion),
 		),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create resource: %w", err)
 	}
 
-	exporter, err := createExporter(ctx, cfg)
+	exporter, err := createExporter(ctx, exportType)
 	if err != nil {
 		return func(_ context.Context) error { return nil }, err
 	}
@@ -107,49 +87,32 @@ func InitializeTelemetry(ctx context.Context, cfg TelemetryConfig) (func(context
 	}, nil
 }
 
-func createExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporter, error) {
+func createExporter(ctx context.Context, exportType string) (trace.SpanExporter, error) {
 	log := utils.GetLogger()
 
-	switch cfg.ExportType {
+	switch exportType {
 	case "otlp":
-		return createOTLPExporter(ctx, cfg)
-	case "stdout":
-		return createStdoutExporter()
-	default:
-		if cfg.ExportType != "" {
-			log.Warnf("Unknown export type: %s, using stdout", cfg.ExportType)
+		endpoint := getEnvOrDefault("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:4318")
+		log.Infof("Using OTLP exporter with endpoint: %s", endpoint)
+
+		exporter, err := otlptracehttp.New(ctx, otlptracehttp.WithEndpoint(endpoint))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
 		}
 
-		return createStdoutExporter()
+		return exporter, nil
+	default:
+		if exportType != "" {
+			log.Warnf("Unknown export type: %s, using stdout", exportType)
+		}
+
+		log.Infof("Using stdout exporter")
+
+		exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+		if err != nil {
+			return nil, fmt.Errorf("failed to create stdout exporter: %w", err)
+		}
+
+		return exporter, nil
 	}
-}
-
-func createOTLPExporter(ctx context.Context, cfg TelemetryConfig) (trace.SpanExporter, error) {
-	log := utils.GetLogger()
-
-	log.Infof("Using OTLP exporter with endpoint: %s", cfg.OTLPEndpoint)
-
-	exporter, err := otlptracehttp.New(ctx,
-		otlptracehttp.WithEndpoint(cfg.OTLPEndpoint),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
-	}
-
-	return exporter, nil
-}
-
-func createStdoutExporter() (trace.SpanExporter, error) {
-	log := utils.GetLogger()
-
-	log.Infof("Using stdout exporter")
-
-	exporter, err := stdouttrace.New(
-		stdouttrace.WithPrettyPrint(),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create stdout exporter: %w", err)
-	}
-
-	return exporter, nil
 }

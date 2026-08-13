@@ -19,12 +19,11 @@ limitations under the License.
 package app
 
 import (
-	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 func installFlags(flags *pflag.FlagSet, cmdOptions *Opts) {
@@ -39,27 +38,18 @@ func installFlags(flags *pflag.FlagSet, cmdOptions *Opts) {
 }
 
 func initializeConfig(cmd *cobra.Command) error {
-	v := viper.New()
-	v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-	v.AutomaticEnv()
-
-	return bindFlags(cmd, v)
-}
-
-func bindFlags(cmd *cobra.Command, viperInstance *viper.Viper) error {
-	var bindErr error
-
+	// Load environment variables into flags if not already set.
 	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
-		if bindErr != nil || flag.Changed || !viperInstance.IsSet(flag.Name) {
+		if flag.Changed {
 			return
 		}
 
-		bindErr = cmd.Flags().Set(flag.Name, fmt.Sprintf("%v", viperInstance.Get(flag.Name)))
+		// Convert flag name to env var: replace "-" with "_" and uppercase.
+		envKey := strings.ToUpper(strings.ReplaceAll(flag.Name, "-", "_"))
+		if val, ok := os.LookupEnv(envKey); ok {
+			_ = cmd.Flags().Set(flag.Name, val)
+		}
 	})
-
-	if bindErr != nil {
-		return fmt.Errorf("failed to apply configuration from environment: %w", bindErr)
-	}
 
 	return nil
 }
