@@ -9,1520 +9,1520 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.14.1] - 2026-08-07
+
+### Changed
+
+- Standardized casing and escaping for "readme" and "go.\*" in the changelog to improve clarity and consistency with project documentation standards. [f0ae54ff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f0ae54ffcb45afaa9c3299e9e432c45326222547)
+
+## [18.14.0] - 2026-08-07
+
+### Added
+
+- Enabled detailed changelog entries for recent releases, including new terms recognized by automated checks during linting and validation, documentation consistency improvements, and expanded historical notes, thereby enhancing traceability and clarity for users reviewing project history. [76140cb4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/76140cb438c1719ce1fc21d90abe3ca8bca4257f)
+
 ## [18.13.0] - 2026-08-07
 
 ### Added
 
-- Enabled two missing terms: dfa and ebcee, to be recognized by automated checks during linting and validation without triggering false positives. [6eaf6714](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6eaf6714a837d04a6cf9b437d0c048b72ff9f17c)
+- Enabled two missing terms, dfa and ebcee, in the wordlist to prevent false positives during linting and validation. [6eaf6714](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6eaf6714a837d04a6cf9b437d0c048b72ff9f17c)
 
 ## [18.12.1] - 2026-08-07
 
 ### Changed
 
-- Improved the consistency of project documentation by standardizing casing and escaping in changelog references to readme and go.\*. [054746c2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/054746c222cb988486d6ca82d100f1723a939154)
+- Clarified references to "readme" and "go.\*" in the changelog for improved consistency and alignment with project documentation standards without affecting functional behavior. [054746c2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/054746c222cb988486d6ca82d100f1723a939154)
 
 ## [18.12.0] - 2026-08-07
 
 ### Added
 
-- Enabled detailed changelog entries for versions 18.10.0 to 18.11.1, documenting improvements like wordlist optimization, reproducibility enhancements, and documentation alignment without introducing breaking changes or migration requirements. [a9ecba87](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a9ecba87e4b4869f6145c626c397b08f61bc1921)
+- Optimized project transparency by introducing detailed changelog entries for versions 18.10.0 to 18.11.1 that document improvements like wordlist optimization, reproducibility enhancements, and documentation alignment without introducing breaking changes or migration requirements. [a9ecba87](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a9ecba87e4b4869f6145c626c397b08f61bc1921)
 
 ## [18.11.1] - 2026-08-07
 
 ### Changed
 
-- Aligned documentation to project file naming conventions by consistently referencing the readme file as "readme.md", improving clarity without affecting functional behavior. [7fc97d7e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7fc97d7efd7e3f3e00d505ebcee41789296cf89b)
+- Standardized project documentation by renaming references to README.md to readme.md for consistency with project file naming conventions. [7fc97d7e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7fc97d7efd7e3f3e00d505ebcee41789296cf89b)
 
 ## [18.11.0] - 2026-08-07
 
 ### Added
 
-- Optimized the custom wordlist by introducing missing terms to accurately filter out false positives in spelling and linting checks. [cd9f928f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cd9f928f5392769d7eb0a42d11c739c823692dfa)
+- Enabled smoother CI runs and reduced noise for contributors by adding missing terms to the custom wordlist, specifically bugfixes and cecf, which were causing false positives in spelling checks. [cd9f928f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cd9f928f5392769d7eb0a42d11c739c823692dfa)
 
 ## [18.10.1] - 2026-08-07
 
 ### Changed
 
-- Stabilized reproducibility of linting and formatting results by removing stale dependencies and virtual environments before running these targets. [b73686da](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b73686da69d98f2d8509a16d0577251b1a1ff73b)
+- Stabilized linting and formatting results across environments by removing stale dependencies and virtual environments through an automated cleanup step prior to running these tasks. [b73686da](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b73686da69d98f2d8509a16d0577251b1a1ff73b)
 
 ## [18.10.0] - 2026-08-07
 
 ### Added
 
-- Introduced detailed changelog entries for versions 18.7.0 through 18.9.1, documenting new features, fixes, and improvements that enhance project transparency and help users track the evolution of features and fixes over time without introducing breaking behavior or migration requirements. [8046630c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8046630cb5e2f5f8e90796225313b82482da29a1)
+- Enabled detailed tracking of feature evolution and project progress through a comprehensive changelog documenting new features, enhancements, and fixes for versions 18.7.0 to 18.9.1 without introducing breaking behavior or requiring migration steps. [8046630c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8046630cb5e2f5f8e90796225313b82482da29a1)
 
 ## [18.9.1] - 2026-08-07
 
 ### Fixed
 
-- Stabilized the fmt target by ensuring that formatting changes from golangci-lint are preserved in the final output through a consistent order of code formatting tool execution. [91b75ef2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b75ef21f20b9d2e6c93f133452f801bf924273)
+- Stabilized the fmt target by ensuring that all applied fixes are reflected in the final output through consistent ordering of code formatting tools. [91b75ef2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b75ef21f20b9d2e6c93f133452f801bf924273)
 
 ## [18.9.0] - 2026-08-07
 
 ### Added
 
-- Enabled enforcement of consistent terminology usage in documentation and prose by defaulting the terminology rule on in textlint configuration. [41b9df58](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/41b9df58e41171b78d4e7b2829f101783305fd41)
+- Enabled enforcement of consistent terminology usage in documentation and prose through textlint configuration. [41b9df58](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/41b9df58e41171b78d4e7b2829f101783305fd41)
 
 ## [18.8.1] - 2026-08-07
 
 ### Changed
 
-- Clarified terminology throughout the changelog to consistently reference tools and technologies such as GitHub Actions, readme, Go linter, and spell checking, enhancing readability and professionalism without introducing any breaking behavior or migration requirements. [2f49d0c7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2f49d0c7a0d0d5c7bb23ba596ed940780b3d8e42)
+- Standardized terminology and capitalization for tools, technologies, and workflow steps to improve readability and reduce confusion among contributors and users referencing the changelog. [2f49d0c7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2f49d0c7a0d0d5c7bb23ba596ed940780b3d8e42)
 
 ## [18.8.0] - 2026-08-07
 
 ### Added
 
-- Enabled more accurate spelling and linting tools by expanding the custom wordlist to include new terms, abbreviations, and project-specific identifiers that reduce false positives on domain-specific vocabulary. [643c0806](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/643c08061cf82ee17b14a1a837b851238cecf265)
+- Enabled more accurate spelling and linting by expanding the custom wordlist to include new domain-specific terms, abbreviations, and project identifiers, reducing false positives on technology names, internal function names, and common acronyms observed in the codebase. [643c0806](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/643c08061cf82ee17b14a1a837b851238cecf265)
 
 ## [18.7.0] - 2026-08-07
 
 ### Added
 
-- Enabled clear and consistent release notes for users and maintainers through the introduction of a comprehensive changelog following the Keep a Changelog format and Semantic Versioning, which includes versioned entries with links to commits, summaries of changes, and context for each release. [224740a1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/224740a1bede9df8c51b7b063079c99934e65395)
+- Introduced a comprehensive changelog following Keep a Changelog and Semantic Versioning to provide clear release notes for users and maintainers, including versioned entries with links to commits, summaries of changes, and context for each release. [224740a1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/224740a1bede9df8c51b7b063079c99934e65395)
 
 ## [18.6.0] - 2026-08-07
 
 ### Added
 
-- Enabled more flexible Markdown writing by allowing second H1 headings and longer lines in documents, while maintaining Jekyll front-matter as the primary source for main H1 headings. [ddb2d6cb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ddb2d6cb659fe3cdc492d95cd5bab4a4d0593868)
+- Enabled more flexible Markdown content organization by allowing secondary headings in self-contained documentation while maintaining Jekyll front-matter as the primary title source. [ddb2d6cb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ddb2d6cb659fe3cdc492d95cd5bab4a4d0593868)
 
 ## [18.5.1] - 2026-08-07
 
 ### Changed
 
-- Optimized the markdownlint hook to utilize the faster and more maintainable markdownlint-cli linter resulting in improved developer experience through reduced setup friction and a more efficient linting process. [b34b19ff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b34b19ffe41f26fbded7c9b3a0bbccf487af670a)
+- Optimized the markdownlint pre-commit hook to utilize the faster and more maintainable markdownlint-cli linter, thereby reducing setup friction in CI environments. [b34b19ff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b34b19ffe41f26fbded7c9b3a0bbccf487af670a)
 
 ## [18.5.0] - 2026-08-07
 
 ### Added
 
-- Enabled automatic Go linting and style enforcement during formatting, ensuring code quality and consistency across the project by installing golangci-lint if missing and running it with autofix. [5bd8a1c0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5bd8a1c0d8e68b74aaec0db8745e0ef2e62f015c)
+- Enforces Go linting standards during formatting by installing and running golangci-lint to autofix style issues improving code quality and consistency across the project. [5bd8a1c0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5bd8a1c0d8e68b74aaec0db8745e0ef2e62f015c)
 
 ## [18.4.0] - 2026-08-07
 
 ### Added
 
-- Enhanced test case clarity by introducing empty lines after os.Args assignments to improve readability and separate setup steps without affecting API or CLI contracts. [ce71f230](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ce71f230ddffff728aa4cee724850626fa571e4b)
-
-## [18.3.0] - 2026-08-07
-
-### Added
-
-- Enabled automatic enforcement of code quality during formatting by installing and running golangci-lint with autofix capabilities. [1dea3151](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1dea31513fd2a0a71dad18fdaa5bb09eb8a4090e)
-
-## [18.2.0] - 2026-08-07
-
-### Added
-
-- Improved readability of test cases by introducing empty lines after os.Args assignments to enhance visual separation of setup steps without affecting API or CLI contracts and security implications. [8066fc30](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8066fc30e5de25547ab071825c777144e952eda5)
+- Improved test case readability by introducing empty lines after os.Args assignments to visually separate setup steps without altering functionality. [ce71f230](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ce71f230ddffff728aa4cee724850626fa571e4b)
 
 ## [18.1.2] - 2026-08-07
 
 ### Changed
 
-- Optimized the workflow frequency by restricting execution to Fridays that fall between the 15th and 21st of the month, effectively targeting the third Friday. [dc77fdfe](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dc77fdfe2173331ffd57fcad07fd5ded122fbd17)
+- Optimized workflow frequency by restricting execution to the third Friday of each month. [dc77fdfe](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dc77fdfe2173331ffd57fcad07fd5ded122fbd17)
 
 ## [18.1.1] - 2026-08-07
 
 ### Changed
 
-- Updated several GitHub Actions and Go dependencies to their latest patch versions for compatibility and security reasons, requiring downstream consumers to verify integration due to potential subtle API or behavior changes in updated dependencies. [b6d8fe1f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6d8fe1f542823876cf4b0407414e8896a91245a)
+- Updated several GitHub Actions and Go module dependencies to their latest versions to ensure continued compatibility and security, incorporating upstream bugfixes and improvements from OpenTelemetry, kubevirt.io/containerized-data-importer-api, grpc-gateway, and github.com/go-openapi packages. [b6d8fe1f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6d8fe1f542823876cf4b0407414e8896a91245a)
 
 ## [18.1.0] - 2026-08-07
 
 ### Added
 
-- Improved test coverage for cmd/kar main entrypoint by exercising previously untested paths, increasing statement coverage from 58.9% to 94.5% and mutation testing coverage from 90.91% to 95.45%, without modifying production code or changing existing behavior. [959b4bc7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/959b4bc759d910a75e1368d9eed0832a4bf9c9d0)
+- Stabilized code coverage for the cmd/kar package's main entrypoint by introducing a new test that exercises previously untested paths and improved statement coverage from 0% to 94.5%, also increasing mutation testing coverage to 95.45%. [959b4bc7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/959b4bc759d910a75e1368d9eed0832a4bf9c9d0)
 
 ## [18.0.0] - 2026-08-07
 
 ### Removed
 
-- Simplified the .golangci.yml configuration by removing unused dependencies github.com/golang/mock/gomock and github.com/pkg/errors that are no longer imported in the codebase. [ef5d590c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ef5d590c72fc705d697aa51e13e74105345dba78)
+- Simplified configuration by eliminating unnecessary dependencies in .golangci.yml, removing github.com/golang/mock/gomock and github.com/pkg/errors as they are no longer imported by the project. [ef5d590c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ef5d590c72fc705d697aa51e13e74105345dba78)
 
 ## [17.1.8] - 2026-07-31
 
 ### Changed
 
-- Simplified error handling in tests by introducing shared variables for simulated failures, such as watch and transient get errors, reducing duplication and improving maintainability without changing functional behavior. [6413c56c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6413c56c73575ff51117df92718042727af391d7)
+- Simplified error handling in tests by introducing shared variables for simulated failures. [6413c56c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6413c56c73575ff51117df92718042727af391d7)
 
 ## [17.1.7] - 2026-07-31
 
 ### Changed
 
-- Updated dependencies to their latest versions, enabling improved compatibility and bugfixes for Go modules including kubevirt.io/API, kubevirt.io/client-go, and github.com/k8snetworkplumbingwg/network-attachment-definition-client, as well as GitHub Actions workflows. [60d1a24b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/60d1a24bc49bb980e4e133c305b4d3e9ae818434)
+- Updated several Go module dependencies and GitHub Actions workflows to their latest releases for improved compatibility, bugfixes, and security patches, introducing no breaking changes but requiring downstream consumers to verify integration with the updated dependencies. [60d1a24b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/60d1a24bc49bb980e4e133c305b4d3e9ae818434)
 
 ## [17.1.6] - 2026-07-31
 
 ### Changed
 
-- Simplified test logic by extracting assertion helpers for error and shutdown checks, resulting in improved test readability and reduced maintenance effort due to the extracted helper functions. [c45de95a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c45de95a41bf322ac7ec431cf8efdeb46c6ae8dc)
+- Simplified error and shutdown assertions in tests to reduce duplication and improve readability, allowing developers to more easily verify these behaviors without introducing any breaking changes. [c45de95a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c45de95a41bf322ac7ec431cf8efdeb46c6ae8dc)
 
 ## [17.1.5] - 2026-07-31
 
 ### Changed
 
-- Stabilized code coverage for cmd/kar and internal runner packages by introducing additional tests that now pass, resulting in a 5.2% increase in overall coverage from 84.9% to 90.1%. [e6fd7bf4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e6fd7bf450d5c856d286bf8f0d0b96f18f1c3605)
+- Optimized code coverage by adding tests for key functions in cmd/kar and internal runner packages resulting in increased test success rates from 84.9% to 90.1%. [e6fd7bf4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e6fd7bf450d5c856d286bf8f0d0b96f18f1c3605)
 
 ## [17.1.4] - 2026-07-31
 
 ### Changed
 
-- Simplified the update logic for golangci-lint and gremlins versions by consolidating it into a single generic helper function, making no changes to observable behavior. [6e039c41](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6e039c41a7371c81dd1a7b38169b4c98b9570082)
+- Simplified the update logic for GitHub Actions by consolidating duplicated functions into a single generic helper function that can handle different actions without changing behavior. [6e039c41](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6e039c41a7371c81dd1a7b38169b4c98b9570082)
 
 ## [17.1.3] - 2026-07-24
 
 ### Changed
 
-- Simplified VCS build setting keys and runMainApp function signature to reduce cognitive overhead and clarify the application's contract without introducing any functional changes. [34c1e7c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/34c1e7c556556f559954d572ee1a1e0cf93da9c7)
+- Simplified VCS build setting keys and runMainApp function signature to reduce cognitive overhead and improve clarity in table-driven tests without introducing any functional changes to application behavior. [34c1e7c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/34c1e7c556556f559954d572ee1a1e0cf93da9c7)
 
 ## [17.1.2] - 2026-07-24
 
 ### Changed
 
-- Updated GitHub Actions and Go dependencies across all workflows to ensure compatibility with the latest features and security patches, including upgrading actions/setup-go, docker/login-action, and several Go module dependencies, as well as bumping the codespell pre-commit hook for improved typo detection. [28d84a26](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/28d84a261199fb70a10668695712ce97f79efe5a)
+- Upgraded GitHub Actions and Go dependencies to ensure compatibility with the latest features and security patches across all workflows. [28d84a26](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/28d84a261199fb70a10668695712ce97f79efe5a)
 
 ## [17.1.1] - 2026-07-24
 
 ### Fixed
 
-- Resolved issues with artifact upload reliability in CI runs by correcting exported logs directory ownership to prevent permission errors and improving debuggability of future log collection problems. [a1fbe002](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1fbe0024a8b7416d5642a7e877648860fc182ba)
+- resolved issues with artifact uploads in CI runs by changing ownership of exported logs to the current user and listing directory contents for easier debugging. [a1fbe002](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1fbe0024a8b7416d5642a7e877648860fc182ba)
 
 ## [17.1.0] - 2026-07-24
 
 ### Added
 
-- Increased code coverage for the cmd/kar/main.go file from 0% to 60.6%, enabling more reliable testing and diagnostics of critical functionality. [3169678e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3169678effbd5b48e4696a7ddafa92302ef569e7)
+- Enabled increased code coverage for the cmd/kar/main.go file by introducing unit tests in main_test.go that now cover 60.6% of statements. [3169678e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3169678effbd5b48e4696a7ddafa92302ef569e7)
 
 ## [17.0.0] - 2026-07-24
 
 ### Removed
 
-- Simplified the Printf method in LoggerImpl to delegate directly to Infof, eliminating redundant logic without altering the API contract or observable behavior for users and maintainers. [e61ae8f8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e61ae8f8d50d3fb1b2b217d770e390a1e3b408fc)
+- Simplified logging behavior by eliminating redundant Printf method logic and delegating to Infof without introducing any breaking changes or migration requirements. [e61ae8f8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e61ae8f8d50d3fb1b2b217d770e390a1e3b408fc)
 
 ## [16.2.1] - 2026-07-17
 
 ### Changed
 
-- Enabled Copilot CLI to perform comprehensive verification tasks by relaxing default restrictions on tool and path usage while maintaining security for critical operations through explicit denial of dangerous shell commands. [667cbe2c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/667cbe2c43d278b508f2eafb33e3e5df2039fc5d)
+- Enabled comprehensive verification tasks for Copilot CLI by relaxing tool and path restrictions while maintaining security through explicit denial of dangerous shell commands. [667cbe2c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/667cbe2c43d278b508f2eafb33e3e5df2039fc5d)
 
 ## [16.2.0] - 2026-07-15
 
 ### Added
 
-- Enabled dual-mode linter failure reporting, providing human-readable summaries and structured machine-report payloads that improve automation, integration, and communication for maintainers. [e62e5a8d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e62e5a8dced88c923c54b8c6bdffbe8ba0e10040)
+- Improved automation and easier integration with external tools for maintainers are now enabled through dual-mode linter failure reporting that includes human-readable summaries and structured machine-report JSON payloads. [e62e5a8d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e62e5a8dced88c923c54b8c6bdffbe8ba0e10040)
 
 ## [16.1.5] - 2026-07-11
 
 ### Fixed
 
-- Resolved permission errors when accessing Kubernetes cluster logs in the CI environment by running the kind export logs command with elevated permissions. [3a620304](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3a620304c02f10c794c07a19b872abe8d7093ba0)
+- Resolved permission errors accessing Kubernetes cluster logs in CI environment by running kind export logs command with elevated permissions. [3a620304](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3a620304c02f10c794c07a19b872abe8d7093ba0)
 
 ## [16.1.4] - 2026-07-11
 
 ### Changed
 
-- Simplified logic for resolving the latest semantic version tag from remote repositories by extracting it into a reusable function that replaces duplicated inlined code across three update functions with no functional changes expected as a result. [df0a1397](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/df0a13974305307575f5659b7e25e664c3b7ec12)
+- Simplified the resolution of semantic version tags from remote repositories by encapsulating the logic in a reusable function, reducing code duplication and making future maintenance easier with no functional changes expected. [df0a1397](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/df0a13974305307575f5659b7e25e664c3b7ec12)
 
 ## [16.1.3] - 2026-07-11
 
 ### Changed
 
-- Enabled proper coverage reporting by granting write permission to contents for analysis, allowing the gwatts/go-coverage-action to annotate commits during Git notes usage without affecting other workflow steps. [43682a91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43682a9162e583d2635cff01804b2156196f512a)
+- Enabled proper coverage reporting by allowing the gwatts/go-coverage-action to annotate commits during analysis. [43682a91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43682a9162e583d2635cff01804b2156196f512a)
 
 ## [16.1.2] - 2026-07-11
 
 ### Changed
 
-- Upgraded several Go module dependencies to their latest versions to ensure compatibility and security, including github.com/onsi/ginkgo/v2, github.com/onsi/gomega, and google.golang.org/gRPC. [91b83fad](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b83fad0cba07cee037b275e41b245f311807f7)
+- Upgraded several dependencies to their latest versions to address compatibility and security concerns, ensuring the project remains compatible with upstream libraries and benefits from recent bugfixes and performance improvements. [91b83fad](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/91b83fad0cba07cee037b275e41b245f311807f7)
 
 ## [16.1.1] - 2026-07-11
 
 ### Changed
 
-- Updated GitHub Actions to their latest patch versions for improved security and future-proofing, reducing maintenance overhead and improving workflow reliability. [27df61ea](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/27df61ea20eff9faddab7c92f329b8e89bab222b)
+- Updated GitHub Actions for the repository's workflows to their latest patch versions, ensuring security and bugfixes are applied, reducing maintenance overhead and improving reliability. [27df61ea](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/27df61ea20eff9faddab7c92f329b8e89bab222b)
 
 ## [16.1.0] - 2026-07-11
 
 ### Added
 
-- Automatically resolves and updates golangci-lint, gremlins, and rtk to their latest available versions in GitHub Actions workflows, reducing manual intervention and minimizing the risk of using outdated tools. [893b6ed1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/893b6ed1b5c69b74545ea52cc50c4e53d2a4b0e6)
+- Automatically resolves and updates golangci-lint, gremlins, and rtk versions in GitHub Actions workflows to ensure CI uses the latest dependencies with reduced manual intervention. [893b6ed1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/893b6ed1b5c69b74545ea52cc50c4e53d2a4b0e6)
 
 ## [16.0.4] - 2026-07-11
 
 ### Changed
 
-- Hardened copilot-cli configuration to restrict tool usage and access to sensitive resources while maintaining necessary workflow functionality. [d76f5ab9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d76f5ab9fc31059aa71f675b7b86f146fd1aaff4)
+- Hardened the copilot-cli configuration to restrict tool usage and limit path and URL access by explicitly denying dangerous shell commands and only allowing a curated set of trusted domains. [d76f5ab9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d76f5ab9fc31059aa71f675b7b86f146fd1aaff4)
 
 ## [16.0.3] - 2026-07-07
 
 ### Changed
 
-- Optimized the CI workflow to conditionally run Go-related jobs only when Go files have changed resulting in reduced resource usage and build times while maintaining publish job functionality. [dc1af83b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dc1af83b5ab8fac1f73b64e6c7d88bccdb49c8fe)
+- Optimized CI workflow efficiency by conditionally running Go-related jobs only when Go files have changed, reducing unnecessary resource usage and build times. [dc1af83b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dc1af83b5ab8fac1f73b64e6c7d88bccdb49c8fe)
 
 ## [16.0.2] - 2026-07-07
 
 ### Changed
 
-- Standardized GitHub Actions workflows for clarity and maintainability by renaming them to accurately reflect their purpose and triggers, clarifying event triggers and path filters, pinning tool versions, and improving job and step names for workflow logs readability. [40bc7fa6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40bc7fa60bd108109c2c8261b0949247eaf8a31b)
+- Standardized GitHub Actions workflows to improve maintainability and onboarding by clarifying event triggers, adding concurrency groups, pinning tool versions, and updating documentation with a quick context section and an execution map. [40bc7fa6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40bc7fa60bd108109c2c8261b0949247eaf8a31b)
 
 ## [16.0.1] - 2026-07-02
 
 ### Changed
 
-- Optimized test coverage by introducing additional deterministic tests that cover previously uncovered code paths resulting in an overall increase from 90.6% to 94.7%. [98dc50b8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/98dc50b837319eeb179f641b73ea38bdfea93727)
+- Optimized test coverage by adding deterministic and isolated tests for previously uncovered code paths via go tool cover analysis resulting in a 4.1% increase to 94.7%. [98dc50b8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/98dc50b837319eeb179f641b73ea38bdfea93727)
 
 ## [16.0.0] - 2026-07-02
 
 ### Removed
 
-- Simplified demo scripts by eliminating ~20 lines of duplicated shell logic and dead code through the consolidation of shared status-reporting functionality into a single `get_status()` function. [81cb5b24](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/81cb5b2487adb8b645273a5bfbd8cc65f57d0379)
+- Simplified demo scripts by eliminating duplicated status-reporting logic and dead code, resulting in ~20 lines of reduced shell complexity. [81cb5b24](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/81cb5b2487adb8b645273a5bfbd8cc65f57d0379)
 
 ## [15.2.2] - 2026-07-02
 
 ### Fixed
 
-- Resolves issues where creating a Virtual Machine Instance that already exists results in unnecessary failures by returning the existing VMI instead of halting execution and logging the "already exists" error separately from other failure cases. [bdf23444](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bdf234447b8738eb55eabb738281dfe2a9b41098)
+- Resolve attempts to create a Virtual Machine Instance that already exists by returning the existing VMI and logging an error message without introducing any breaking behavior or migration requirements. [bdf23444](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bdf234447b8738eb55eabb738281dfe2a9b41098)
 
 ## [15.2.1] - 2026-07-01
 
 ### Changed
 
-- Simplified the creation of DataVolumes by extracting conditional creation into a new helper method, createOptionalDataVolume, which is now used by the createResources function to simplify its logic without introducing any functional changes or breaking API contracts. [28078917](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/28078917388d6a2defac219d242e073857f11445)
+- Simplified DataVolume creation logic to improve code organization and maintainability by extracting the optional creation into a new helper method createOptionalDataVolume without introducing any functional changes or breaking behavior. [28078917](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/28078917388d6a2defac219d242e073857f11445)
 
 ## [15.2.0] - 2026-07-01
 
 ### Added
 
-- Enabled accurate spell checking in Kubernetes and testing contexts by introducing commonly used terms such as kube, testvm, kubectl, and Kubernetes into the wordlist without affecting application logic. [1a1fb5d4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1a1fb5d4a2a5380c9b667d6393a29f8e12d6816b)
+- Enabled spell checks to accurately identify commonly used terms in Kubernetes and testing contexts by incorporating "kube", "testvm", and related variations into the wordlist without impacting application logic. [1a1fb5d4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1a1fb5d4a2a5380c9b667d6393a29f8e12d6816b)
 
 ## [15.1.0] - 2026-07-01
 
 ### Added
 
-- Enabled centralized template management by allowing users to specify the namespace from which to fetch the VM template independently of the runner's namespace through a new flag and corresponding environment variable, reducing template duplication and simplifying lifecycle management while maintaining backward compatibility. [531fb694](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/531fb6943bae02604b7d0207e5187d142e9e8049)
+- Enabled centralized template management by allowing users to specify the namespace from which to fetch the VM template independently of the runner's namespace. [531fb694](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/531fb6943bae02604b7d0207e5187d142e9e8049)
 
 ## [15.0.0] - 2026-06-25
 
 ### Removed
 
-- Streamlined project documentation by eliminating redundant generic code review instructions template that is now maintained elsewhere. [860862be](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/860862be222c55bce2e14ffdf6bd2f044e96d5f6)
+- Simplified repository clutter by eliminating a generic code review instructions template that is no longer needed and is now maintained separately for each project, without affecting functional or behavioral code. [860862be](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/860862be222c55bce2e14ffdf6bd2f044e96d5f6)
 
 ## [14.0.0] - 2026-06-25
 
 ### Removed
 
-- Eliminated outdated documentation about the review-and-refactor skill to keep the repository up to date and reduce confusion about current practices. [c2817b39](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c2817b39cdf53dbcb84beb37881167a99afad06e)
+- Simplified the repository by eliminating outdated review-and-refactor skill documentation that no longer reflects current project practices and workflows. [c2817b39](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c2817b39cdf53dbcb84beb37881167a99afad06e)
 
 ## [13.0.0] - 2026-06-25
 
 ### Removed
 
-- Eliminated redundant documentation to prevent contributor confusion by removing outdated GNU Make Makefile authoring instructions from the instructions directory. [43f34dd2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43f34dd23d74f03cc6d4cf6161714275d424dd20)
+- Simplified documentation by eliminating redundant Makefile authoring instructions that are no longer maintained and have been superseded by project-level documentation and inline comments within individual Makefiles. [43f34dd2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/43f34dd23d74f03cc6d4cf6161714275d424dd20)
 
 ## [12.0.0] - 2026-06-25
 
 ### Removed
 
-- Simplified the workflow by eliminating redundant configuration through consolidation of responsibilities under a unified engineering guidance agent, resulting in no impact on existing automation or engineering processes. [d5aad069](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d5aad069bd60629594ba8b978042ac4bc8957005)
+- Simplified maintenance efforts for maintainers by eliminating redundant functionality through consolidation of the principal software engineer agent's responsibilities under a unified engineering guidance agent. [d5aad069](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d5aad069bd60629594ba8b978042ac4bc8957005)
 
 ## [11.1.0] - 2026-06-25
 
 ### Added
 
-- Enabled global Copilot token management and usage tracking by integrating the rtk token saver into both fixer and verifier workflows, improving observability of token usage and supporting future automation or reporting needs with no impact on existing job logic. [b7eeca91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b7eeca912fccbebcfe10df8715a4057e05413460)
+- Enabled global Copilot token management and usage tracking by integrating the rtk token saver into both fixer and verifier workflows without impacting existing job logic. [b7eeca91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b7eeca912fccbebcfe10df8715a4057e05413460)
 
 ## [11.0.1] - 2026-06-23
 
 ### Changed
 
-- Optimized license headers in Go source files to prevent jscpd from flagging them as duplicate code thereby reducing noise in duplication reports without affecting application logic or tests and with minimal security impact. [1de8a0f4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1de8a0f49d86acb70717027ed4f2aaacd04a42b4)
+- Optimized license headers in Go source files to prevent jscpd from flagging them as duplicate code, reducing noise in duplication reports. [1de8a0f4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1de8a0f49d86acb70717027ed4f2aaacd04a42b4)
 
 ## [11.0.0] - 2026-06-23
 
 ### Removed
 
-- Upgraded GitHub Actions workflows to utilize the latest Copilot CLI features and security updates by switching from v2.0 to v3.2 without introducing any breaking behavior or API changes. [32bd4257](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/32bd4257fc536557fbc962d9af3f87de4041aea4)
+- The GitHub Actions workflows now utilize the latest Copilot CLI version at v3.2, ensuring compatibility with its features and security updates, while introducing a potential migration requirement for future updates. [32bd4257](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/32bd4257fc536557fbc962d9af3f87de4041aea4)
 
 ## [10.0.2] - 2026-06-23
 
 ### Changed
 
-- Enhanced GitHub Actions to reliably update action hashes for SemVer tags in workflow files, addressing edge cases and improving overall automation robustness. [8be2c280](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8be2c280b656ebd0f36a96cb1f863e156fa7ca94)
+- Optimized automated updates of GitHub Action hashes to rely on SemVer tags only and handle annotated and lightweight tags more reliably. [8be2c280](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8be2c280b656ebd0f36a96cb1f863e156fa7ca94)
 
 ## [10.0.1] - 2026-06-23
 
 ### Changed
 
-- Normalized GitHub Actions workflows now consistently reference the latest tagged versions of actions, reducing ambiguity and simplifying maintenance. [bafb6e71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bafb6e71131fdcf835c29df97c26340aabe25463)
+- Simplified GitHub Actions workflows to consistently reference their latest available tags, reducing the risk of using outdated action references and making future maintenance more straightforward. [bafb6e71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bafb6e71131fdcf835c29df97c26340aabe25463)
 
 ## [10.0.0] - 2026-06-19
 
 ### Removed
 
-- Eliminated unnecessary whitespace in the data volume test to improve code readability and consistency without affecting API or CLI contracts, config schema, security, or migration requirements. [7a59bc19](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a59bc19b457f0f67615f7a38a3aa6de9a73dce0)
+- Simplified the data volume test in runner_test by removing unnecessary whitespace to improve code readability and consistency with surrounding tests without introducing breaking behavior or altering the existing functionality. [7a59bc19](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a59bc19b457f0f67615f7a38a3aa6de9a73dce0)
 
 ## [9.7.4] - 2026-06-19
 
 ### Changed
 
-- Upgraded several Go module dependencies to their latest versions, ensuring continued support and reducing the risk of vulnerabilities from outdated packages, without modifying any application code. [a6d30861](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a6d30861343aca0ca05da146dcfa0433d15c0796)
+- Upgraded several dependencies to their latest versions, ensuring continued support and reducing the risk of vulnerabilities from outdated packages, without changing any application code. [a6d30861](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a6d30861343aca0ca05da146dcfa0433d15c0796)
 
 ## [9.7.3] - 2026-06-19
 
 ### Changed
 
-- Simplified telemetry and runner tests to improve maintainability by introducing reusable helper functions and closures that preserve existing test coverage and behavior without altering it. [924b7377](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/924b737736920b7091abd93dff24f1a2d806cca6)
+- Simplified test maintenance by extracting reusable logic and constants to reduce duplication and improve readability while preserving existing test coverage and behavior. [924b7377](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/924b737736920b7091abd93dff24f1a2d806cca6)
 
 ## [9.7.2] - 2026-06-19
 
 ### Changed
 
-- Updated the ai-prepare-commit-msg hook to leverage upstream improvements and bugfixes for commit message generation, requiring no configuration changes but monitoring future breaking changes in hook behavior. [3f0464d1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f0464d1e50712a766a6445de1a8df5331fd007a)
+- Updated the ai-prepare-commit-msg hook to leverage upstream improvements and bugfixes for commit message generation without requiring configuration changes. [3f0464d1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f0464d1e50712a766a6445de1a8df5331fd007a)
 
 ## [9.7.1] - 2026-06-18
 
 ### Changed
 
-- Simplified the runner code to reduce technical debt without introducing any observable changes in behavior, API contract, security, or config schema. [2e96c41f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2e96c41f91268fa464c44a39fcd3e97f27e11131)
+- Simplified the runner code to eliminate duplicated strings and checks, improving maintainability without introducing any breaking behavior or API changes. [2e96c41f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2e96c41f91268fa464c44a39fcd3e97f27e11131)
 
 ## [9.7.0] - 2026-06-18
 
 ### Added
 
-- Enabled comprehensive testing of previously untested code paths resulting in improved overall statement coverage from 70.5% to 92.2%. [68d46dd9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/68d46dd9eb8525ee3028681cfc4265dda7904207)
+- Enabled comprehensive test coverage for previously untested code paths, increasing overall statement coverage from 70.5% to 92.2%. [68d46dd9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/68d46dd9eb8525ee3028681cfc4265dda7904207)
 
 ## [9.6.2] - 2026-06-18
 
 ### Changed
 
-- Stabilized documentation clarity by updating QA subagent code blocks to use "text" language and correcting the heading from "antipatterns" to "Antipatterns". [5f182399](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f18239916873c8a42c56c23eacd5c541ab721e8)
+- Clarified documentation content by updating code blocks to use "text" language and correcting the heading from "antipatterns" to "Antipatterns", maintaining alignment with standards without introducing breaking behavior or migration requirements. [5f182399](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f18239916873c8a42c56c23eacd5c541ab721e8)
 
 ## [9.6.1] - 2026-06-18
 
 ### Changed
 
-- Enhanced documentation clarity by introducing embedded diagrams that explicitly illustrate architecture, quickstart, telemetry pipeline, and timeout behavior for improved onboarding and troubleshooting. [bda81f17](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bda81f17671365389e2cc58f6c9f6a4d7d4527f5)
+- Enhanced documentation clarity by introducing visual diagrams that explicitly illustrate key control flows and lifecycles for improved onboarding and troubleshooting. [bda81f17](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bda81f17671365389e2cc58f6c9f6a4d7d4527f5)
 
 ## [9.6.0] - 2026-06-18
 
 ### Added
 
-- Automated code coverage improvement is now enabled through a dedicated QA subagent that analyzes gaps in unit tests, generates targeted tests, and submits focused pull requests to improve coverage, formalizing and automating test planning, bug reporting, and quality standards while reducing manual oversight and regression risk. [b6922b18](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6922b18bad6fed9eebd840db5c79c55ee1480e5)
+- Enabled automated code coverage improvement through a dedicated QA subagent and GitHub Actions workflow that analyzes gaps, generates targeted tests, and submits focused pull requests to maintain high test quality. [b6922b18](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6922b18bad6fed9eebd840db5c79c55ee1480e5)
 
 ## [9.5.0] - 2026-06-17
 
 ### Added
 
-- Standardized terminology across the codebase by introducing Ctrl, jitconfig, ParseDuration, and SIGTERM to linter-enforced wordlist usage. [5156f568](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5156f56833fd52f5c898f18b756e8590e561d286)
+- Enabled consistent terminology across the project by adding Ctrl, jitconfig, ParseDuration, and SIGTERM to the wordlist used by linters for enforcing standardized usage throughout the codebase. [5156f568](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5156f56833fd52f5c898f18b756e8590e561d286)
 
 ## [9.4.3] - 2026-06-17
 
 ### Fixed
 
-- Stabilized compatibility for all environments building the application by updating the Dockerfile to utilize the latest version of Git, 2.54.0-r0, which includes recent bugfixes and security improvements over the previously used outdated version 2.52.0-r0. [d6535c99](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d6535c99de063288b7b2a656a90ad47e47507649)
+- Updated to the latest version of Git, 2.54.0-r0, ensuring compatibility with current build requirements and access to recent bugfixes and security improvements for all environments using this Dockerfile. [d6535c99](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d6535c99de063288b7b2a656a90ad47e47507649)
 
 ## [9.4.2] - 2026-06-17
 
 ### Changed
 
-- Organized documentation into distinct sections for tutorials, how-to guides, reference, and explanations to improve discoverability and align with established best practices. [f95c9db9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f95c9db9c5798e098bafd2cd64324ff2461d5de2)
+- Modernized documentation structure to clearly separate learning tutorials from task-oriented how-to guides and reference material, improving discoverability and navigation efficiency for users. [f95c9db9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f95c9db9c5798e098bafd2cd64324ff2461d5de2)
 
 ## [9.4.1] - 2026-06-17
 
 ### Fixed
 
-- Stabilized the build environment by updating the base image to alpine 3.24 which includes the latest security patches and bugfixes without introducing any breaking changes to the build process or application functionality. [480ebb71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/480ebb7159f791b4ab087ac660f52ba1d60fea6a)
+- Resolved the base image to utilize the latest security patches and bugfixes available in alpine 3.24 without introducing any breaking changes to the build process or application functionality. [480ebb71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/480ebb7159f791b4ab087ac660f52ba1d60fea6a)
 
 ## [9.4.0] - 2026-06-17
 
 ### Added
 
-- Enabled Gremlins mutation testing in the build workflow to improve code resilience and identify potential weaknesses in the test suite, which runs after unit tests only when Go files have changed and pushes the Docker image only after all tests pass. [fcff167a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fcff167a0b8c40263b5198d3b260e441af961630)
+- Enabled Gremlins mutation testing in the build workflow to strengthen code resilience and fault detection by identifying potential weaknesses in the test suite. [fcff167a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fcff167a0b8c40263b5198d3b260e441af961630)
 
 ## [9.3.0] - 2026-06-17
 
 ### Added
 
-- Enabled automatic commit message suggestions based on changes in the staging area to improve consistency and quality across the project. [a4c56584](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a4c565847b26098f44715876a74b083d684900d1)
+- Enabled automated commit message suggestions during the pre-commit process by re-enabling and updating the ai-prepare-commit-msg hook configuration to utilize the correct repository URL and revision. [a4c56584](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a4c565847b26098f44715876a74b083d684900d1)
 
 ## [9.2.15] - 2026-06-12
 
 ### Changed
 
-- Simplified the codebase to reduce technical debt by eliminating unnecessary checks and consolidating defaults, ensuring backwards compatibility without introducing any breaking behavior or API changes. [817b68c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/817b68c5ab5096417d1f47d51be93a7505ce76e0)
+- Simplified the codebase by eliminating unnecessary nil checks and improving consistency in environment variable usage, resulting in no observable impact on behavior for developers or operators. [817b68c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/817b68c5ab5096417d1f47d51be93a7505ce76e0)
 
 ## [9.2.14] - 2026-06-05
 
 ### Changed
 
-- Optimized version updates in continuous integration workflows to preserve partial changes and improve reliability by resolving dependency mismatches and refining failure reporting without breaking existing APIs. [1ebce834](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1ebce8341782aee6a6a15d84bddeb173163b73cb)
+- ci/update_versions.sh has been optimized to preserve partial updates and handle errors more robustly without breaking changes to the API contract or requiring migration efforts from developers or operators. [1ebce834](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1ebce8341782aee6a6a15d84bddeb173163b73cb)
 
 ## [9.2.13] - 2026-06-05
 
 ### Changed
 
-- Modernized project dependencies to align with updated Go versions and latest OpenTelemetry, Kubernetes, and gRPC releases without introducing breaking behavior or requiring migration efforts from API clients, Kubernetes APIs, or other external libraries. [8def3a3f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8def3a3f1a3d69ab45213135216d55093a46302d)
+- Updated the project's Go dependencies to their latest versions, including go.opentelemetry.io/otel and its related packages at version 1.44.0, k8s.io/API at 0.36.1, and kubevirt.io/API at 1.8.3. [8def3a3f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8def3a3f1a3d69ab45213135216d55093a46302d)
 
 ## [9.2.12] - 2026-06-04
 
 ### Changed
 
-- Optimized GitHub Actions workflows by pinning actions/checkout to v6.0.3 ensuring consistent behavior across all reliant workflows without introducing any breaking changes or modifying the API contract. [5eca7d3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5eca7d3cc3197be3ad58f5a4e8613b55bfbc4c82)
+- Pinned actions/checkout to version 6.0.3 in various GitHub workflows, upgrading underlying dependencies without introducing breaking behavior. [5eca7d3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5eca7d3cc3197be3ad58f5a4e8613b55bfbc4c82)
 
 ## [9.2.11] - 2026-06-04
 
 ### Changed
 
-- Simplified error handling and reduced technical debt by consolidating variable declarations and removing unnecessary imports without introducing any breaking behavior or API changes. [f337f2f8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f337f2f89629dbf521d318111c4bdcbae19b4d54)
+- Simplified error handling and reduced technical debt by consolidating variable declarations, removing redundant imports, and refactoring code to improve maintainability and readability without introducing any breaking changes. [f337f2f8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f337f2f89629dbf521d318111c4bdcbae19b4d54)
 
 ## [9.2.10] - 2026-06-03
 
 ### Changed
 
-- Updated dependencies to the latest available versions, including actions/ai-inference 2.1.1, docker/login-action 4.2.0, docker/metadata-action 6.1.0, and markdownlint v0.16.0, ensuring compatibility with other changes in the project. [1fec048d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1fec048d5f576bde09581e19291863e54d4d51e9)
+- Updated versions of GitHub Actions, Docker dependencies, and pre-commit configuration files to ensure consistency and reflect the latest available versions, potentially requiring manual updates from users who rely on these specific versions for their workflows. [1fec048d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1fec048d5f576bde09581e19291863e54d4d51e9)
 
 ## [9.2.9] - 2026-06-01
 
 ### Changed
 
-- Simplified and optimized telemetry shutdown logic in cmd/kar/main.go to eliminate redundant checks and improve performance without introducing any breaking changes. [7b823ed2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7b823ed204c424b3f38a750808bf8a809f244175)
+- Simplified build information retrieval and telemetry shutdown handling to eliminate panics and golangci-lint violations without introducing breaking changes that affect developers or operators. [7b823ed2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7b823ed204c424b3f38a750808bf8a809f244175)
 
 ## [9.2.8] - 2026-05-28
 
 ### Fixed
 
-- Enabled GoCI configurations to utilize the newer and more secure gomodguard_v2 linter instead of its deprecated predecessor, requiring users who rely on this tool for code analysis to update their configurations accordingly. [bd8401ff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bd8401ff8a66037232b9dcf7f2cb7477d252772a)
+- Enabled gomodguard_v2 by default in the GoCI configuration to replace and harden against the deprecated gomodguard linter. [bd8401ff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bd8401ff8a66037232b9dcf7f2cb7477d252772a)
 
 ## [9.2.7] - 2026-05-28
 
 ### Changed
 
-- Stabilized the VMI wait/status flow in the runner to improve robustness and protect API server integrity by reconnecting the VMI watch on stream closure with context-aware backoff before reconnection and tracking a `readyReported` flag to emit the 'Running and Ready' log only once per phase transition. [dd550f89](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dd550f89292c510ccbcdd29ec659c8475ec26d4c)
+- Optimized VMI wait/status flow to reconnect watch on stream closure and protect API server against excessive requests during context cancellation, enabling more reliable phase transitions in WSL v5 environments. [dd550f89](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dd550f89292c510ccbcdd29ec659c8475ec26d4c)
 
 ## [9.2.6] - 2026-05-28
 
 ### Fixed
 
-- Improved job resilience by automatically reconnecting VMI watches on stream closure during long-running jobs without requiring user configuration changes. [e0024a27](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e0024a27c97d139f119b0b0d3266c2cef6de33d3)
+- Stabilized the runner's behavior against temporary Kubernetes API issues by automatically reconnecting the VMI watch on stream closure without breaking any existing functionality. [e0024a27](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e0024a27c97d139f119b0b0d3266c2cef6de33d3)
 
 ## [9.2.5] - 2026-05-22
 
 ### Changed
 
-- Enabled package-level sentinel errors in internal/runner.go to prevent err113 issues and moved error declarations outside if statements in cmd/kar/app/root.go to satisfy noinlineerr requirements. [7beb720d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7beb720dc91d41e542832da607717312cd1db04f)
+- The package-level sentinel errors have been modernized in internal/runner.go to satisfy golangci-lint requirements and improve overall error handling. [7beb720d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7beb720dc91d41e542832da607717312cd1db04f)
 
 ## [9.2.4] - 2026-05-22
 
 ### Changed
 
-- Updated versions files to latest available versions, enabling seamless build and linting processes for Docker images and GitHub Actions workflows without requiring any migration steps or breaking behavior adjustments. [a4432b61](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a4432b61b25397ae4c2d11307bb22a003014f948)
+- Updated versions files to ensure dependencies remain current with security patches and bugfixes, requiring no migration steps or breaking behavior changes. [a4432b61](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a4432b61b25397ae4c2d11307bb22a003014f948)
 
 ## [9.2.3] - 2026-05-15
 
 ### Changed
 
-- The logging functionality has been optimized to improve maintainability and reduce complexity in the codebase. [7f56e593](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7f56e593c6a6d6ac21e63ca197ac8303aa847fdd)
+- Optimized test functions to eliminate redundant loop variable copies thereby improving performance and efficiency. [7f56e593](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7f56e593c6a6d6ac21e63ca197ac8303aa847fdd)
 
 ## [9.2.2] - 2026-05-15
 
 ### Changed
 
-- Updated versions of the `actions/ai-inference` action to 2.1.0 in three GitHub workflows, potentially impacting build and linter analysis results due to API contract changes that may affect accuracy or output of these analyses. [f01c4513](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f01c451346c9306198837a01d96ea1839457ab87)
+- Updated versions of the `actions/ai-inference` action in GitHub Actions workflows to 2.1.0 from 2.0.8 for analysis and linter checks. [f01c4513](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f01c451346c9306198837a01d96ea1839457ab87)
 
 ## [9.2.1] - 2026-05-14
 
 ### Changed
 
-- Optimized the default wait timeout for the KAR runner to 1 hour from its previous value of 10 minutes, affecting users who configure timeouts via environment variables such as KAR_WAIT_TIMEOUT. [1aaf5577](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1aaf5577dda0daa1181a10c4ff0a407818352fa3)
+- Increased the default wait timeout from 10 minutes to 1 hour for Kubevirt Actions Runner, allowing more time for terminal VMI phases to complete and enabling users to configure the new timeout value using the KAR_WAIT_TIMEOUT environment variable. [1aaf5577](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1aaf5577dda0daa1181a10c4ff0a407818352fa3)
 
 ## [9.2.0] - 2026-05-14
 
 ### Added
 
-- Enabled configurable KAR_WAIT_TIMEOUT and VMI Running+Ready provisioning milestone logging, allowing users to customize timeouts and interpret provisioning milestones more effectively in their workflows. [6a853fc3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a853fc3c99c9a644998aa3e3c73576e5246df32)
+- Enabled configurable wait timeout for terminal VMI phase, introducing Running+Ready milestone that ends wait without requiring Succeeded phase, with default timeout of 10 minutes adjustable via KAR_WAIT_TIMEOUT environment variable. [6a853fc3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a853fc3c99c9a644998aa3e3c73576e5246df32)
 
 ## [9.1.6] - 2026-05-08
 
 ### Changed
 
-- Simplified logging and build info creation to improve maintainability and adherence to best practices without introducing breaking changes or security vulnerabilities. [3c1ca8ce](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3c1ca8ce936ce86798f9fa171d71698fd7fcd89e)
+- Simplified logging and build information creation to improve maintainability without introducing breaking changes or security vulnerabilities. [3c1ca8ce](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3c1ca8ce936ce86798f9fa171d71698fd7fcd89e)
 
 ## [9.1.5] - 2026-05-01
 
 ### Fixed
 
-- Resolved an error in actions/setup-copilot by downgrading austenstone/copilot-cli from v3.0 to v2.0 and disabling the Copilot CLI auto-update via a pinned_actions list in update_versions.sh. [9ac1d458](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9ac1d45853edb80722230f39a18f49aa6b944379)
+- Resolved issues caused by actions/setup-copilot not being found by preventing austenstone/copilot-cli from auto-updating to v3.0 and instead locking it at version 2.0 in workflows. [9ac1d458](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9ac1d45853edb80722230f39a18f49aa6b944379)
 
 ## [9.1.4] - 2026-04-20
 
 ### Changed
 
-- Updated GitHub Actions workflows to utilize newer versions of actions, specifically GoTestTools/gotestfmt-action was updated from 2.2.0 to 2.3.0 and actions/upload-artifact was updated from 7.0.0 to 7.0.1 without introducing breaking behavior or requiring migration steps. [6a84162a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a84162a986a6a31b4639086575e495c0a5380f7)
+- Updated GitHub Actions workflows to utilize newer versions of several actions, ensuring continued correct function with the latest available tools. [6a84162a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a84162a986a6a31b4639086575e495c0a5380f7)
 
 ## [9.1.3] - 2026-04-11
 
 ### Fixed
 
-- Resolved documentation duplicity by removing redundant content from the Diátaxis Documentation Expert skill. [fea2e201](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fea2e201652786d5a11b89717a3109e292d4a34c)
+- Resolved documentation duplicity by removing redundant content from the Diátaxis Documentation Expert skill, allowing users and maintainers to review updated README.md for alternative resources and contributing information without impacting API or CLI contracts. [fea2e201](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fea2e201652786d5a11b89717a3109e292d4a34c)
 
 ## [9.1.2] - 2026-04-07
 
 ### Fixed
 
-- Resolved NATURAL_LANGUAGE and GITLEAKS super-linter failures, addressed Go linting issues, applied code review feedback, and added default branch handling for unrecognized VMI phases without introducing any breaking behavior or migration requirements. [9b026b66](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9b026b66a888705b442148cc652ab73b8cc49801)
+- Resolved multiple linter failures and code review feedback issues, ensuring that Makefiles and shell scripts are now lint-free and adhere to best practices for maintainability and portability. [9b026b66](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9b026b66a888705b442148cc652ab73b8cc49801)
 
 ## [9.1.1] - 2026-04-05
 
 ### Fixed
 
-- Stabilized the WaitForVirtualMachineInstance method by introducing a 5-minute timeout to prevent indefinite blocking and improve test reliability, clarity, and security. [d5babba4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d5babba40cd8ef22322232cc69378726d09dab93)
+- Improved reliability by introducing a 5-minute timeout to the WaitForVirtualMachineInstance method and restricting GitHub tool access permissions for tighter security controls. [d5babba4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d5babba40cd8ef22322232cc69378726d09dab93)
 
 ## [9.1.0] - 2026-04-05
 
 ### Added
 
-- Enabled custom GitHub instructions to ensure code quality and documentation standards in the repository by emphasizing testing, validation, documentation updates, and clean code practices for contributors, reviewers, and maintainers. [0e9d3162](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/0e9d316275320e0da4058a45077554296706d7f6)
+- Enabled clear and consistent documentation for various programming languages and tools by introducing custom GitHub instructions, agents, and skills to the repository. [0e9d3162](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/0e9d316275320e0da4058a45077554296706d7f6)
 
 ## [9.0.5] - 2026-04-03
 
 ### Changed
 
-- Modernized versions files and tool dependencies to resolve linting issues and ensure compatibility with the latest CI tools. [bbf36644](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bbf366448cf0046eec577ec096da65399a2ff96e)
+- Modernized versions files and GitHub Actions tool dependencies to ensure compatibility with the latest super-linter and other tools, resolving linting issues and simplifying configuration management for developers. [bbf36644](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bbf366448cf0046eec577ec096da65399a2ff96e)
 
 ## [9.0.4] - 2026-03-30
 
 ### Fixed
 
-- Resolved the pinned Git version in the Dockerfile to 2.52.0-r0 from 2.49.1-r0, requiring users who were relying on the previous version to rebuild their containers. [5e82fb61](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e82fb61c9e855c2749736a7f7adc9975556a102)
+- Updated Docker images to utilize the latest Git version 2.52.0-r0, requiring users who relied on the previous version 2.49.1-r0 to rebuild their images. [5e82fb61](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e82fb61c9e855c2749736a7f7adc9975556a102)
 
 ## [9.0.3] - 2026-03-27
 
 ### Changed
 
-- Updated dependencies to align with latest available releases impacting GitHub Pages settings and deployment actions potentially requiring migration steps for users relying on these dependencies in their workflows. [6a06c04d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a06c04d758eec28da63f99a870028de0ebb9f4b)
+- Updated GitHub Actions workflows to utilize the latest available versions of Go and other dependencies without introducing breaking behavior or requiring migration efforts. [6a06c04d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a06c04d758eec28da63f99a870028de0ebb9f4b)
 
 ## [9.0.2] - 2026-03-20
 
 ### Fixed
 
-- Resolved demo execution reliability by pre-building kar binary and waiting for virt-handler readiness before running the demo. [34f22cd4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/34f22cd4fc530d5e6f6a16e8f36acbba0cd8b939)
+- Resolved demo execution reliability by ensuring the virt-handler is fully operational before proceeding. [34f22cd4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/34f22cd4fc530d5e6f6a16e8f36acbba0cd8b939)
 
 ## [9.0.1] - 2026-03-20
 
 ### Fixed
 
-- Resolved scheduled version update workflow failures by robustly extracting major.minor Go versions and updating the Dockerfile base image to match. [d04e41af](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d04e41af9b9a11662843cb19151e0953daaac718)
+- Resolved scheduled version update workflow failures by robustly extracting major.minor Go versions and updating the Dockerfile FROM-line using the Docker Hub API. [d04e41af](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d04e41af9b9a11662843cb19151e0953daaac718)
 
 ## [9.0.0] - 2026-03-13
 
 ### Removed
 
-- Prevented fatal crashes in DeleteResources by making AppContext initialization optional and introducing the HasAppContext function to check for initialization before proceeding with deletion. [cdaaa3dc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cdaaa3dc544bab4371eee86157aa8e5a51a4fbb5)
+- Stabilized DeleteResources functionality to prevent fatal crashes on uninitialized AppContext by ensuring the presence of an initialized context before proceeding. [cdaaa3dc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cdaaa3dc544bab4371eee86157aa8e5a51a4fbb5)
 
 ## [8.0.2] - 2026-03-13
 
 ### Changed
 
-- Updated GitHub Actions workflows to include detailed Docker image build process and tool dependency information for enhanced debugging and troubleshooting capabilities across multiple development tasks. [d194d7ac](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d194d7aceeefca883a0f8eb6178e3612311ed77a)
+- Updated the workflow configuration for GitHub Actions to include more detailed information in the build process and Docker image creation steps with no breaking changes required. [d194d7ac](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d194d7aceeefca883a0f8eb6178e3612311ed77a)
 
 ## [8.0.1] - 2026-03-13
 
 ### Fixed
 
-- The Docker build process was stabilized to allow users submitting changes directly to the master branch without requiring pull requests, maintaining the existing API and CLI contract with no migration steps required. [26910142](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2691014241233ba9f001385849b6a68f9bf62100)
+- Resolved an issue in Docker build workflows for GitHub Actions, eliminating the requirement for pull requests targeting the master branch to trigger builds and allowing users to simplify their workflow configurations accordingly. [26910142](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2691014241233ba9f001385849b6a68f9bf62100)
 
 ## [8.0.0] - 2026-03-13
 
 ### Removed
 
-- Streamlined access to relevant information by eliminating unnecessary index.md content that previously cluttered the testbed's documentation sections on architecture and design principles. [1966ee0f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1966ee0f1eed4782a8a5aff6d9771b29f966d189)
+- Simplified navigation through project sections by eliminating redundant content that was previously accessible via index.md information. [1966ee0f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1966ee0f1eed4782a8a5aff6d9771b29f966d189)
 
 ## [7.20.7] - 2026-03-13
 
 ### Fixed
 
-- resolved golangci-lint exitAfterDefer and paralleltest failures in appcontext ensuring consistent behavior during testing without introducing any breaking changes. [a28a6002](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a28a6002f71957b9f2ff10f62a66697cf7614f2c)
+- Resolved issues with golangci-lint and Docker build process in appcontext, ensuring successful linting and building for users relying on these tools. [a28a6002](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a28a6002f71957b9f2ff10f62a66697cf7614f2c)
 
 ## [7.20.6] - 2026-03-13
 
 ### Fixed
 
-- Stabilized user understanding of KubeVirt Actions Runner's functionality by adding a diagram image to the readme.md file that addresses limitations of GitHub-hosted runners in standard workflows. [d9424fda](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d9424fdacb4f11459f3a4fd7bc51c29221d1fbe2)
+- Resolved the lack of visual context in the README.md file by adding a diagram image that enhances user understanding of the project's functionality and its relationship with Kubernetes and GitHub Actions. [d9424fda](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d9424fdacb4f11459f3a4fd7bc51c29221d1fbe2)
 
 ## [7.20.5] - 2026-03-13
 
 ### Fixed
 
-- resolved GitHub Pages deployment issues by stripping Runme-specific code fence attributes from documentation before Jekyll rendering. [b93ae3f6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b93ae3f6ed9dfd33bdb9fa3da0daabe5eeb0693b)
+- Resolved GitHub Pages deployment issues by enabling a Python script to remove Runme-specific code fence attributes from Markdown files in the documentation site. [b93ae3f6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b93ae3f6ed9dfd33bdb9fa3da0daabe5eeb0693b)
 
 ## [7.20.4] - 2026-03-13
 
 ### Fixed
 
-- The Docker build process was resolved by correcting an issue that prevented it from importing the project's Git repository correctly during the build process. [3f62f463](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f62f463bb53e081e90330245803ccf69e0c8cca)
+- Resolved issues related to importing the Git repository in Docker builds from non-git directories by removing unnecessary instructions and ensuring successful project code import. [3f62f463](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f62f463bb53e081e90330245803ccf69e0c8cca)
 
 ## [7.20.3] - 2026-03-13
 
 ### Fixed
 
-- Resolved super-linter failures in NATURAL_LANGUAGE, Markdown, and JSCPD checks by updating configuration settings and modifying readme.md content to conform to textlint and markdownlint rules. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
+- Resolved super-linter failures for NATURAL_LANGUAGE, Markdown, and JSCPD checks by addressing textlint and markdownlint issues in the README.md file. [5e56b630](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5e56b63013afb82a1518cad7dcdd293f62f81095)
 
 ## [7.20.2] - 2026-03-13
 
 ### Changed
 
-- Simplified documentation in the testbed guide to eliminate duplicate content and redundant flowcharts ensuring consistency for users. [732ec425](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/732ec425c0523f7c0dd4fc3ea16168acb10ec6ec)
+- Simplified the testbed guide documentation to remove duplicate content and improve clarity for users by replacing a detailed architecture overview link in place of the removed flowchart without introducing any breaking behavior or migration requirements. [732ec425](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/732ec425c0523f7c0dd4fc3ea16168acb10ec6ec)
 
 ## [7.20.1] - 2026-03-13
 
 ### Fixed
 
-- Optimized GitHub Actions workflow triggers to improve job filtering and reduce technical debt by introducing more selective remediation label matching and eliminating pull request review triggering in the build process. [d4b3c217](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d4b3c21772631da7f28f35d5cfc0724202c1b800)
+- The GH action triggers for workflows have been optimized to only run the `fixers.yml` workflow when an opened issue already includes a matching remediation label. [d4b3c217](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d4b3c21772631da7f28f35d5cfc0724202c1b800)
 
 ## [7.20.0] - 2026-03-13
 
 ### Added
 
-- Enabled GitHub workflows documentation for users to understand and utilize existing CI validation, maintenance, and automation workflows without introducing breaking behavior or API changes. [ecf4b03a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ecf4b03a5eeae8507bec3220a0bc034a1ee23c5b)
+- Enabled GitHub workflows documentation for CI validation, maintenance, and automation, including purpose, trigger, and description for each workflow file without introducing breaking behavior or API changes. [ecf4b03a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ecf4b03a5eeae8507bec3220a0bc034a1ee23c5b)
 
 ## [7.19.0] - 2026-03-13
 
 ### Added
 
-- Enhanced documentation for KubeVirt Actions Runner's readme.md file now clearly outlines key features including ephemeral VM creation, increased isolation, customizable system-level configuration support, and seamless integration with Kubernetes-native tooling. [b496c5a4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b496c5a461b9b0c1db705c21a33e064c5e2f6b5e)
+- Improved the README.md file documentation to better explain the KubeVirt Actions Runner project's features and benefits for running GitHub Actions workflows in isolated virtual machines using KubeVirt. [b496c5a4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b496c5a461b9b0c1db705c21a33e064c5e2f6b5e)
 
 ## [7.18.0] - 2026-03-13
 
 ### Added
 
-- Improved code readability and maintainability through enhanced documentation and metadata variables for build-time information. [bfd76a05](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bfd76a053fa91589f4fcb601a6b0a6562aa94ff2)
+- Code comments now provide metadata about the build, including the Git commit hash and build date, allowing developers to track version information. [bfd76a05](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bfd76a053fa91589f4fcb601a6b0a6562aa94ff2)
 
 ## [7.17.0] - 2026-03-13
 
 ### Added
 
-- Enabled easier maintenance and updates of the architecture diagram by relocating it to its own separate document in the `docs/explanations` directory without introducing any breaking behavior, API changes, or security impact. [821604c8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/821604c85d05c125b1ffcece32be1e06bc0d8626)
+- Introduced an architecture overview diagram in docs/explanations/architecture-overview.md and updated the README.md to include a link to it. [821604c8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/821604c85d05c125b1ffcece32be1e06bc0d8626)
 
 ## [7.16.0] - 2026-03-13
 
 ### Added
 
-- Enabled the Cayman theme for project documentation, resulting in an updated visual appearance online without introducing any breaking behavior or API changes. [56f2592a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/56f2592a7a714a1c4dad751bbfd5d5a123933736)
+- Introduced Cayman theme for documentation, which may affect how documentation appears online and requires users to review their documentation settings for the desired appearance. [56f2592a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/56f2592a7a714a1c4dad751bbfd5d5a123933736)
 
 ## [7.15.0] - 2026-03-13
 
 ### Added
 
-- Improved documentation navigation and organization have been introduced through an enhanced GitHub Pages setup that includes restructured project sections, updated tutorials, and a corrected telemetry guide for Jaeger UI traces verification. [84d2e4f0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/84d2e4f08fbb2e08f480459d3b028adf89a93739)
+- Optimized documentation navigation by reorganizing GitHub Pages under consistent naming conventions and moving files to the `how-to-guides` and `tutorials` directories without introducing breaking behavior or migration requirements. [84d2e4f0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/84d2e4f08fbb2e08f480459d3b028adf89a93739)
 
 ## [7.14.0] - 2026-03-13
 
 ### Added
 
-- The quickstart documentation is now more accessible and easier to maintain due to its relocation from the readme into a separate file. [6c472840](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6c472840477f076c6bfdaded92049d142e55cb21)
+- Enabled improved organization and clarity of quickstart instructions by moving documentation to a separate guide in docs/how-to-setup-quickstart.md. [6c472840](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6c472840477f076c6bfdaded92049d142e55cb21)
 
 ## [7.13.2] - 2026-02-28
 
 ### Fixed
 
-- Resolved the Markdown linting issues in the docs/how-to-enable-telemetry.md file to ensure consistency across example sections without introducing any breaking behavior or requiring migration steps. [a10c04b7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a10c04b7ff8d10567019a939ed9b3b3da328a421)
+- Resolved the Markdown linting issues in the docs without introducing any breaking behavior or requiring migration steps. [a10c04b7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a10c04b7ff8d10567019a939ed9b3b3da328a421)
 
 ## [7.13.1] - 2026-02-28
 
 ### Fixed
 
-- Corrected linting issues to ensure adherence to critical rules and improved code readability by removing duplicated package declarations, adding empty lines between logical code groups, and clarifying documentation requirements in readme files. [974b827d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/974b827d41932beae430585a8d2f228b19a63eda)
+- Stabilized linting for Go code by removing duplicate package declarations and clarifying formatting rules for code organization and documentation to improve adherence to community standards. [974b827d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/974b827d41932beae430585a8d2f228b19a63eda)
 
 ## [7.13.0] - 2026-02-28
 
 ### Added
 
-- Enabled clear guidelines for developers contributing to the Kubevirt Actions Runner project by introducing a contributing file outlining setup instructions and code standards. [3258012c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3258012ca9022f7783fcabc15a12968fdb85de7b)
+- Established clear guidelines for contributors to ensure consistency in code quality and adherence to best practices through the introduction of a contributing file outlining coding standards, testing, security, documentation, and development workflow. [3258012c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3258012ca9022f7783fcabc15a12968fdb85de7b)
 
 ## [7.12.0] - 2026-02-28
 
 ### Added
 
-- Enabled better observability and debugging capabilities for users through distributed tracing by introducing a new guide on how to enable telemetry for the `kubevirt-actions-runner` application, including configuration options and exporter types, in favor of previous telemetry documentation. [5f9be7fa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f9be7fa0120ec66b7420de0928eaa826977f111)
+- Improved telemetry setup is now simplified for users through detailed configuration instructions and examples for OTLP exporters and stdout exporters, as well as verification steps for Jaeger and local debugging. [5f9be7fa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5f9be7fa0120ec66b7420de0928eaa826977f111)
 
 ## [7.11.2] - 2026-02-27
 
 ### Fixed
 
-- The documentation for the Diátaxis Documentation Expert skill was updated to correct Markdown and natural language issues, improving clarity and consistency in project tone, style, and terminology. [02c8b8d5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/02c8b8d5a2eb56cadcf4805725dd6fa5722a808b)
+- Resolved issues related to Markdown and natural language in the Diátaxis Documentation Expert skill documentation, ensuring consistency in tone and style without introducing any breaking behavior or migration requirements. [02c8b8d5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/02c8b8d5a2eb56cadcf4805725dd6fa5722a808b)
 
 ## [7.11.1] - 2026-02-27
 
 ### Fixed
 
-- The wordlist used in GitHub Actions has been updated to include several new terms without introducing any breaking behavior or migration requirements. [18f94788](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18f9478899af0ba2e4a2b13c96fd97642d3b1e8b)
+- Resolved missing words in dictionary used for GitHub Actions wordlist to ensure proper handling of keywords during automated tasks without affecting API or CLI contracts and introducing any security risks. [18f94788](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18f9478899af0ba2e4a2b13c96fd97642d3b1e8b)
 
 ## [7.11.0] - 2026-02-27
 
 ### Added
 
-- Enabled setup of testbed environments for kubevirt-actions-runner through comprehensive documentation that outlines prerequisites, architecture, deployment flow, automated install script, and demo usage. [f7a19689](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f7a1968957b8dd59dbd92673e249c43200684aa5)
+- Introduced setup testbed documentation enabling users to configure and validate a local testing environment for `kubevirt-actions-runner`, including automated install scripts and customizable VM templates. [f7a19689](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f7a1968957b8dd59dbd92673e249c43200684aa5)
 
 ## [7.10.0] - 2026-02-27
 
 ### Added
 
-- Enabled expert technical writers to create high-quality software documentation by introducing guidelines based on the Diátaxis Framework's principles and structure that outline four document types, workflow, and contextual awareness for clarity, accuracy, user-centricity, and consistency. [1b8c9e14](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1b8c9e140fd239e15da42d220df140d02335d489)
+- Enabled users to contribute high-quality software documentation by introducing a skill outlining four document types and guidelines for contextual awareness following the Diátaxis Framework's principles and structure. [1b8c9e14](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1b8c9e140fd239e15da42d220df140d02335d489)
 
 ## [7.9.3] - 2026-02-14
 
 ### Fixed
 
-- The GitHub Actions workflow for on-demand CI jobs now triggers for all relevant pull requests, including opened, synchronized, and reopened ones, in addition to submitted reviews, potentially increasing the number of tests run without introducing any breaking behavior or migration requirements. [4797133c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4797133cdfae46eb148249f5b1bbe5585bdb4404)
+- Triggering of on-demand CI jobs is now optimized to include all pull requests, including opened, synchronized, and reopened ones, as well as submitted reviews, without introducing any breaking changes that require maintainers to review their setup. [4797133c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4797133cdfae46eb148249f5b1bbe5585bdb4404)
 
 ## [7.9.2] - 2026-02-14
 
 ### Fixed
 
-- Resolved inconsistencies in janitor agent documentation by correcting overengineering terminology to maintain proper consistency and accuracy without introducing any breaking behavior or migration requirements. [a1de3c32](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1de3c325daa17d12a7c6579413925d7cdd57ea9)
+- Resolved documentation inaccuracies in the Janitor agent's "Clean any codebase" section by correcting minor wording issues to ensure precise terminology is used. [a1de3c32](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a1de3c325daa17d12a7c6579413925d7cdd57ea9)
 
 ## [7.9.1] - 2026-02-14
 
 ### Fixed
 
-- Resolved GitHub workflows to more effectively guide users in submitting Pull Requests that reduce technical debt by clarifying the steps for creating a new branch and submitting a request with improvements. [b1689a76](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b1689a7624afd7f4a803923bfc68c2441cb39738)
+- Simplified the janitor prompt task in the workflow to clearly guide users through reducing technical debt and maintaining clean codebases without breaking public APIs. [b1689a76](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b1689a7624afd7f4a803923bfc68c2441cb39738)
 
 ## [7.9.0] - 2026-02-14
 
 ### Added
 
-- Enabled automated cleanup of unused code elements and tech debt remediation through integration into GitHub workflows for Docker build fixes and Go linting issues. [40df54db](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40df54db7f6d7b0d3a1c1b6ec5f7472910c554f2)
+- Enabled the janitor agent to perform cleanup tasks on codebases, including tech debt remediation, simplification, and removal of unnecessary abstractions, which impacts the Docker build process by removing a workflow that resolved build and runtime failures. [40df54db](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40df54db7f6d7b0d3a1c1b6ec5f7472910c554f2)
 
 ## [7.8.0] - 2026-02-14
 
 ### Added
 
-- Introduced automated analysis of Docker build failures and direct fixes through a new workflow, reducing manual effort and improving developer productivity. [13ad46df](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/13ad46df4a09af1ce2083dc8fc97d1d67c2b2f8f)
+- Automated Docker image build and runtime failure analysis is now enabled through the addition of AI-powered container failure analysis and a failed-build-issue-action in GitHub workflows. [13ad46df](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/13ad46df4a09af1ce2083dc8fc97d1d67c2b2f8f)
 
 ## [7.7.1] - 2026-02-12
 
 ### Fixed
 
-- Resolved all 14 golangci-lint wsl_v5 whitespace violations in the codebase, ensuring adherence to linter rules and maintaining code readability without introducing any breaking behavior or API/CLI contract changes. [6467558c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6467558c0b962aaf8a056fba99db516ddefe8524)
+- Resolved all 14 golangci-lint wsl_v5 whitespace violations in test files to maintain code readability without introducing breaking behavior or API/CLI contract changes. [6467558c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6467558c0b962aaf8a056fba99db516ddefe8524)
 
 ## [7.7.0] - 2026-02-12
 
 ### Added
 
-- Enabled automatic linting and issue resolution through integration with golangci-lint agent in GitHub Actions workflows without introducing breaking behavior or API changes but requiring migration of existing workflows to leverage the new functionality. [4d9d33dd](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4d9d33dd6d7df1b194fed5a457dadc311cb2cb9f)
+- Enabled automatic resolution of linter findings in the repository through the addition of a GitHub Actions workflow for golangci-lint issues that preserves existing behavior and tests while following idiomatic Go patterns. [4d9d33dd](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4d9d33dd6d7df1b194fed5a457dadc311cb2cb9f)
 
 ## [7.6.1] - 2026-02-02
 
 ### Fixed
 
-- The Docker build process now includes Git information in the image, enabling developers to leverage this data for debugging and development purposes without requiring any migration steps. [82d918e2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82d918e241ce995c5bae41b0153c603d9af8cd09)
+- The build process now includes Git information for users relying on this data in their applications. [82d918e2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82d918e241ce995c5bae41b0153c603d9af8cd09)
 
 ## [7.6.0] - 2026-02-02
 
 ### Added
 
-- Enabled improved testing coverage for projects that use Docker images by introducing a new smoke test for image building and testing in addition to Go code. [150f7617](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/150f7617d7955198635303e82ad3ca3616e6f0fa)
+- Enabled improved testing of image builds through the addition of a smoke test job to the GitHub Actions workflow that verifies the functionality of Docker images upon code changes. [150f7617](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/150f7617d7955198635303e82ad3ca3616e6f0fa)
 
 ## [7.5.6] - 2026-02-02
 
 ### Fixed
 
-- Resolved false positives in code spell checking by excluding go.\* files from the `.codespellrc` configuration and disabling code spell checking during linting in GitHub Actions workflows and Makefiles. [35cd82aa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/35cd82aa4d019ac55c42f9319356be21b1562087)
+- Improved the accuracy of linting by resolving false positives from spell checks in go files and disabling them in GitHub Actions workflows. [35cd82aa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/35cd82aa4d019ac55c42f9319356be21b1562087)
 
 ## [7.5.5] - 2026-02-02
 
 ### Changed
 
-- Updated GitHub Actions versions in workflows to 3.7.0 for docker/login-action, 3.2.0 for actions/attest-build-provenance, and 8.4.0 for super-linter/super-linter. [14fb8e04](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/14fb8e046a7367ea3a9289b1e3581437b42c12ad)
+- Updated GitHub Actions versions in build and linter workflows to 3.7.0 for docker/login-action and 8.4.0 for super-linter/super-linter, potentially requiring manual intervention if hardcoded references exist elsewhere. [14fb8e04](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/14fb8e046a7367ea3a9289b1e3581437b42c12ad)
 
 ## [7.5.4] - 2026-02-02
 
 ### Fixed
 
-- Resolved the issue with go mod update by downgrading grpc-gateway from v2.27.5 to v2.27.3 requiring a potential migration step for users relying on this version. [bae3ef04](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bae3ef04f4e7fd05577d59bf4f48ee5e50520be0)
+- Resolved the go.mod file to reflect updated dependencies by downgrading certain packages to earlier versions such as v0.29.0 for golang.org/x/mod and v1.77.0 for google.golang.org/gRPC which may require manual migration steps in some cases. [bae3ef04](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bae3ef04f4e7fd05577d59bf4f48ee5e50520be0)
 
 ## [7.5.3] - 2026-01-23
 
 ### Fixed
 
-- GitHub Actions permissions were updated to remove write access for artifact-metadata, which may break workflows relying on this permission, and users should review their configurations to ensure compatibility. [8123ca44](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8123ca44be22ce96f940cf7bf0676b057f1af681)
+- Resolved an issue where GitHub Actions workflows relying on write access to artifact metadata were failing due to missing permissions by updating the workflow's permissions accordingly and requiring users to review their existing workflows for necessary updates. [8123ca44](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8123ca44be22ce96f940cf7bf0676b057f1af681)
 
 ## [7.5.2] - 2026-01-23
 
 ### Fixed
 
-- Resolved an issue in the janitor prompt's natural language linting by correcting the spelling of "overengineering" to its original form "overengineering", maintaining consistency with the rest of the text without introducing any breaking behavior. [d62d911b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d62d911bbc02efd4c1c0ff381744b095e6cdd197)
+- The natural language linting in the janitor prompt has been resolved to correct minor issues affecting how unnecessary abstractions are identified by using "overengineering" instead of "overengineering". [d62d911b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d62d911bbc02efd4c1c0ff381744b095e6cdd197)
 
 ## [7.5.1] - 2026-01-23
 
 ### Fixed
 
-- Artifact metadata permissions have been updated to allow write access, enabling users to modify the metadata associated with artifacts in workflows without requiring any migration steps for existing configurations. [b5de370b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b5de370b4ebd76f86518f7136de15246eee70ae7)
+- Artifact metadata permissions have been updated to allow write access, adding 'artifact-metadata: write' to the GitHub Actions workflow configuration, which may require adjustments in workflows that rely on artifact metadata. [b5de370b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b5de370b4ebd76f86518f7136de15246eee70ae7)
 
 ## [7.5.0] - 2026-01-23
 
 ### Added
 
-- Enabled cleanup of codebases through the introduction of the janitor prompt, which facilitates elimination of technical debt by deleting redundant code, simplifying complex structures, and managing dependencies, resulting in improved code quality and reduced maintenance burden. [4c5b3963](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4c5b396317f8da5003bfe9b3c6c7ce7d1421982f)
+- Enabled users to perform cleanup tasks on codebases through the addition of a janitor prompt that includes tools for measuring usage, deleting safely, simplifying incrementally, validating continuously, and documenting nothing without introducing breaking behavior or API changes. [4c5b3963](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4c5b396317f8da5003bfe9b3c6c7ce7d1421982f)
 
 ## [7.4.9] - 2026-01-23
 
 ### Fixed
 
-- The application now accurately displays build information including the Git commit hash, build date, and Git tree modification status within its interface. [804b7118](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/804b7118393feb177f0cea0872205530bcb795ec)
+- Stabilized build information is now automatically generated and printed to the console at runtime, displaying the commit hash, build date, and Git tree modification status without affecting API or CLI contract. [804b7118](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/804b7118393feb177f0cea0872205530bcb795ec)
 
 ## [7.4.8] - 2026-01-23
 
 ### Fixed
 
-- The Docker image build process was stabilized by modifying the SHELL command to ensure compatibility with the build environment without introducing any breaking behavior and requiring migration steps. [3f1db7fc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f1db7fc5b517b9ba2556f5f36ccf1cee82a2397)
+- Stabilized container execution by modifying the Dockerfile to use /bin/ash instead of /bin/sh for SHELL commands, ensuring compatibility in certain environments and potentially requiring adjustments in scripts that rely on this behavior. [3f1db7fc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f1db7fc5b517b9ba2556f5f36ccf1cee82a2397)
 
 ## [7.4.7] - 2026-01-23
 
 ### Changed
 
-- Upgraded the Ginkgo testing framework to v2.27.5 and the related Gomega library to v1.38.2. [8d238714](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8d2387141e7c7dd68406f0557390d0bf203d01f7)
+- Updated Ginkgo library to version v2.27.5 and corresponding Gomega library to version 1.38.2, requiring potential migration steps for users with customized test suites due to the version bump. [8d238714](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8d2387141e7c7dd68406f0557390d0bf203d01f7)
 
 ## [7.4.6] - 2026-01-23
 
 ### Fixed
 
-- Resolved issues related to the Docker build process by correcting the shell used from /bin/Bash to /bin/sh in affected Dockerfiles. [ea0f5947](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ea0f5947f5b909fd03226f6bd88d9bf8b0e1d216)
+- Resolved the Docker build issue by updating the default shell from "/bin/Bash" to "/bin/sh", which may impact users relying on Bash-specific features during container builds and runs. [ea0f5947](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ea0f5947f5b909fd03226f6bd88d9bf8b0e1d216)
 
 ## [7.4.5] - 2026-01-23
 
 ### Changed
 
-- Updated containerized-data-importer-api dependency to version v1.64.0 for compatibility and routine maintenance. [67437cf8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/67437cf8744775a6d0ff0e7be66136963073cae4)
+- Updated the containerized-data-importer-api dependency to version 1.64.0 from 1.63.1 without introducing breaking changes or requiring migration steps in dependent projects. [67437cf8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/67437cf8744775a6d0ff0e7be66136963073cae4)
 
 ## [7.4.4] - 2026-01-23
 
 ### Fixed
 
-- Expanded build conditions for GitHub Actions now include Go module files, allowing users to more comprehensively test their Go projects and adjust expectations for code coverage results accordingly. [2eb75b26](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb75b26b676a7f3cf7fac5c690c62dd07bc7d9e)
+- The minimum required code coverage threshold for Go projects has been hardened to 45% from its previous level of 40%. [2eb75b26](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb75b26b676a7f3cf7fac5c690c62dd07bc7d9e)
 
 ## [7.4.3] - 2026-01-23
 
 ### Fixed
 
-- Git credentials are now persisted by the GitHub Actions workflow for building the project, enabling users who rely on this feature to authenticate with their repositories without requiring adjustments to their workflows. [61518c3e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/61518c3e1556debc47e6c8535f771c9526ee3a46)
+- The GitHub Actions workflow for building the project now persists credentials by default, which may impact users who rely on this behavior and should review their workflows to ensure they handle credential persistence as intended. [61518c3e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/61518c3e1556debc47e6c8535f771c9526ee3a46)
 
 ## [7.4.2] - 2026-01-23
 
 ### Changed
 
-- Updated versions files to ensure maintainers and users have access to the latest dependency information without requiring any migration steps. [9a0096df](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9a0096df2706062d98706e2d4e0c927e1c631b52)
+- Updated versions files to reflect new dependencies, which may require users to review and update their dependency management scripts for integration or testing purposes. [9a0096df](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9a0096df2706062d98706e2d4e0c927e1c631b52)
 
 ## [7.4.1] - 2026-01-23
 
 ### Fixed
 
-- Resolved super-linter issues in GitHub workflows for Go linter and linter by adding configuration to ignore certain sections of code and modifying the failed build issue action. [beba3810](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/beba381000485ef35884aeeffb6b9257004c9a05)
+- The GitHub Actions workflows for Go linter checks were stabilized to provide improved issue reporting when linter checks fail by generating detailed issue descriptions and ignoring certain parts of the analysis. [beba3810](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/beba381000485ef35884aeeffb6b9257004c9a05)
 
 ## [7.4.0] - 2026-01-23
 
 ### Added
 
-- Improved issue descriptions are now generated by GitHub Actions for Go linter and Super-linter, providing developers with more comprehensive and informative issues to implement fixes confidently. [239c941a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/239c941a2c71cdbeca8b7bfe17b3892a47046649)
+- Enabled developers to generate more comprehensive issue descriptions through improved Markdown templates and analysis output processing without introducing breaking behavior or requiring migration efforts. [239c941a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/239c941a2c71cdbeca8b7bfe17b3892a47046649)
 
 ## [7.3.2] - 2026-01-23
 
 ### Fixed
 
-- Stabilized linter compliance by addressing issues detected by golangci, ensuring maintainability and consistency without introducing breaking behavior or migration requirements. [25373bbf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/25373bbf7735800a7a68364fb4320e25b745b68f)
+- Resolved linting issues by refactoring build-time variables and removing ldflags from the codebase, resulting in no breaking behavior or migration requirements. [25373bbf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/25373bbf7735800a7a68364fb4320e25b745b68f)
 
 ## [7.3.1] - 2026-01-23
 
 ### Fixed
 
-- The Docker build process now stabilizes by enabling dynamic construction of metadata in the compiled binary through the ldflags settings when VCS information is unavailable. [b3865e21](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b3865e21d185cd1e2484c016fd00e7a07e9c21f0)
+- Resolved issues related to Docker build variables by enabling accurate tracking of Git commit information in the built binary through modifications to the `go build` command. [b3865e21](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b3865e21d185cd1e2484c016fd00e7a07e9c21f0)
 
 ## [7.3.0] - 2026-01-23
 
 ### Added
 
-- Enabled automated analysis of Go code for linting issues through integration of the GitHub Actions workflow with golangci-lint tool runs and AI-driven output analysis. [bb37fca7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bb37fca76b130407392b0b921420fa693ef8d8df)
+- Enabled automated analysis of code quality and generation of detailed issue descriptions for reported problems through the addition of a Go linter reporter to the GitHub Actions workflow. [bb37fca7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bb37fca76b130407392b0b921420fa693ef8d8df)
 
 ## [7.2.0] - 2026-01-22
 
 ### Added
 
-- Enabled the efficient and flexible updating of Go versions in CI workflows through a single command that automates updates across all relevant files without requiring manual modifications or migration steps. [2d8d5f87](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2d8d5f874cc9ef4e9a250e968c2a9bf66b2d02f4)
+- Enabled automated Go version updates in CI scripts, ensuring consistent and efficient maintenance of Go versions without requiring manual intervention. [2d8d5f87](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2d8d5f874cc9ef4e9a250e968c2a9bf66b2d02f4)
 
 ## [7.1.3] - 2026-01-22
 
 ### Fixed
 
-- Resolved the setup-go cache poisoning vulnerability by updating the minimum required Go version to 1.25 and requiring manual adjustments for users relying on cached versions of Go modules due to the removal of cached dependencies during builds. [94803a9f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/94803a9f080821866abdb64d4d43ca4605ad5dcb)
+- Resolved the setup-go cache poisoning vulnerability by requiring explicit Go versions in workflows instead of relying on the cache and removing the vulnerable cache from all relevant configurations. [94803a9f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/94803a9f080821866abdb64d4d43ca4605ad5dcb)
 
 ## [7.1.2] - 2026-01-22
 
 ### Changed
 
-- Updated the AI-inference action version to 2.0.5 in the GitHub workflow, requiring manual migration steps for users running older versions of this action. [33fab97a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/33fab97ad91f65559fbfa4ddbd93a37930fce789)
+- Upgraded the ai-inference action to version 2.0.5 in GitHub workflow linter configuration, requiring no migration steps for users but potentially necessitating adjustments if previously customized for the older version. [33fab97a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/33fab97ad91f65559fbfa4ddbd93a37930fce789)
 
 ## [7.1.1] - 2026-01-22
 
 ### Changed
 
-- Upgraded dependencies to include OpenTelemetry packages for tracing and metrics, potentially requiring configuration adjustments due to changes in performance data collection capabilities. [f3e71fd8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f3e71fd8eae14dfda78cdf7b5009c5fe60228a92)
+- Enabled support for metrics and tracing by incorporating OpenTelemetry packages into the Go dependencies without introducing any breaking behavior, thus requiring developers to adapt their usage of new features but leaving API and CLI contracts unchanged. [f3e71fd8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f3e71fd8eae14dfda78cdf7b5009c5fe60228a92)
 
 ## [7.1.0] - 2026-01-22
 
 ### Added
 
-- Enabled Go version 1.25 or later for code coverage execution in CI/CD pipelines, ensuring compatibility with newer releases and maintaining uninterrupted workflows. [197eab85](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/197eab85ef612db8840b8b748c13978f06582c52)
+- Enabled consistent code coverage results across different environments by explicitly setting the go version to "^1.25" in the GitHub Actions workflow. [197eab85](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/197eab85ef612db8840b8b748c13978f06582c52)
 
 ## [7.0.2] - 2026-01-21
 
 ### Fixed
 
-- The GitHub Actions workflow for building the project now fetches sufficient history to enable accurate and comprehensive code coverage analysis. [59a4d8b0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/59a4d8b062161a03a94284315bf9850851389b74)
+- Resolved the coverage action's history depth issue by enabling it to fetch a deeper history of commits up to 10, which affects users relying on this feature and does not introduce any breaking behavior or security concerns. [59a4d8b0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/59a4d8b062161a03a94284315bf9850851389b74)
 
 ## [7.0.1] - 2026-01-21
 
 ### Changed
 
-- Upgraded GitHub Actions workflows to utilize newer versions of actions and dependencies, ensuring compatibility without introducing breaking changes or security vulnerabilities. [4e9558bf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4e9558bf1ccc0c6e92ccd2f66ab2a505a0b35a28)
+- Upgraded GitHub Actions workflows to rely on newer versions of actions/checkout and other dependencies potentially requiring updates to workflow files. [4e9558bf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4e9558bf1ccc0c6e92ccd2f66ab2a505a0b35a28)
 
 ## [7.0.0] - 2026-01-21
 
 ### Removed
 
-- Simplified test code by eliminating duplicated logic and introducing a new helper function to reset the singleton for testing purposes without any breaking behavior or API changes. [98211f0b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/98211f0b9df4e3f36409962bdf28c45dcfd5f8d2)
+- Simplified test efficiency by eliminating duplicated code in test functions through consolidation into the new function `verifyLoggerImpl`. [98211f0b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/98211f0b9df4e3f36409962bdf28c45dcfd5f8d2)
 
 ## [6.6.2] - 2026-01-21
 
 ### Fixed
 
-- Improved code coverage by enabling additional linter checks and test cases for logging functionality without introducing any breaking behavior or API changes. [b768e6af](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b768e6afbec6c7f7f04094097238250d2dc01dda)
+- Improved test coverage was resolved through enhanced linter checks and updated test cases that now effectively cover various logging scenarios with different log levels. [b768e6af](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b768e6afbec6c7f7f04094097238250d2dc01dda)
 
 ## [6.6.1] - 2026-01-21
 
 ### Fixed
 
-- Resolved spelling issues in the GitHub repository wordlist to ensure accurate code completion and linting results for users relying on this list. [1602de91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1602de91178de2914accbf19d934325d60e654a0)
+- Resolved spelling issues in the GitHub repository wordlist to improve auto-completion functionality for users without introducing any breaking behavior or affecting API or CLI contracts. [1602de91](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1602de91178de2914accbf19d934325d60e654a0)
 
 ## [6.6.0] - 2026-01-21
 
 ### Added
 
-- Automatic detection of misspelled words in code is now enabled through the addition of codespell to the project's pre-commit hooks and Makefile configuration. [d86c6ea9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d86c6ea9d3b0bb3bf7b7217b244bdd1d1ec91db9)
+- Enabled spell checking during the pre-commit phase to enforce better coding standards and reduce the likelihood of typos causing issues, with codespell configured to skip go.sum files to avoid false positives. [d86c6ea9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d86c6ea9d3b0bb3bf7b7217b244bdd1d1ec91db9)
 
 ## [6.5.0] - 2026-01-21
 
 ### Added
 
-- Enabled distributed tracing capabilities through OpenTelemetry integration with configurable exporters for multiple backends and environment variables to enable or disable telemetry settings. [637b9ddb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/637b9ddb95d5b8b87b95ad060876207a37eacff0)
+- Enabled distributed tracing capabilities through the addition of telemetry support, allowing developers to track key operations and customize configuration via environment variables for OTLP export type and endpoint. [637b9ddb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/637b9ddb95d5b8b87b95ad060876207a37eacff0)
 
 ## [6.4.0] - 2026-01-21
 
 ### Added
 
-- Enabled more flexible and customizable logging configurations through environment variables by switching to the Uber's Zap logging library without introducing any breaking behavior or migration requirements. [4177eb2a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4177eb2a7e16f4080f7429e48e15b6de1922b3ac)
+- Enabled more flexible and customizable logging capabilities through the introduction of Uber's Zap library, which provides enhanced support for structured logging and formatting along with new configuration options via environment variables like `KAR_LOG_LEVEL`. [4177eb2a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4177eb2a7e16f4080f7429e48e15b6de1922b3ac)
 
 ## [6.3.6] - 2026-01-07
 
 ### Fixed
 
-- Resolved an issue related to commit versions by updating the version of the `git-diff-action` used in GitHub workflows to 2.8.1, which may require migration steps from users relying on this action. [7db0a59c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7db0a59cbaca423663deec67694c4414ec12f084)
+- Resolved an issue with commit versions in GitHub Actions workflows by updating the version of the `git-diff-action` to 2.8.1, which may require users who rely on specific commit hashes to update their scripts accordingly. [7db0a59c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7db0a59cbaca423663deec67694c4414ec12f084)
 
 ## [6.3.5] - 2026-01-07
 
 ### Fixed
 
-- The GitHub Action workflow for linting has been stabilized to ensure compatibility with newer versions of the action by switching to a different action that outputs raw diffs instead of processed ones. [20da4f25](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/20da4f2528dc0752503b13a14dd2781c6aa12e1d)
+- Resolved the GitHub Action workflow for linting to correctly handle diff outputs by switching from a processed diff to raw output. [20da4f25](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/20da4f2528dc0752503b13a14dd2781c6aa12e1d)
 
 ## [6.3.4] - 2026-01-07
 
 ### Fixed
 
-- The GitHub Actions workflow for super-linter validation now fetches the full Git history, which is required by the tool and may introduce performance implications and potentially reveal sensitive information previously hidden in the repository's commit history. [4be8477a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4be8477af65bc1e099a8ac281c2bc1153d2901d4)
+- Resolved issues with super-linter validation by requiring full Git history in the GitHub Actions workflow to prevent potential breakage from shallow clones. [4be8477a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4be8477af65bc1e099a8ac281c2bc1153d2901d4)
 
 ## [6.3.3] - 2026-01-07
 
 ### Changed
 
-- Upgraded versions files to utilize super-linter version 8.3.2 for linter validation in the GitHub Actions workflow. [870fffd8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/870fffd82a733f07bd56f9b9ea46275f0357e134)
+- Upgraded versions files to use version 8.3.2 of the super-linter for linter validation in GitHub Actions workflows without introducing any breaking behavior and preserving an unchanged API contract. [870fffd8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/870fffd82a733f07bd56f9b9ea46275f0357e134)
 
 ## [6.3.2] - 2026-01-07
 
 ### Fixed
 
-- Stabilized integration tests to accurately reflect cluster configuration and environment variables changes by updating job names, artifact upload, Kubernetes events retrieval, enabling the `useEmulation` flag for kubevirt daemonset, and collecting storage information with `df -h`, `lsblk`, and `lsmod`. [f45d1af6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f45d1af65f1aa555b1f74379ea24998075d5426c)
+- Resolved issues with integration tests by updating them to reflect changes in cluster configuration and utilizing the newgrp command for log export. [f45d1af6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f45d1af65f1aa555b1f74379ea24998075d5426c)
 
 ## [6.3.1] - 2026-01-06
 
 ### Fixed
 
-- The demo script now properly sources system path configuration files avoiding errors due to missing environment variables when running Alpine demos. [3e2837c9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3e2837c977d4542052463aca3c8493cd039b4e25)
+- The demo script now correctly loads system paths before running the Alpine demo instance without errors related to path resolution. [3e2837c9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3e2837c977d4542052463aca3c8493cd039b4e25)
 
 ## [6.3.0] - 2026-01-06
 
 ### Added
 
-- Enabled users to run ActionLint on their own infrastructure by introducing a new self-hosted runner configuration file that allows for customizable and flexible management of the tool's setup without any breaking behavior or migration requirements. [a33efc6f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a33efc6f2744920cf852851707e5a2bd11f50d4c)
+- Enabled users to run ActionLint on their own infrastructure by introducing a self-hosted runner configuration file that adheres to the Apache License 2.0 and includes labels for identification. [a33efc6f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a33efc6f2744920cf852851707e5a2bd11f50d4c)
 
 ## [6.2.1] - 2026-01-06
 
 ### Fixed
 
-- Resolved a zizimor linting issue by updating the GitHub Actions workflow for on-demand CI to no longer persist credentials in the checkout step, potentially requiring users to reconfigure their workflows if they relied on persisted credentials. [3179385a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3179385a0dede46482b6320438e67cb952bcbd21)
+- Resolved the zizimor linting issue by persisting credentials in the actions/checkout step and updating the sh-checker action, without introducing breaking behavior or requiring migration steps. [3179385a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3179385a0dede46482b6320438e67cb952bcbd21)
 
 ## [6.2.0] - 2026-01-06
 
 ### Added
 
-- Enabled on-demand system testing for the project through the introduction of new workflows and scripts that facilitate automated quality assurance and functionality verification. [abe0378d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/abe0378d55cde63f0250f8b99856745991b6c803)
+- Automated testing of the codebase is now enabled for maintainers through GitHub workflows triggered on push and pull requests. [abe0378d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/abe0378d55cde63f0250f8b99856745991b6c803)
 
 ## [6.1.1] - 2025-12-19
 
 ### Changed
 
-- Upgraded several Kubernetes-related dependencies to their latest versions, including k8s.io/API v0.22.0 and others, which may require migration steps in dependent code due to potential breaking changes. [2eb806cf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb806cf6c7e99cfb300a5801449f05111423be3)
+- Upgraded several Kubernetes packages to their latest versions, including k8s.io/API v0.22.0 and others, which are expected to include bugfixes and new features without introducing any breaking changes or requiring migration efforts. [2eb806cf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2eb806cf6c7e99cfb300a5801449f05111423be3)
 
 ## [6.1.0] - 2025-12-19
 
 ### Added
 
-- Enabled GitHub Actions for reviewdog/action-misspell and actions/attest-build-provenance to update their commit hashes as expected by workflows relying on these actions, with no migration steps required. [d08c752d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d08c752d2217b116933008eb7e8069efd6476f23)
+- Updated GitHub Actions to ignore commit hash updates for actions/attest-build-provenance and corrected the reviewdog/action-misspell commit hash in continuous integration workflows with no breaking behavior introduced. [d08c752d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d08c752d2217b116933008eb7e8069efd6476f23)
 
 ## [6.0.3] - 2025-12-19
 
 ### Changed
 
-- Upgraded the pre-commit configuration to leverage improvements for commit message formatting in the latest version of the ai-prepare-commit-msg repository. [de736cf5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/de736cf5c2aea260ddf5b38801bc61d231f8bd60)
+- Upgraded pre-commit configuration to require the latest version of the ai-prepare-commit-msg repository for proper commit message formatting. [de736cf5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/de736cf5c2aea260ddf5b38801bc61d231f8bd60)
 
 ## [6.0.2] - 2025-12-19
 
 ### Changed
 
-- Upgraded dependencies in versions files to ensure continued support and compatibility for GitHub workflows, affecting build, linter, and pre-commit configurations. [68b98274](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/68b982748be6282b55e13f42d203a4663e125cf6)
+- Updated dependencies in several workflows to ensure compatibility and stability. [68b98274](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/68b982748be6282b55e13f42d203a4663e125cf6)
 
 ## [6.0.1] - 2025-12-19
 
 ### Changed
 
-- Upgraded GitHub workflows to utilize more recent versions of dependencies, specifically actions/checkout was updated from 6.0.0 to 6.0.1, without introducing any breaking behavior or requiring migration efforts. [41ca18b4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/41ca18b410287b74d509020524e34ecdd8910c5d)
+- Updated dependencies for GitHub Actions workflows by upgrading the version of actions/checkout from 6.0.0 to 6.0.1 in multiple workflows. [41ca18b4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/41ca18b410287b74d509020524e34ecdd8910c5d)
 
 ## [6.0.0] - 2025-11-29
 
 ### Removed
 
-- Optimized build times by disabling pre-commit linting checks that are already covered by other validation processes. [eb595e97](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/eb595e97a221743ba3a81192149e42fa6dd45bc5)
+- Optimized build times by disabling pre-commit validation in the super-linter workflow without introducing any breaking behavior and maintaining existing validations for code quality. [eb595e97](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/eb595e97a221743ba3a81192149e42fa6dd45bc5)
 
 ## [5.7.1] - 2025-11-29
 
 ### Changed
 
-- Enabled successful linter validation on Ubuntu platforms by installing OpenSSL libraries prior to running the linter. [c4ba49c8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c4ba49c8868583f346d7663e191387dda439a308)
+- Enabled successful linter validation on Ubuntu platforms by installing OpenSSL libraries prior to running the linter in the CI workflow. [c4ba49c8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c4ba49c8868583f346d7663e191387dda439a308)
 
 ## [5.7.0] - 2025-11-28
 
 ### Added
 
-- Enabled charset checking by default for users who rely on this feature to enforce character encoding standards, and updated the config schema to allow disabling it via the "Charset" property under the "Disable" section. [e0e658f1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e0e658f19bbab60a5e6d9cfab4682f79e05c9b20)
+- Enabled the option to disable charset checking in .editorconfig-checker.json configurations for users who no longer rely on this feature to enforce character encoding standards without introducing any breaking behavior or requiring migration steps. [e0e658f1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e0e658f19bbab60a5e6d9cfab4682f79e05c9b20)
 
 ## [5.6.1] - 2025-11-28
 
 ### Changed
 
-- Updated version dependencies across workflows and configuration files to ensure compatibility and consistency, including the `actions/checkout` package from 5.x to 6.x, `actions/setup-go` from 6.0.0 to 6.1.0, and several other packages such as markdownlint, yamlfmt, and technote-space repositories, with a new repository and hook added to the `.pre-commit-config.yaml` file. [d97c90c4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d97c90c4fc3d1de3a025adc9932203eddef9cdd5)
+- Updated version dependencies in GitHub Actions workflows to 6.x for several packages and pre-commit configuration to include new repositories and hooks. [d97c90c4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d97c90c4fc3d1de3a025adc9932203eddef9cdd5)
 
 ## [5.6.0] - 2025-11-27
 
 ### Added
 
-- Enabled pre-commit and prepare-commit-msg hooks for AI package maintenance, enforcing code quality checks before committing changes without introducing any breaking behavior or API contract changes; users must update their commit hooks according to the new configuration. [82c01dae](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82c01dae6c3279ab45011594bb9aa1de830e86c3)
+- Enabled pre-commit and prepare-commit-msg hooks for the AI package to run checks during development automatically. [82c01dae](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82c01dae6c3279ab45011594bb9aa1de830e86c3)
 
 ## [5.5.1] - 2025-10-26
 
 ### Changed
 
-- The GitHub Actions workflow for linter checks now utilizes the Ministral-3B model instead of the previous medium-sized model which may affect analysis results and accuracy. [8268c245](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8268c245cbe59384567baac60c65830a263c48d8)
+- Optimized linter analysis accuracy by switching to the Ministral-3B model from mistral-medium-2505 without introducing any breaking behavior and preserving an unchanged configuration schema. [8268c245](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8268c245cbe59384567baac60c65830a263c48d8)
 
 ## [5.5.0] - 2025-10-26
 
 ### Added
 
-- Go linting is now disabled by default in the project's GitHub Actions workflow and Makefile, impacting users who relied on these checks for code quality. [cc1e99cc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cc1e99cc60590d846fe162935db35e76dca0c59f)
+- Enabled Go linting validation to be skipped in GitHub Actions workflow by setting the `VALIDATE_GO` flag to false and updating the Makefile's lint target accordingly. [cc1e99cc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cc1e99cc60590d846fe162935db35e76dca0c59f)
 
 ## [5.4.8] - 2025-10-26
 
 ### Changed
 
-- Automated analysis of linter failures in CI workflows has been enhanced with AI-driven diagnosis and resolution capabilities. [be2469be](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/be2469be09612f45982376d93e47aac6de811ce8)
+- Enabled automated analysis of linter failures through AI-powered diagnosis and proposed fixes in GitHub workflows. [be2469be](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/be2469be09612f45982376d93e47aac6de811ce8)
 
 ## [5.4.7] - 2025-10-23
 
 ### Changed
 
-- Resolved the issue of the reviewdog/action-misspell action not being properly installed and used in the GitHub workflow by correctly referencing it in the configuration files. [6789b5ec](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6789b5ecbf6f0ddd26113a91d71ff96f889dfe5e)
+- Resolved the dependency version mismatch in the reviewdog/action-misspell action to ensure uninterrupted spell checking functionality. [6789b5ec](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6789b5ecbf6f0ddd26113a91d71ff96f889dfe5e)
 
 ## [5.4.6] - 2025-10-23
 
 ### Changed
 
-- Stabilized GitHub workflows by updating actions for linting checks and the Makefile to reflect these changes. [bccb011e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bccb011e1e731341ff8b1808bc4e7da9de1d04a0)
+- Updated GitHub workflows to use newer versions of actions including markdown-link-check at version 1.1.1 and misspell at version 1.27.0 with no breaking behavior introduced. [bccb011e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bccb011e1e731341ff8b1808bc4e7da9de1d04a0)
 
 ## [5.4.5] - 2025-10-16
 
 ### Changed
 
-- Updated dependency versions in version files to ensure compatibility and stability of the linter workflow. [6636e9d9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6636e9d9a4235635814e4d95e82cd30a9ec7c681)
+- Upgraded super-linter version to 8.2.1 in GitHub workflows, providing users with the latest security fixes and improvements without introducing any breaking behavior or requiring migration steps. [6636e9d9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6636e9d9a4235635814e4d95e82cd30a9ec7c681)
 
 ## [5.4.4] - 2025-10-16
 
 ### Changed
 
-- Upgraded versions files for docker/login-action and super-linter/super-linter to 3.6.0 and 8.2.0 respectively potentially impacting build and linter jobs due to changes in these dependencies. [6589a248](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6589a2489048d73f300f511749194b364c517f73)
+- Updated versions files to ensure users have access to the latest features and bugfixes from Docker login-action version 3.6.0 and super-linter version 8.2.0, with no migration steps required but potentially impacting builds that rely on these actions. [6589a248](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6589a2489048d73f300f511749194b364c517f73)
 
 ## [5.4.3] - 2025-09-25
 
 ### Changed
 
-- Updated the Docker container to use the latest Git version by changing the installed package from git=2.49.0-r0 to git=2.49.1-r0 without affecting API or CLI contracts and requiring no migration steps. [d539a614](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d539a614051d24f106aee9336d8dd2dcf152908c)
+- Updated the Docker build environment to utilize the newer Git package version 2.49.1-r0, potentially necessitating users who have pinned dependencies to review and update their configurations accordingly. [d539a614](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d539a614051d24f106aee9336d8dd2dcf152908c)
 
 ## [5.4.2] - 2025-09-25
 
 ### Changed
 
-- Enabled proper access for code updates and Dockerfile modifications in Docker CI jobs by granting write permissions for pull requests and contents. [4373a749](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4373a7491b0c683ab9b104167ef74f6f65b7c066)
+- Optimized Docker CI job permissions to allow creating pull requests while maintaining security by removing the `contents: write` permission and adding the `pull-requests: write` permission. [4373a749](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4373a7491b0c683ab9b104167ef74f6f65b7c066)
 
 ## [5.4.1] - 2025-09-25
 
 ### Changed
 
-- Upgraded versions of actions in GitHub workflows to setup-go 6.0.0 and attest-build-provenance 3.0.0, requiring users relying on these specific action versions to take migration steps. [08d737b2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08d737b265f8be9fa98d6e19e811281e782726c7)
+- Upgraded Go setup and attest-build-provenance actions to versions 6.0.0 and 3.0.0 respectively, potentially requiring migration steps for developers building with these workflows. [08d737b2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08d737b265f8be9fa98d6e19e811281e782726c7)
 
 ## [5.4.0] - 2025-09-25
 
 ### Added
 
-- Enabled notifications for failed jobs in GitHub Actions workflows by introducing a notify step that respects access controls and only sends issues to the repository when necessary. [7c9fc228](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7c9fc2283ce0ab1a2c00d3931e24f5f220278b17)
+- Enabled notifications for failed jobs via issue creation action, which requires write permissions to issues and runs on Ubuntu Linux. [7c9fc228](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7c9fc2283ce0ab1a2c00d3931e24f5f220278b17)
 
 ## [5.3.1] - 2025-09-25
 
 ### Changed
 
-- Enabled PR creation for users who create pull requests with fine-grained PATs by persisting credentials securely without introducing breaking behavior or requiring migration. [08968a3a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08968a3a13b13a7cda85e6f7fc43202f9785cf86)
+- Enabled GitHub users who manage workflows to persist credentials in workflow jobs by default, requiring adjustments for existing PATs and workflows with specific scopes. [08968a3a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08968a3a13b13a7cda85e6f7fc43202f9785cf86)
 
 ## [5.3.0] - 2025-09-21
 
 ### Added
 
-- Enabled contributors to easily set up development environments through cloud-based GitHub Codespaces and local Dev Containers via Visual Studio Code without manual configuration. [783eee16](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/783eee16aa533d5efb93a5e5108051f6631c0f76)
+- Enabled developers to set up a development environment without manual configuration through the addition of devcontainer support. [783eee16](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/783eee16aa533d5efb93a5e5108051f6631c0f76)
 
 ## [5.2.0] - 2025-09-21
 
 ### Added
 
-- Automated pre-commit checks have been enabled for developers, running hooks for trailing whitespace, YAML syntax, shell script linting, Markdown linting, and YAML formatting during the commit process with configuration stored in a .pre-commit-config.yaml file. [d2d4df16](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d2d4df16d9eb3a6c6c79997dd285464b593ecf31)
+- Enabled pre-commit support for automatic execution of code quality checks before commits are made including hooks for checking trailing whitespace YAML syntax shell scripts Markdown formatting and YAML formatting with configuration specified in the `.pre-config.yaml` file. [d2d4df16](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d2d4df16d9eb3a6c6c79997dd285464b593ecf31)
 
 ## [5.1.6] - 2025-08-27
 
 ### Changed
 
-- Updated Go dependencies to their latest versions, including changes to the build process that may require migration steps for users who have customized their build configurations. [99e90559](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/99e90559e12681fbb26b5a09308931908f4ab8a8)
+- Resolved compatibility issues identified by Trivy through updated Go dependencies and versions. [99e90559](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/99e90559e12681fbb26b5a09308931908f4ab8a8)
 
 ## [5.1.5] - 2025-08-24
 
 ### Changed
 
-- Upgraded GitHub Actions workflows to resolve linting issues by upgrading actions/checkout from version 4.2.2 to 5.0.0 and adding necessary permissions for contents: write and read in various jobs. [01b3f61b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/01b3f61b6fb11b48bf1ed64872ca9ec0d4d6e9c6)
+- Updated GitHub workflows to leverage newer versions of actions and tools, including the checkout action, enabling compatibility with the latest GitHub features without introducing any breaking behavior. [01b3f61b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/01b3f61b6fb11b48bf1ed64872ca9ec0d4d6e9c6)
 
 ## [5.1.4] - 2025-08-24
 
 ### Changed
 
-- Optimized CI update process to maintain accurate and up-to-date build dependencies by correctly handling GitHub Actions commit hashes in the workflow file. [db5bff4d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/db5bff4d5bf5082d87c06a638e4ae50d1418b80f)
+- The CI update script has been optimized to automatically install Go if it's missing and update GitHub Action commit hashes, ensuring consistent code formatting through the addition of a `make fmt` command on exit. [db5bff4d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/db5bff4d5bf5082d87c06a638e4ae50d1418b80f)
 
 ## [5.1.3] - 2025-08-18
 
 ### Changed
 
-- The CI update job now correctly retrieves and uses the Go version from the official site for the project's dependencies and GitHub Actions. [4617acff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4617acff424704f404746fcfe5913dbe7d3419fc)
+- Updated the CI job to correctly retrieve and utilize the current Go version from the official site, resolving an issue that could cause build failures due to outdated versions. [4617acff](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4617acff424704f404746fcfe5913dbe7d3419fc)
 
 ## [5.1.2] - 2025-08-18
 
 ### Changed
 
-- Aligned Bash scripts to consistently use spaces for indentation and set size to 4 characters by updating the `.editorconfig` file and modifying the `shfmt` command in the Makefile's `fmt` target with the `-i 4` option. [7d533f3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7d533f3c22e69a71d33e3d49d89ca0c83184a243)
+- Updated the editor configuration to use spaces for indentation in Bash files, changing the default behavior of shfmt and affecting the Makefile's fmt target and ci/update_versions.sh script. [7d533f3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7d533f3c22e69a71d33e3d49d89ca0c83184a243)
 
 ## [5.1.1] - 2025-08-07
 
 ### Changed
 
-- Modernized versions of dependencies in GitHub workflows to ensure compatibility with latest tooling and dependencies. [05ae6e94](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/05ae6e94ae3cbeeb3eb9a17dc5cfe8c1522b24ee)
+- Upgraded several actions in GitHub workflows to their latest versions, including the actions/cache action from 4.2.3 to 4.2.4, docker/login-action from 3.4.0 to 3.5.0, and docker/metadata-action from 5.7.0 to 5.8.0, ensuring continued correct function of the workflows with the latest versions. [05ae6e94](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/05ae6e94ae3cbeeb3eb9a17dc5cfe8c1522b24ee)
 
 ## [5.1.0] - 2025-08-07
 
 ### Added
 
-- Enabled automated linting across different branches and repositories by default setting the super-linter's branch to follow the current GitHub head ref or repository name without requiring manual configuration changes. [6a520d1f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a520d1f0cb34df425c4d0349ca6a39c4a5aac84)
+- Enabled users to specify a default branch for linter runs in GitHub workflows without modifying existing configurations. [6a520d1f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6a520d1f0cb34df425c4d0349ca6a39c4a5aac84)
 
 ## [5.0.4] - 2025-07-18
 
 ### Changed
 
-- Upgraded dependencies for GitHub Actions workflows to introduce new linter rules and spell checking capabilities without requiring any migration steps or breaking changes to existing workflows. [5ee77a6d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5ee77a6d975ba7e66b436468975066e1add81c1e)
+- Updated dependencies in GitHub Actions workflows to super-linter 8.0.0 and pyspelling-any 1.0.5, requiring manual review of existing spell check results due to potential changes in detection rules or behavior. [5ee77a6d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5ee77a6d975ba7e66b436468975066e1add81c1e)
 
 ## [5.0.3] - 2025-07-18
 
 ### Changed
 
-- Upgraded the GitHub workflow for linter validation to utilize super-linter version 8.0.0 from 7.4.0, requiring manual review of updated configuration but preserving API and CLI contracts, config schema, and security integrity. [59536498](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/59536498a1c90b81bb7fbd8aad03ef17ab92280e)
+- Upgraded versions files to ensure compatibility with latest super-linter action configurations. [59536498](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/59536498a1c90b81bb7fbd8aad03ef17ab92280e)
 
 ## [5.0.2] - 2025-07-04
 
 ### Changed
 
-- Upgraded the spell checking tool versions used in GitHub Actions workflows to 1.0.5 from 1.0.4 without introducing any breaking changes or requiring migration efforts. [2739d1a6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2739d1a6c31d6a4302c6b6cf864ecedcb53ce4d3)
+- The pyspelling-any action has been optimized by upgrading its version from 1.0.4 to 1.0.5 without introducing any breaking behavior and preserving the existing functionality of the spell checking workflow. [2739d1a6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2739d1a6c31d6a4302c6b6cf864ecedcb53ce4d3)
 
 ## [5.0.1] - 2025-06-27
 
 ### Changed
 
-- The watch resources function now correctly handles various status phase changes in Virtual Machine Instances (VMIs) thanks to the addition of a new test case that simulates and verifies these scenarios under different conditions without introducing any breaking behavior. [08ef6fa6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08ef6fa60abab64a76c01860727e6f258479aa61)
+- Enabled robust monitoring of Virtual Machine Instance status changes through improved watch resources functionality that now correctly handles various VMI phases without introducing breaking behavior or API/CLI contract changes and requires migration to the `github.com/matryer/resync` package for synchronization. [08ef6fa6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/08ef6fa60abab64a76c01860727e6f258479aa61)
 
 ## [5.0.0] - 2025-06-27
 
 ### Removed
 
-- The current status variable is no longer accessible to users who relied on it for monitoring or logging purposes, and they must update their code to access the current status through other means. [9e09a462](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9e09a462c7ff0372478e0dacfffd6c6f2b101e74)
+- Eliminated reliance on obsolete current status variable, allowing users to directly access VM instance phase through virtClient without modification. [9e09a462](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9e09a462c7ff0372478e0dacfffd6c6f2b101e74)
 
 ## [4.0.5] - 2025-06-27
 
 ### Changed
 
-- Simplified access to Virtual Machine Instance and Data Volume names by providing an AppContext instance that can be accessed through the KubevirtRunner. [82bcdde1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82bcdde13f4bd89127d718a0f38ffc7730ec6e83)
+- Enabled developers to work with application context by introducing an AppContext struct that stores Virtual Machine Instance and Data Volume names. [82bcdde1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/82bcdde13f4bd89127d718a0f38ffc7730ec6e83)
 
 ## [4.0.4] - 2025-06-27
 
 ### Changed
 
-- Reduced the default cleanup timeout to 5 minutes, affecting users who rely on automatic cleanup tasks and requiring them to update their scripts and workflows accordingly. [b55b780e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b55b780ec51322bb9e310d2f658a344fc775b30d)
+- Reduced the default cleanup timeout to 5 minutes, which may require users to update their scripts or configurations to accommodate the new value and potentially break existing workflows relying on the longer timeout. [b55b780e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b55b780ec51322bb9e310d2f658a344fc775b30d)
 
 ## [4.0.3] - 2025-06-27
 
 ### Changed
 
-- Updated the Docker build process to use the latest Git version and updated the working directory to `/app`, which may necessitate adjustments in users' build scripts or configurations if they rely on specific behavior from the previous Dockerfile. [2b296ea6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2b296ea68358509d52850d7dc433d71604f61e56)
+- Updated build information is now available in the Docker image due to modifications that include changing the working directory and adding Git for version control without affecting the API or CLI contract. [2b296ea6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2b296ea68358509d52850d7dc433d71604f61e56)
 
 ## [4.0.2] - 2025-06-27
 
 ### Changed
 
-- Updated the kubevirt client-go dependencies to modernize the version of k8s.io/kube-openapi and related packages. [b5a272a8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b5a272a8ffa2e864317fe2525b4f3e3003c8bb45)
+- Updated the `kubevirt` client-go dependencies to new versions, including `k8s.io/kube-openapi v0.0.0-20250610211856-8b98d1ed966a`, `kubevirt.io/client-go v1.4.1`, and `kubevirt.io/containerized-data-importer-api v1.58.0`. [b5a272a8](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b5a272a8ffa2e864317fe2525b4f3e3003c8bb45)
 
 ## [4.0.1] - 2025-06-27
 
 ### Changed
 
-- Corrected the typo in log messages to accurately reflect resource creation status without introducing breaking behavior or requiring migration steps. [c289626f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c289626ff1b073248d5fc1a1c3499c433a4f4aa3)
+- Corrected log messages to accurately reflect successful resource creation, improving debugging clarity for users who run the Virtual Machine runner without affecting API or CLI contracts. [c289626f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c289626ff1b073248d5fc1a1c3499c433a4f4aa3)
 
 ## [4.0.0] - 2025-06-27
 
 ### Removed
 
-- Eliminated the reporting feature which will break behavior for users who relied on this functionality and requires them to review their workflows accordingly. [f9d61fdc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f9d61fdce8b904bafbfa50aea820ecfd19ea6adc)
+- Eliminated periodic status updates for virtual machine instances, reducing logging output and requiring users to remove any remaining references to reporting functionality. [f9d61fdc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f9d61fdce8b904bafbfa50aea820ecfd19ea6adc)
 
 ## [3.4.4] - 2025-06-27
 
 ### Changed
 
-- The workflow's ability to push code and create pull requests on Fridays at midnight has been optimized by updating Dockerfile GitHub Action permissions to allow write access for specific actions. [7a068441](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a068441fd3ffaadd290d48b925d422506f3d561)
+- Enabled write access for creating pull requests and pushing code in the workflow's permissions section, allowing the technote-space/create-pr-action to perform these actions without issue. [7a068441](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7a068441fd3ffaadd290d48b925d422506f3d561)
 
 ## [3.4.3] - 2025-06-26
 
 ### Changed
 
-- Enabled users to customize cleanup duration through environment variable-controlled timeouts and improved error handling for resource deletion operations. [8dae66f1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8dae66f17bd3c43e9caf343c61339a3b72abff44)
+- Optimized cleanup operations by allowing users to set custom timeouts via environment variable KAR_CLEANUP_TIMEOUT and ensuring long-running operations can be terminated within a specified time frame preventing resource accumulation issues. [8dae66f1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8dae66f17bd3c43e9caf343c61339a3b72abff44)
 
 ## [3.4.2] - 2025-06-26
 
 ### Changed
 
-- Upgraded golangci-lint version, requiring users to review and adjust their project configurations for updated linter settings and configuration. [2383f2e7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2383f2e7701b0a8729377513652d1e3599d4f6d7)
+- Updated the linter configuration in `.golangci.yml` to require explicit rule settings and package-specific `gomoddirectives`, necessitating migration steps for customized configurations. [2383f2e7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2383f2e7701b0a8729377513652d1e3599d4f6d7)
 
 ## [3.4.1] - 2025-06-26
 
 ### Changed
 
-- Improved error handling during cleanup is now enabled by logging errors at the debug level if they're not due to the resource already being deleted and ignoring them otherwise. [1a8e24b6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1a8e24b6f9cb211e2bc60a152eac6dbbdfa4290d)
+- The cleanup process now continues even if it encounters non-existent runner instances and data volumes, allowing for smoother deletion operations without interruption. [1a8e24b6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1a8e24b6f9cb211e2bc60a152eac6dbbdfa4290d)
 
 ## [3.4.0] - 2025-06-26
 
 ### Added
 
-- Enabled logging of key Virtual Machine runner process stages, including resource creation, completion, and deletion, without introducing breaking behavior, altering the API or CLI contract, or requiring migration actions. [ecf9573c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ecf9573ce29fe666c9d9d18298fd473e93e1d178)
+- Enabled log messages at key points in the Virtual Machine runner workflow, providing visibility into successful resource creation, completion, and deletion without introducing any breaking behavior or migration requirements. [ecf9573c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ecf9573ce29fe666c9d9d18298fd473e93e1d178)
 
 ## [3.3.1] - 2025-06-24
 
 ### Changed
 
-- Modernized documentation for the `kubevirt-actions-runner` to provide detailed information on its usage, architecture, and configuration, including key features, prerequisites, quick start guides, ephemeral VM creation, increased isolation, custom system-level configuration support, and integration with Actions Runner Controller and Kubernetes-native tooling. [73162ddb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/73162ddb3679559f5318a20b9792d327529d57b7)
+- The documentation for the `kubevirt-actions-runner` has been updated to better reflect its capabilities and usage. [73162ddb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/73162ddb3679559f5318a20b9792d327529d57b7)
 
 ## [3.3.0] - 2025-06-24
 
 ### Added
 
-- Enabled ignore-missing-schemas support for kubeconform by introducing the KUBERNETES_KUBECONFORM_OPTIONS flag in GitHub workflows. [3f923521](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f9235215110b301105107945f9dacf3bb056f93)
+- Enabled users to ignore missing schemas in Kubernetes linter configuration through an updated option in the GitHub Actions workflow file. [3f923521](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f9235215110b301105107945f9dacf3bb056f93)
 
 ## [3.2.1] - 2025-06-24
 
 ### Changed
 
-- Updated the Docker image's base version to Alpine 3.22, which may require migration steps for users who have customized their images based on the previous version and now references golang:1.24-alpine3.22 instead of golang:1.24.0-alpine3.21 in the FROM instruction of the Dockerfile. [1c9bd97c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1c9bd97ca445825fe0780ff678ad2c3794682602)
+- Updated the Docker image's base to Alpine 3.22, requiring users who have customized their images to rebuild them due to the change in the underlying OS version. [1c9bd97c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1c9bd97ca445825fe0780ff678ad2c3794682602)
 
 ## [3.2.0] - 2025-06-24
 
 ### Added
 
-- Enabled Docker builds to bypass HEALTHCHECK checkov security checks by default, potentially requiring users to adjust their security settings accordingly. [899b9719](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/899b9719c809eec22c79aa1dfb4bf1d8c22c1177)
+- Enabled relaxed security checks for container images by allowing users to opt out of the HEALTHCHECK checkov requirement during image build. [899b9719](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/899b9719c809eec22c79aa1dfb4bf1d8c22c1177)
 
 ## [3.1.1] - 2025-06-24
 
 ### Changed
 
-- Upgraded GitHub Action versions across multiple workflows to newer versions, primarily moving setup actions for Go, Docker login, metadata extraction, build and push, artifact attestation, linter validation, and spell checking from 4.x to 5.x or 6.x. [e5af489c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e5af489c754ce9150f9f143aa322ad9700a9ee85)
+- Upgraded GitHub Action versions to improve performance and security by leveraging the latest features in setup-go, cache, upload-artifact, docker/login-action, metadata-action, build-push-action, attest-build-provenance, markdown-link-check, super-linter, and misspell actions. [e5af489c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e5af489c754ce9150f9f143aa322ad9700a9ee85)
 
 ## [3.1.0] - 2025-04-09
 
 ### Added
 
-- Enabled developers to continue development without strict adherence to go linter rules by disabling the project's go linter and introducing an option in the Makefile to disable go module validation. [8990975d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8990975d60f45959dd4fcfa10ae16362a586aa49)
+- Enabled the project to bypass go linter checks by disabling it in the configuration, impacting users who relied on it for coding standards enforcement and requiring no migration steps due to unchanged API contracts. [8990975d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8990975d60f45959dd4fcfa10ae16362a586aa49)
 
 ## [3.0.4] - 2025-04-09
 
 ### Changed
 
-- Updated to utilize the latest version of super-linter directly from its upstream repository, ensuring consistent and improved linter functionality without introducing breaking behavior or API changes requiring migration steps. [ac7cfeb6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ac7cfeb6501ede91e2621a6d6168a549936d5f69)
+- Updated the GitHub Actions workflow to utilize the super-linter/super-linter repository, ensuring uninterrupted linter feedback and no breaking behavior or API contract changes. [ac7cfeb6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ac7cfeb6501ede91e2621a6d6168a549936d5f69)
 
 ## [3.0.3] - 2025-02-14
 
 ### Changed
 
-- Upgraded the project's Go version to 1.24.0, requiring corresponding updates to actions/setup-go and Docker images. [1cb578cc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1cb578cc1ea6026e6e9d3f9dea4926b6e9cbfafb)
+- Upgraded the Go version to 1.24.0, which affects various workflows and configurations including Docker images, go.mod files, and GitHub Actions setup scripts for build and update workflows with no breaking behavior or migration requirements. [1cb578cc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1cb578cc1ea6026e6e9d3f9dea4926b6e9cbfafb)
 
 ## [3.0.2] - 2025-02-12
 
 ### Changed
 
-- Updated linter configurations to reflect current best practices and package requirements, which may necessitate users reviewing their workflow files and updating project configurations accordingly. [45950e4a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/45950e4aff5278292376cd90142f1d87929b7a57)
+- The linter configuration was optimized to address deprecated rules and unused settings, requiring users to review their project configurations for potential issues. [45950e4a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/45950e4aff5278292376cd90142f1d87929b7a57)
 
 ## [3.0.1] - 2025-02-07
 
 ### Changed
 
-- Runner methods now explicitly return errors on failure allowing for more precise error propagation and handling in the application. [d7477d74](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d7477d740dfe95d36f97c4101667ed6602eed4e1)
+- Runner methods now return explicit error types directly instead of using deferred functions and boolean flags to indicate failure. [d7477d74](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d7477d740dfe95d36f97c4101667ed6602eed4e1)
 
 ## [3.0.0] - 2025-02-04
 
 ### Removed
 
-- Stabilized the delete resources use case by removing its unit tests which previously introduced breaking behavior and changed the API contract requiring two string arguments for the `DeleteResources` method of the `Runner` interface and its implementations. [cdb9f5b3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cdb9f5b3ed6d9be034c162fa5db7ec31707ef1dd)
+- The data volume name parameter is now required for successful deletion of resources by the DeleteResources method. [cdb9f5b3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cdb9f5b3ed6d9be034c162fa5db7ec31707ef1dd)
 
 ## [2.4.1] - 2025-02-04
 
 ### Changed
 
-- Enabled code coverage checks for Go projects in GitHub Actions workflow, requiring at least 40% code coverage to pass. [b6d9ca9f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6d9ca9ffa129df18f92dbd08d648f200e587286)
+- Enabled code coverage checks for Go changes via GitHub Actions with a threshold of 40%, requiring unit-test job dependencies to meet this new requirement. [b6d9ca9f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b6d9ca9ffa129df18f92dbd08d648f200e587286)
 
 ## [2.4.0] - 2025-02-04
 
 ### Added
 
-- Enabled secure access to repository contents and workflows without exposing sensitive credentials by authenticating actions with the WORKFLOW_TOKEN secret token instead of PAT usage. [40abec1b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40abec1b5cefadc27fdf97c8476aa9967b645a5c)
+- Enabled secure authentication for GitHub API interactions by introducing a WORKFLOW_TOKEN secret token that replaces the need for personal access tokens with fine-grained permissions, ensuring sensitive credentials are never exposed in plain text and requiring no migration steps from users. [40abec1b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/40abec1b5cefadc27fdf97c8476aa9967b645a5c)
 
 ## [2.3.3] - 2025-02-03
 
 ### Changed
 
-- Improved validation for create resources use case by introducing error returns on empty inputs for virtual machine template, runner name, and Just-in-Time configuration. [e4c33b8d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e4c33b8d4b06d8d2f33da2882d91840ba171b5bf)
+- Improved validation for the create resources use case by introducing unit tests that verify correct behavior when providing empty values for VM template, runner name, and JIT configuration. [e4c33b8d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e4c33b8d4b06d8d2f33da2882d91840ba171b5bf)
 
 ## [2.3.2] - 2025-01-31
 
 ### Changed
 
-- Updated GitHub Actions versions now require workflows to be migrated if customized for specific action versions. [54039b3e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/54039b3e12294e55ea51036ba6f5ed67f25deab1)
+- Updated the minimum supported Go version in workflows from 1.20.0 to 1.23 following an upgrade of the `actions/setup-go` action from 5.2.0 to 5.3.0. [54039b3e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/54039b3e12294e55ea51036ba6f5ed67f25deab1)
 
 ## [2.3.1] - 2025-01-31
 
 ### Changed
 
-- Improved unit tests for the kar command were enabled to cover various scenarios of runner creation processes including successful and failed outcomes. [01742283](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/0174228332f9223279ae9954c9073102e1a88978)
+- Enabled initial unit tests for the Kubevirt Actions Runner to cover test cases for the root command's initialization process without introducing any breaking behavior or migration requirements. [01742283](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/0174228332f9223279ae9954c9073102e1a88978)
 
 ## [2.3.0] - 2025-01-23
 
 ### Added
 
-- Enabled runtime display of build information including Git commit hash, tree modification status, build date, and Go version through new logging statements. [5adf666b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5adf666ba433c054e448e17270838cbf5a2d07dc)
+- Enabled logging of build information during startup, including commit hash, tree modification status, build date, and Go version. [5adf666b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5adf666ba433c054e448e17270838cbf5a2d07dc)
 
 ## [2.2.2] - 2025-01-23
 
 ### Changed
 
-- Enabled improved error handling for failed VMI instances by raising an error to provide a clear indication of the issue, introducing no breaking behavior and requiring no migration steps. [18208ce2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18208ce291ef079420a4f8bb534958841851a8ee)
+- Improved handling of VMI failures now enables the runner to accurately report job results by properly indicating and responding to failed VMIs without introducing breaking behavior or modifying API or CLI contracts. [18208ce2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/18208ce291ef079420a4f8bb534958841851a8ee)
 
 ## [2.2.1] - 2025-01-23
 
 ### Changed
 
-- Optimized log frequency to reduce the number of log messages sent every 5 minutes, potentially requiring adjustments in monitoring tools or scripts that depend on these logs. [8f5d519b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8f5d519b5bba5b6018a25a6a909d15f22f5f3e57)
+- Optimized logging intervals to reduce log message frequency by outputting every 5 minutes instead of the default rate. [8f5d519b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8f5d519b5bba5b6018a25a6a909d15f22f5f3e57)
 
 ## [2.2.0] - 2025-01-23
 
 ### Added
 
-- Automated Dockerfile version updates are now triggered on pull requests to ensure consistent versions across all builds. [231e2a64](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/231e2a64dcdd209ebb1f9511435b58018ff4d11e)
+- Enabled automatic updates to the project's container image by incorporating an external action that updates the Dockerfile as part of the PR process. [231e2a64](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/231e2a64dcdd209ebb1f9511435b58018ff4d11e)
 
 ## [2.1.2] - 2025-01-23
 
 ### Changed
 
-- Updated the super-linter image reference in the Makefile to ghcr.io/super-linter/super-linter, which may break existing workflows relying on the old image and requires no migration steps or changes to the API or CLI contract. [edbf223c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/edbf223c93a3e06b68032cba69f8dc8881239489)
+- The super-linter image reference has been updated to ghcr.io from github.com requiring users to re-pull the image if they have previously pulled from the old repository. [edbf223c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/edbf223c93a3e06b68032cba69f8dc8881239489)
 
 ## [2.1.1] - 2025-01-08
 
 ### Changed
 
-- Updated GH action versions enabled workflows for linter and spell checking to utilize the latest available functionality without requiring explicit migration steps. [484c6225](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/484c622500c0e48a9e113a9c3468b373536a850b)
+- Modernized GH action versions to 4.2.2 and 1.26.1 for actions/checkout and reviewdog/action-misspell respectively, with setup-go updated to 5.2.0, ensuring correct dependency installation for Go version 1.20.0 and above. [484c6225](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/484c622500c0e48a9e113a9c3468b373536a850b)
 
 ## [2.1.0] - 2025-01-08
 
 ### Added
 
-- The update version script now includes running `go mod tidy` to maintain the Go module's integrity, ensuring dependencies are correctly updated when changing versions. [6e24be6f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6e24be6f8ab5c5d9d4c40e75ee773de42fffbec2)
+- The update version script now ensures the Go module is in a consistent state by running `go mod tidy`, which affects users who rely on automated updates and maintainers managing project dependencies without introducing any breaking behavior or API changes. [6e24be6f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6e24be6f8ab5c5d9d4c40e75ee773de42fffbec2)
 
 ## [2.0.0] - 2025-01-08
 
 ### Removed
 
-- Simplified the GoLangCI configuration file format to remove unnecessary lines and improve maintainability by reducing clutter in the configuration file. [4f0f484d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4f0f484d78b60f5ed26ca532a53736ce6002971c)
+- Simplified the GoLangCI configuration format to remove unnecessary lines ensuring a more streamlined setup for users without introducing any breaking behavior or requiring migration. [4f0f484d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4f0f484d78b60f5ed26ca532a53736ce6002971c)
 
 ## [1.1.0] - 2025-01-08
 
 ### Added
 
-- Automated creation of Docker containers is now enabled through a GitHub Actions workflow that triggers on push to the master branch and pull requests to the master branch, builds and publishes Docker images with versioned tags, and generates an artifact attestation. [6ac394bc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6ac394bc31f56208e573db40c4fc7db4a904db5b)
+- Automated Docker image creation and publication are now streamlined through the addition of GitHub Actions for building and pushing Docker images. [6ac394bc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/6ac394bc31f56208e573db40c4fc7db4a904db5b)
 
 ## [1.0.2] - 2024-12-19
 
 ### Changed
 
-- DataVolumes now reference their owner through an OwnerReference field in the DataVolume's metadata, enabling users to manage DataVolumes based on their associated VirtualMachineInstances without requiring any modifications to their existing workflow. [a3df2c68](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a3df2c688cec490f8615ac5c882b25defe375ec4)
+- Enabled automatic deletion of associated DataVolumes by including an OwnerReference to the VirtualMachineInstance during DataVolume creation. [a3df2c68](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a3df2c688cec490f8615ac5c882b25defe375ec4)
 
 ## [1.0.1] - 2024-12-19
 
 ### Changed
 
-- Resources are now properly cleaned up after usage due to the replacement of context.WithCancel with NotifyContext method in several places. [350bb8ac](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/350bb8acd40d839229bf366e5cee03fd53e24b90)
+- The NewRootCommand function now requires users to pass a Runner instance instead of command options, affecting API usage and potentially necessitating migration steps for existing scripts. [350bb8ac](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/350bb8acd40d839229bf366e5cee03fd53e24b90)
 
 ## [1.0.0] - 2024-12-18
 
 ### Added
 
-- Enabled initial project foundation for Kubevirt Actions Runner including configuration files workflows and dependencies that can be leveraged by developers to build upon this base. [f571e6da](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f571e6da5f69cb100d5dc85ef41672814bb51279)
+- Introduced support for spawning ephemeral virtual machines for jobs using KubeVirt in the Kubernetes-based runner image. [f571e6da](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f571e6da5f69cb100d5dc85ef41672814bb51279)
