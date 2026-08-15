@@ -22,6 +22,7 @@ import (
 	"context"
 	"errors"
 	"os"
+	"runtime/debug"
 	"testing"
 	"time"
 
@@ -50,6 +51,26 @@ func (m *mockRunner) DeleteResources(_ context.Context) error {
 	return m.deleteErr
 }
 
+// TestDefaultTimeoutConstants locks in the intended duration values of the
+// package-level timeout constants, guarding against accidental arithmetic
+// changes (e.g. `5 * time.Minute` becoming `5 + time.Minute`) that would
+// otherwise silently alter runtime behavior without failing any other test.
+func TestDefaultTimeoutConstants(t *testing.T) {
+	t.Parallel()
+
+	if defaultCleanupTimeout != 5*time.Minute {
+		t.Fatalf("expected defaultCleanupTimeout to be %v, got %v", 5*time.Minute, defaultCleanupTimeout)
+	}
+
+	if defaultWaitTimeout != 1*time.Hour {
+		t.Fatalf("expected defaultWaitTimeout to be %v, got %v", 1*time.Hour, defaultWaitTimeout)
+	}
+
+	if shutdownTimeout != 5*time.Second {
+		t.Fatalf("expected shutdownTimeout to be %v, got %v", 5*time.Second, shutdownTimeout)
+	}
+}
+
 func TestGetBuildInfo(t *testing.T) {
 	t.Parallel()
 
@@ -76,6 +97,61 @@ func TestGetBuildInfo(t *testing.T) {
 		// goVersion field should be populated regardless of VCS availability.
 		if info.goVersion == "" {
 			t.Fatal("expected goVersion to be populated from build info")
+		}
+	})
+}
+
+func TestApplyVCSSettings(t *testing.T) {
+	t.Parallel()
+
+	t.Run("populates all fields from empty settings", func(t *testing.T) {
+		t.Parallel()
+
+		out := buildInfo{}
+		out.applyVCSSettings([]debug.BuildSetting{
+			{Key: "vcs.revision", Value: "abc123"},
+			{Key: "vcs.time", Value: "2026-01-01T00:00:00Z"},
+			{Key: "vcs.modified", Value: "true"},
+			{Key: "vcs.unrelated", Value: "ignored"},
+		})
+
+		if out.gitCommit != "abc123" {
+			t.Fatalf("expected gitCommit %q, got %q", "abc123", out.gitCommit)
+		}
+
+		if out.buildDate != "2026-01-01T00:00:00Z" {
+			t.Fatalf("expected buildDate %q, got %q", "2026-01-01T00:00:00Z", out.buildDate)
+		}
+
+		if out.gitTreeModified != "true" {
+			t.Fatalf("expected gitTreeModified %q, got %q", "true", out.gitTreeModified)
+		}
+	})
+
+	t.Run("does not overwrite fields that are already set", func(t *testing.T) {
+		t.Parallel()
+
+		out := buildInfo{
+			gitCommit:       "preset-commit",
+			buildDate:       "preset-date",
+			gitTreeModified: "preset-modified",
+		}
+		out.applyVCSSettings([]debug.BuildSetting{
+			{Key: "vcs.revision", Value: "from-settings-commit"},
+			{Key: "vcs.time", Value: "from-settings-date"},
+			{Key: "vcs.modified", Value: "from-settings-modified"},
+		})
+
+		if out.gitCommit != "preset-commit" {
+			t.Fatalf("expected gitCommit to remain %q, got %q", "preset-commit", out.gitCommit)
+		}
+
+		if out.buildDate != "preset-date" {
+			t.Fatalf("expected buildDate to remain %q, got %q", "preset-date", out.buildDate)
+		}
+
+		if out.gitTreeModified != "preset-modified" {
+			t.Fatalf("expected gitTreeModified to remain %q, got %q", "preset-modified", out.gitTreeModified)
 		}
 	})
 }

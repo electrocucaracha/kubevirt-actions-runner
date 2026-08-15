@@ -57,6 +57,11 @@ func (l *LoggerImpl) Fatal(args ...any) {
 var (
 	loggerInstance *LoggerImpl
 	loggerOnce     sync.Once
+	// buildProductionLogger is overridable in tests to exercise the fallback
+	// path taken when building the production zap logger fails.
+	buildProductionLogger = func(config zap.Config) (*zap.Logger, error) {
+		return config.Build()
+	}
 )
 
 // GetLogger returns a singleton LoggerImpl instance. The singleton is
@@ -86,7 +91,7 @@ func GetLogger() *LoggerImpl {
 		config := zap.NewProductionConfig()
 		config.Level = zap.NewAtomicLevelAt(lvl)
 
-		logger, err := config.Build()
+		logger, err := buildProductionLogger(config)
 		if err != nil {
 			devCfg := zap.NewDevelopmentConfig()
 			logger, _ = devCfg.Build()
@@ -104,4 +109,17 @@ func GetLogger() *LoggerImpl {
 func ResetLoggerForTesting() {
 	loggerInstance = nil
 	loggerOnce = sync.Once{}
+}
+
+// SetLoggerBuilderForTesting overrides the function used to build the
+// production zap logger, allowing tests to exercise the fallback path taken
+// when logger construction fails. It returns a restore function that must be
+// called to reinstate the original builder.
+func SetLoggerBuilderForTesting(builder func(zap.Config) (*zap.Logger, error)) func() {
+	original := buildProductionLogger
+	buildProductionLogger = builder
+
+	return func() {
+		buildProductionLogger = original
+	}
 }

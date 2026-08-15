@@ -26,7 +26,10 @@ import (
 	"testing"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
+	"go.uber.org/zap"
 )
+
+var errSimulatedBuildFailure = errors.New("simulated zap build failure")
 
 // TestFatalExitsProcess verifies that Fatal terminates the process with a
 // non-zero exit code. Since zap's Fatal calls os.Exit(1), the assertion runs
@@ -111,6 +114,28 @@ func TestGetLoggerLevels(t *testing.T) {
 			verifyLoggerImpl(t)
 		})
 	}
+}
+
+// TestGetLoggerFallsBackWhenProductionBuildFails verifies that GetLogger
+// falls back to a development logger (rather than panicking or returning a
+// nil instance) when constructing the production zap logger fails.
+func TestGetLoggerFallsBackWhenProductionBuildFails(t *testing.T) {
+	t.Setenv("KAR_LOG_LEVEL", "info")
+
+	utils.ResetLoggerForTesting()
+
+	restore := utils.SetLoggerBuilderForTesting(func(_ zap.Config) (*zap.Logger, error) {
+		return nil, errSimulatedBuildFailure
+	})
+	defer restore()
+
+	logger := utils.GetLogger()
+	if logger == nil {
+		t.Fatal("expected a non-nil logger even when production build fails")
+	}
+
+	// The fallback logger should still be usable.
+	logger.Printf("fallback logger test %s", "message")
 }
 
 func TestGetLoggerSingleton(t *testing.T) {

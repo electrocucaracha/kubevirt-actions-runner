@@ -135,3 +135,40 @@ func TestInitializeTelemetry_OTLPExporter(t *testing.T) {
 	// Ignore shutdown error; the fake endpoint will reject the flush.
 	_ = shutdown(context.Background())
 }
+
+func TestInitializeTelemetry_DefaultServiceNameAndVersion(t *testing.T) {
+	t.Setenv("KAR_TELEMETRY_ENABLED", "true")
+	t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "stdout")
+	// Explicitly clear these so getEnvOrDefault falls back to its default
+	// values instead of an inherited environment variable.
+	t.Setenv("KAR_TELEMETRY_SERVICE_NAME", "")
+	t.Setenv("KAR_TELEMETRY_SERVICE_VERSION", "")
+
+	shutdown, err := runner.InitializeTelemetry(context.Background())
+	if err != nil {
+		t.Fatalf("unexpected error with default service name/version: %v", err)
+	}
+
+	requireShutdownNoError(t, shutdown)
+}
+
+func TestInitializeTelemetry_OTLPExporterCreationFails(t *testing.T) {
+	t.Setenv("KAR_TELEMETRY_ENABLED", "true")
+	t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "otlp")
+	t.Setenv("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:19999")
+	t.Setenv("KAR_TELEMETRY_SERVICE_NAME", testServiceName)
+	t.Setenv("KAR_TELEMETRY_SERVICE_VERSION", testServiceVersion)
+
+	// An already-cancelled context makes the OTLP exporter's underlying HTTP
+	// client setup fail synchronously, exercising the createExporter error
+	// path returned from InitializeTelemetry.
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	shutdown, err := runner.InitializeTelemetry(ctx)
+	if err == nil {
+		t.Fatal("expected an error when the context is already cancelled")
+	}
+
+	requireShutdownNoError(t, shutdown)
+}
