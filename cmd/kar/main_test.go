@@ -51,6 +51,26 @@ func (m *mockRunner) DeleteResources(_ context.Context) error {
 	return m.deleteErr
 }
 
+// TestDefaultTimeoutConstants locks in the intended duration values of the
+// package-level timeout constants, guarding against accidental arithmetic
+// changes (e.g. `5 * time.Minute` becoming `5 + time.Minute`) that would
+// otherwise silently alter runtime behavior without failing any other test.
+func TestDefaultTimeoutConstants(t *testing.T) {
+	t.Parallel()
+
+	if defaultCleanupTimeout != 5*time.Minute {
+		t.Fatalf("expected defaultCleanupTimeout to be %v, got %v", 5*time.Minute, defaultCleanupTimeout)
+	}
+
+	if defaultWaitTimeout != 1*time.Hour {
+		t.Fatalf("expected defaultWaitTimeout to be %v, got %v", 1*time.Hour, defaultWaitTimeout)
+	}
+
+	if shutdownTimeout != 5*time.Second {
+		t.Fatalf("expected shutdownTimeout to be %v, got %v", 5*time.Second, shutdownTimeout)
+	}
+}
+
 func TestGetBuildInfo(t *testing.T) {
 	t.Parallel()
 
