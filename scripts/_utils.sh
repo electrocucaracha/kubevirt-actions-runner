@@ -13,22 +13,10 @@ set -o errexit
 set -o nounset
 [[ ${DEBUG:-false} != "true" ]] || set -o xtrace
 
-# debug() - This function prints a debug message in the standard output
-function debug {
-    _print_msg "DEBUG" "$1"
-    echo "::debug::$1"
-}
-
 # info() - This function prints an information message in the standard output
 function info {
     _print_msg "INFO" "$1"
     echo "::notice::$1"
-}
-
-# warn() - This function prints a warning message in the standard output
-function warn {
-    _print_msg "WARN" "$1"
-    echo "::warning::$1"
 }
 
 # error() - This function prints an error message in the standard output
