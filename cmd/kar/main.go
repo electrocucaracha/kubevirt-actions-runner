@@ -51,6 +51,10 @@ var (
 	gitCommit       string
 	buildDate       string
 	gitTreeModified string
+
+	// readBuildInfo is a seam over debug.ReadBuildInfo so tests can exercise
+	// the "no build info available" branch of getBuildInfo deterministically.
+	readBuildInfo = debug.ReadBuildInfo
 )
 
 type buildInfo struct {
@@ -67,7 +71,7 @@ func getBuildInfo(commit, date, modified string) buildInfo {
 		gitTreeModified: modified,
 	}
 
-	info, ok := debug.ReadBuildInfo()
+	info, ok := readBuildInfo()
 	if !ok {
 		return out
 	}
@@ -123,13 +127,34 @@ func ensureValidCleanupContext(parent context.Context) (context.Context, context
 	return context.WithTimeout(parent, cleanupTimeout)
 }
 
-func setupTelemetry(log *utils.LoggerImpl) func(context.Context) error {
-	shutdownTelemetry, err := runner.InitializeTelemetry(context.Background())
+func setupTelemetry(ctx context.Context, log *utils.LoggerImpl) func(context.Context) error {
+	shutdownTelemetry, err := runner.InitializeTelemetry(ctx)
 	if err != nil {
 		log.Warnf("failed to initialize telemetry: %v", err)
 	}
 
 	return shutdownTelemetry
+}
+
+// shutdownTelemetryAndLog invokes the telemetry shutdown function and logs a
+// warning if it fails, without terminating the process.
+func shutdownTelemetryAndLog(ctx context.Context, shutdownTelemetry func(context.Context) error, log *utils.LoggerImpl) {
+	err := shutdownTelemetry(ctx)
+	if err != nil {
+		log.Warnf("failed to shutdown telemetry: %v", err)
+	}
+}
+
+// runCleanup deletes the runner's KubeVirt resources once the parent context
+// is done, logging any failure returned by DeleteResources.
+func runCleanup(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl) {
+	cleanupCtx, cancel := ensureValidCleanupContext(ctx)
+	defer cancel()
+
+	err := kr.DeleteResources(cleanupCtx)
+	if err != nil {
+		log.Println("cleanup failed:", err)
+	}
 }
 
 func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
@@ -163,16 +188,13 @@ func main() {
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
 		buildInfo.gitCommit, buildInfo.gitTreeModified, buildInfo.buildDate, buildInfo.goVersion)
 
-	shutdownTelemetry := setupTelemetry(log)
+	shutdownTelemetry := setupTelemetry(context.Background(), log)
 
 	defer func() {
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 		defer cancel()
 
-		err := shutdownTelemetry(shutdownCtx)
-		if err != nil {
-			log.Warnf("failed to shutdown telemetry: %v", err)
-		}
+		shutdownTelemetryAndLog(shutdownCtx, shutdownTelemetry, log)
 	}()
 
 	virtClient, namespace, err := getClientAndNamespace()
@@ -194,13 +216,7 @@ func main() {
 	go func() {
 		<-ctx.Done()
 
-		cleanupCtx, cancel := ensureValidCleanupContext(ctx)
-		defer cancel()
-
-		err := kubevirtRunner.DeleteResources(cleanupCtx)
-		if err != nil {
-			log.Println("cleanup failed:", err)
-		}
+		runCleanup(ctx, kubevirtRunner, log)
 	}()
 
 	runMainApp(ctx, kubevirtRunner, log)
