@@ -270,16 +270,31 @@ func handleWatchEvent(
 		return false, true, nil
 	}
 
+	done, err := evaluateVMIStatus(span, vmiName, vmi, currentStatus, readyReported)
+
+	return done, false, err
+}
+
+// evaluateVMIStatus reports the readiness milestone and processes a phase
+// transition for a VMI observation. It returns done=true when a terminal
+// phase (Succeeded or Failed) has been reached.
+func evaluateVMIStatus(
+	span trace.Span,
+	vmiName string,
+	vmi *v1.VirtualMachineInstance,
+	currentStatus *v1.VirtualMachineInstancePhase,
+	readyReported *bool,
+) (bool, error) {
 	reportReadyMilestone(span, vmiName, vmi, readyReported)
 
 	if vmi.Status.Phase == *currentStatus {
-		return false, false, nil
+		return false, nil
 	}
 
 	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
 	*currentStatus = vmi.Status.Phase
 
-	return done, false, err
+	return done, err
 }
 
 // handleVMIPhase processes a VMI phase transition. It returns (true, err) when a
@@ -408,14 +423,7 @@ func (rc *KubevirtRunner) refreshVMIStatus(
 		return true, "", fmt.Errorf("failed to get the virtual machine instance %q: %w", vmiName, err)
 	}
 
-	reportReadyMilestone(span, vmiName, vmi, readyReported)
-
-	if vmi.Status.Phase == *currentStatus {
-		return false, vmi.ResourceVersion, nil
-	}
-
-	done, err := handleVMIPhase(span, vmiName, vmi.Status.Phase)
-	*currentStatus = vmi.Status.Phase
+	done, err := evaluateVMIStatus(span, vmiName, vmi, currentStatus, readyReported)
 
 	return done, vmi.ResourceVersion, err
 }
