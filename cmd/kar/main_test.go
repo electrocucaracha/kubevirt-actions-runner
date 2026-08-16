@@ -99,6 +99,34 @@ func TestGetBuildInfo(t *testing.T) {
 			t.Fatal("expected goVersion to be populated from build info")
 		}
 	})
+
+	t.Run("returns ldflags values unmodified when no build info is available", func(t *testing.T) {
+		// Temporarily swap the readBuildInfo seam to simulate
+		// debug.ReadBuildInfo() reporting ok=false, which happens when a
+		// binary is built without module information embedded.
+		origReadBuildInfo := readBuildInfo
+		readBuildInfo = func() (*debug.BuildInfo, bool) { return nil, false }
+
+		defer func() { readBuildInfo = origReadBuildInfo }()
+
+		info := getBuildInfo("ldflags-commit", "ldflags-date", "ldflags-modified")
+
+		if info.gitCommit != "ldflags-commit" {
+			t.Fatalf("expected gitCommit %q, got %q", "ldflags-commit", info.gitCommit)
+		}
+
+		if info.buildDate != "ldflags-date" {
+			t.Fatalf("expected buildDate %q, got %q", "ldflags-date", info.buildDate)
+		}
+
+		if info.gitTreeModified != "ldflags-modified" {
+			t.Fatalf("expected gitTreeModified %q, got %q", "ldflags-modified", info.gitTreeModified)
+		}
+
+		if info.goVersion != "" {
+			t.Fatalf("expected goVersion to remain empty, got %q", info.goVersion)
+		}
+	})
 }
 
 func TestApplyVCSSettings(t *testing.T) {
@@ -349,7 +377,7 @@ func TestSetupTelemetry(t *testing.T) {
 	t.Run("returns a no-op shutdown function when telemetry is disabled", func(t *testing.T) {
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 
-		shutdown := setupTelemetry(log)
+		shutdown := setupTelemetry(context.Background(), log)
 		assertShutdownNoError(t, shutdown)
 	})
 
@@ -357,8 +385,77 @@ func TestSetupTelemetry(t *testing.T) {
 		t.Setenv("KAR_TELEMETRY_ENABLED", "true")
 		t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "stdout")
 
-		shutdown := setupTelemetry(log)
+		shutdown := setupTelemetry(context.Background(), log)
 		assertShutdownNoError(t, shutdown)
+	})
+
+	t.Run("logs a warning and still returns a usable shutdown function on init failure", func(t *testing.T) {
+		t.Setenv("KAR_TELEMETRY_ENABLED", "true")
+		t.Setenv("KAR_TELEMETRY_EXPORT_TYPE", "otlp")
+		t.Setenv("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:19999")
+
+		// An already-cancelled context makes OTLP exporter creation fail
+		// synchronously, exercising setupTelemetry's log.Warnf branch.
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		shutdown := setupTelemetry(ctx, log)
+		if shutdown == nil {
+			t.Fatal("expected a non-nil shutdown function even when initialization fails")
+		}
+
+		assertShutdownNoError(t, shutdown)
+	})
+}
+
+func TestShutdownTelemetryAndLog(t *testing.T) {
+	t.Parallel()
+
+	log := utils.GetLogger()
+
+	t.Run("does not log when shutdown succeeds", func(t *testing.T) {
+		t.Parallel()
+
+		called := false
+		shutdownTelemetryAndLog(context.Background(), func(context.Context) error {
+			called = true
+
+			return nil
+		}, log)
+
+		if !called {
+			t.Fatal("expected shutdown function to be invoked")
+		}
+	})
+
+	t.Run("logs a warning when shutdown returns an error", func(t *testing.T) {
+		t.Parallel()
+
+		// shutdownTelemetryAndLog should not panic and should log the
+		// returned error via log.Warnf rather than propagating it.
+		shutdownTelemetryAndLog(context.Background(), func(context.Context) error {
+			return errMainTestFailure
+		}, log)
+	})
+}
+
+func TestRunCleanup(t *testing.T) {
+	t.Parallel()
+
+	log := utils.GetLogger()
+
+	t.Run("does not log when DeleteResources succeeds", func(t *testing.T) {
+		t.Parallel()
+
+		runner := &mockRunner{}
+		runCleanup(context.Background(), runner, log)
+	})
+
+	t.Run("logs cleanup failure when DeleteResources returns an error", func(t *testing.T) {
+		t.Parallel()
+
+		runner := &mockRunner{deleteErr: errMainTestFailure}
+		runCleanup(context.Background(), runner, log)
 	})
 }
 
