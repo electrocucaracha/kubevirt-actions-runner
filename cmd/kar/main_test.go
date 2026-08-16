@@ -101,6 +101,8 @@ func TestGetBuildInfo(t *testing.T) {
 	})
 
 	t.Run("returns ldflags values unmodified when no build info is available", func(t *testing.T) {
+		t.Parallel()
+
 		// Temporarily swap the readBuildInfo seam to simulate
 		// debug.ReadBuildInfo() reporting ok=false, which happens when a
 		// binary is built without module information embedded.
@@ -417,6 +419,7 @@ func TestShutdownTelemetryAndLog(t *testing.T) {
 		t.Parallel()
 
 		called := false
+
 		shutdownTelemetryAndLog(context.Background(), func(context.Context) error {
 			called = true
 

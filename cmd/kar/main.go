@@ -138,7 +138,11 @@ func setupTelemetry(ctx context.Context, log *utils.LoggerImpl) func(context.Con
 
 // shutdownTelemetryAndLog invokes the telemetry shutdown function and logs a
 // warning if it fails, without terminating the process.
-func shutdownTelemetryAndLog(ctx context.Context, shutdownTelemetry func(context.Context) error, log *utils.LoggerImpl) {
+func shutdownTelemetryAndLog(
+	ctx context.Context,
+	shutdownTelemetry func(context.Context) error,
+	log *utils.LoggerImpl,
+) {
 	err := shutdownTelemetry(ctx)
 	if err != nil {
 		log.Warnf("failed to shutdown telemetry: %v", err)
