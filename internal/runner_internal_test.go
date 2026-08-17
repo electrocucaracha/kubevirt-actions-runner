@@ -43,6 +43,8 @@ var (
 // path in getResources where encoding the runner-info annotation payload
 // fails. It swaps the marshalJSON seam to force the failure deterministically.
 func TestGetResourcesMarshalJSONError(t *testing.T) {
+	t.Parallel()
+
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
@@ -63,7 +65,7 @@ func TestGetResourcesMarshalJSONError(t *testing.T) {
 		},
 	}, nil)
 
-	rc := &KubevirtRunner{virtClient: virtClient, namespace: namespace}
+	runner := &KubevirtRunner{virtClient: virtClient, namespace: namespace}
 
 	originalMarshal := marshalJSON
 
@@ -73,7 +75,7 @@ func TestGetResourcesMarshalJSONError(t *testing.T) {
 		return nil, errSimulatedMarshalFailure
 	}
 
-	vmi, dataVolume, err := rc.getResources(context.Background(), vmTemplate, namespace, runnerName, jitConfig)
+	vmi, dataVolume, err := runner.getResources(context.Background(), vmTemplate, namespace, runnerName, jitConfig)
 	if err == nil {
 		t.Fatal("expected an error when marshalling the runner info annotation payload fails")
 	}
@@ -125,6 +127,8 @@ func TestInitializeTelemetryResourceCreationError(t *testing.T) {
 // error path in createExporter where building the stdout exporter fails. It
 // swaps the newStdoutExporter seam to force the failure deterministically.
 func TestCreateExporterStdoutCreationError(t *testing.T) {
+	t.Parallel()
+
 	originalNewStdoutExporter := newStdoutExporter
 
 	defer func() { newStdoutExporter = originalNewStdoutExporter }()
