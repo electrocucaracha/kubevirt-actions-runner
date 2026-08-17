@@ -9,6 +9,126 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [22.0.2] - 2026-08-16
+
+### Changed
+
+- Optimized test concurrency by enabling parallel execution of two test functions. [cb674c62](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cb674c62683dd240a5395e31cd94f2e662421b1d)
+
+## [22.0.1] - 2026-08-16
+
+### Changed
+
+- Optimized internal package test coverage by introducing seams to force deterministically testable error paths, thereby increasing overall repository code coverage to 100.0%. [e23a5ca2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e23a5ca2a58247fb3be720aa2efbd3395c704e39)
+
+## [22.0.0] - 2026-08-16
+
+### Removed
+
+- Simplified the update_versions.sh script by eliminating dead logic that checked for pinned GitHub Actions. [20b77cfc](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/20b77cfccf841f8fe783465ee868c21cf8f76d41)
+
+## [21.0.3] - 2026-08-16
+
+### Changed
+
+- Simplified the workflow structure by relocating technical debt and code coverage improvement jobs to the improvers workflow, clarifying responsibilities and reducing complexity in the verifiers pipeline. [fd92c7f5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fd92c7f505d3ede1baa5ff86866585c03f82bc60)
+
+## [21.0.2] - 2026-08-16
+
+### Changed
+
+- clarified the step name for demo dependency installation to improve workflow readability and maintainability. [1295fb71](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1295fb716c4edca47d821f0a694e005ad2424a33)
+
+## [21.0.1] - 2026-08-16
+
+### Changed
+
+- Enabled CI validation of both local trace export and OTLP collector export, ensuring comprehensive coverage and confidence in observability features. [c6f68022](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c6f680228b8006269f7df0047ef9d14da1e9b02a)
+
+## [21.0.0] - 2026-08-16
+
+### Removed
+
+- Simplified the OTLP endpoint environment variable default to remove the scheme, improving compatibility with the OTLP exporter and clarifying configuration for users. [97c169c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/97c169c520003b9e2ddfb7eeeab369ccde7a898b)
+
+## [20.1.0] - 2026-08-16
+
+### Added
+
+- Optimized the textlint process by excluding the custom term list from linting checks. [fb7aa25d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fb7aa25d8f36b61e23ed355b72d91d0675d31fb9)
+
+## [20.0.3] - 2026-08-16
+
+### Changed
+
+- Optimized the ldflags fallback test in TestGetBuildInfo to run in parallel, significantly improving test suite performance and isolation, and ensuring that parallelizable tests execute without interference. [240d7435](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/240d74355dcc80011840415af0e8a992ee9d6ecf)
+
+## [20.0.2] - 2026-08-16
+
+### Changed
+
+- Enabled deterministic testing of the "no build info available" branch of getBuildInfo and increased overall repository statement coverage to 99.0% by introducing a readBuildInfo seam and accepting a context parameter in the setupTelemetry function. [31f267f7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/31f267f7e356d1c2e5462ea5bcc4d804b0657d0f)
+
+## [20.0.1] - 2026-08-16
+
+### Changed
+
+- Simplified the evaluation of VMI phases by extracting the shared logic into a single helper function, without introducing any observable changes in behavior. [79cbe74d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/79cbe74d7c37c8d528aa99e5d5fb36a5a6a8b2eb)
+
+## [20.0.0] - 2026-08-14
+
+### Removed
+
+- Simplified the project configuration by eliminating unnecessary dependencies and shell helper functions, resulting in no observable impact on developers or operators. [e8098731](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e809873199f948dd02e27b9c02e40bb5a2f38262)
+
+## [19.0.4] - 2026-08-14
+
+### Changed
+
+- Improved code coverage to 97.4% by introducing new tests for telemetry and VCS settings initialization, and additional tests for constants and arithmetic operations, without introducing any breaking behavior or API changes. [7f19dd4c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7f19dd4c7b7107e5ef68208d2f1a2502857b24ab)
+
+## [19.0.3] - 2026-08-13
+
+### Changed
+
+- Simplified test setup for VirtualMachine and VirtualMachineInstance, reducing duplication and improving maintainability with no breaking behavior or API contract changes. [9bc92c81](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9bc92c81b0e6ad16ddeba8036a023cba36fa7d58)
+
+## [19.0.2] - 2026-08-13
+
+### Changed
+
+- Stabilized the project's dependencies by updating several indirect dependencies to their latest versions, ensuring the project's stability and compatibility with other packages. [d7e772b7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d7e772b75bed79d2ff71abe5213d556046ef5f7c)
+
+## [19.0.1] - 2026-08-13
+
+### Changed
+
+- Updated the ai-prepare-commit-msg hook to v7.1.0, ensuring compatibility with recent pre-commit features and incorporating upstream improvements and bugfixes without requiring any configuration changes. [2db58b04](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2db58b04726de9af8b646e51d72b84e241385104)
+
+## [19.0.0] - 2026-08-13
+
+### Removed
+
+- Simplified telemetry configuration by eliminating the need for environment variables to be bound to flags through a dependency, instead directly reading flag values and telemetry configuration from environment variables. [23d822f9](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/23d822f9ae6fd568a3dd89a35afd3e13ebb92409)
+
+## [18.16.1] - 2026-08-12
+
+### Changed
+
+- Standardized changelog entries now use active voice, minimizing redundancy and more accurately conveying the impact of each change to users and maintainers reviewing project history. [45c34a25](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/45c34a25df98952de7cf81e42a1976e7da0e1c25)
+
+## [18.16.0] - 2026-08-12
+
+### Added
+
+- Enabled project-specific and tool-related words in the spelling whitelist to prevent unnecessary linting warnings for valid terms, thereby improving the developer experience. [ee1d576b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ee1d576b6875b1507d9b3a076e75e00e2b27975b)
+
+## [18.15.0] - 2026-08-12
+
+### Added
+
+- Enabled linting for prose quality checks across all text files, improving documentation quality and reducing manual review effort, without affecting Prettier installation or usage. [8d62c7c3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8d62c7c341cb430651a6e07fc485dd598b897f76)
+
 ## [18.14.1] - 2026-08-07
 
 ### Changed

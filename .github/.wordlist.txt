@@ -64,6 +64,7 @@ bbfd
 bca
 bcb
 bcbd
+bcc
 bccb
 bccdb
 bcdde
@@ -106,6 +107,7 @@ ccb
 ccbcdd
 ccc
 ccd
+ccde
 ccf
 cda
 cdaaa
@@ -125,6 +127,7 @@ cefadc
 centricity
 cfab
 cfb
+cfccf
 cfe
 cfeb
 cff
@@ -162,8 +165,8 @@ dae
 daemonset
 DataDog
 DataVolume
-datavolumes
 DataVolume's
+datavolumes
 dba
 dbbdfa
 dbcb
@@ -172,6 +175,7 @@ dbe
 dbf
 dca
 dcb
+dcc
 dcdd
 dce
 dced
@@ -183,8 +187,10 @@ ddafa
 ddb
 ddbd
 ddd
+ddeba
 ddefe
 ddf
+ddfb
 ddffff
 deab
 debc
@@ -196,6 +202,7 @@ defac
 defe
 DeleteDataVolume
 DeleteResources
+deterministically
 dev
 devcontainer
 devs
@@ -236,6 +243,7 @@ ecfd
 eda
 edb
 edbf
+edca
 eddef
 ede
 editorconfig
@@ -246,8 +254,10 @@ eebd
 eeca
 eed
 eee
+eeeab
 ef
 efb
+efbd
 efc
 efd
 efdeb
@@ -304,6 +314,7 @@ fieldRef
 filesystems
 fmt
 formatter
+getBuildInfo
 gh
 gha
 ghcr
@@ -332,6 +343,7 @@ href
 HTTPS
 Ij
 img
+improvers
 Infof
 inlined
 IShouldRefactorThis
@@ -403,6 +415,7 @@ OTEL
 OTLP
 overengineering
 OwnerReference
+parallelizable
 paralleltest
 ParseDuration
 passwordless
@@ -418,6 +431,7 @@ pyspelling
 pytest
 quickstart
 RBAC
+readBuildInfo
 README
 readyReported
 reallyLongArg
@@ -438,6 +452,7 @@ SCSS
 semver
 ServiceAccount
 serviceAccountName
+setupTelemetry
 shfmt
 SIGTERM
 slideshare
@@ -456,6 +471,7 @@ Teardown
 technote
 testbed
 testbed's
+TestGetBuildInfo
 testvm
 textlint
 tox
@@ -470,6 +486,7 @@ valueFrom
 VCS
 venv
 verifier
+verifiers
 verifyLoggerImpl
 virt
 virtClient
