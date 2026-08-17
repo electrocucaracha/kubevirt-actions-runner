@@ -92,10 +92,14 @@ func createExporter(ctx context.Context, exportType string) (trace.SpanExporter,
 
 	switch exportType {
 	case "otlp":
-		endpoint := getEnvOrDefault("KAR_TELEMETRY_OTLP_ENDPOINT", "http://localhost:4318")
+		endpoint := getEnvOrDefault("KAR_TELEMETRY_OTLP_ENDPOINT", "localhost:4318")
 		log.Infof("Using OTLP exporter with endpoint: %s", endpoint)
 
-		exporter, err := otlptracehttp.New(ctx, otlptracehttp.WithEndpoint(endpoint))
+		exporter, err := otlptracehttp.New(
+			ctx,
+			otlptracehttp.WithEndpoint(endpoint),
+			otlptracehttp.WithInsecure(),
+		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
 		}

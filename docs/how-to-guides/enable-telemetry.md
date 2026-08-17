@@ -32,7 +32,7 @@ Telemetry is configured via environment variables. Below is a summary of the ava
 | ------------------------------- | ------------------------- | ----------------------------------------------------------- |
 | `KAR_TELEMETRY_ENABLED`         | `false`                   | Enable or disable telemetry (`true` or `false`).            |
 | `KAR_TELEMETRY_EXPORT_TYPE`     | ``                        | Export type: `otlp` or `stdout`.                            |
-| `KAR_TELEMETRY_OTLP_ENDPOINT`   | `http://localhost:4318`   | OTLP collector HTTP endpoint (only for `otlp` export type). |
+| `KAR_TELEMETRY_OTLP_ENDPOINT`   | `localhost:4318`          | OTLP collector HTTP endpoint (only for `otlp` export type). |
 | `KAR_TELEMETRY_SERVICE_NAME`    | `kubevirt-actions-runner` | Service name for telemetry.                                 |
 | `KAR_TELEMETRY_SERVICE_VERSION` | `unknown`                 | Service version for telemetry.                              |
 
@@ -54,7 +54,7 @@ To send traces to an OTLP-compatible backend, set the following variables:
 
 ```bash
 export KAR_TELEMETRY_EXPORT_TYPE=otlp
-export KAR_TELEMETRY_OTLP_ENDPOINT=http://<your-otel-endpoint>:4318
+export KAR_TELEMETRY_OTLP_ENDPOINT=<your-otel-endpoint>:4318
 export KAR_TELEMETRY_SERVICE_NAME=my-runner-service
 export KAR_TELEMETRY_SERVICE_VERSION=1.0.0
 ```
