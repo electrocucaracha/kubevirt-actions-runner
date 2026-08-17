@@ -51,6 +51,12 @@ const (
 
 var errWaitTimeout = errors.New("timeout while waiting for the virtual machine instance")
 
+// marshalJSON is a seam over json.Marshal so tests can force the
+// runner-info annotation encoding failure path in getResources.
+//
+//nolint:gochecknoglobals
+var marshalJSON = json.Marshal
+
 type Runner interface {
 	CreateResources(ctx context.Context,
 		vmTemplate string,
@@ -198,23 +204,19 @@ func (rc *KubevirtRunner) WaitForVirtualMachineInstance(ctx context.Context) err
 			return watchResultErr
 		}
 
-		if watchResultErr == nil {
-			log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
-			span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", watchChannelClosedMsg)))
+		// watchVMIEvents only returns done=false when the watch channel closed
+		// without a terminal error, so watchResultErr is always nil here.
+		log.Printf("Watch stream closed for %s Virtual Machine Instance; reconnecting\n", vmiName)
+		span.AddEvent("watch_reconnect", trace.WithAttributes(attribute.String("reason", watchChannelClosedMsg)))
 
-			timer := time.NewTimer(watchReconnectBackoff)
-			select {
-			case <-ctx.Done():
-				timer.Stop()
+		timer := time.NewTimer(watchReconnectBackoff)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
 
-				return errWaitTimeout
-			case <-timer.C:
-			}
-
-			continue
+			return errWaitTimeout
+		case <-timer.C:
 		}
-
-		return watchResultErr
 	}
 }
 
@@ -568,7 +570,7 @@ func (rc *KubevirtRunner) getResources(
 		"jitconfig": jitConfig,
 	}
 
-	out, err := json.Marshal(runnerInfo)
+	out, err := marshalJSON(runnerInfo)
 	if err != nil {
 		return nil, nil, fmt.Errorf("cannot marshal runner info annotation payload: %w", err)
 	}

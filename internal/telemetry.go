@@ -40,6 +40,18 @@ func getEnvOrDefault(key, defaultVal string) string {
 	return defaultVal
 }
 
+// newResource and newStdoutExporter are seams over resource.New and
+// stdouttrace.New respectively so tests can force their error paths in
+// InitializeTelemetry and createExporter deterministically.
+//
+//nolint:gochecknoglobals
+var (
+	newResource       = resource.New
+	newStdoutExporter = func() (trace.SpanExporter, error) {
+		return stdouttrace.New(stdouttrace.WithPrettyPrint())
+	}
+)
+
 // InitializeTelemetry sets up OpenTelemetry tracing from environment variables.
 // Returns a shutdown function that should be called before the application exits.
 func InitializeTelemetry(ctx context.Context) (func(context.Context) error, error) {
@@ -58,7 +70,7 @@ func InitializeTelemetry(ctx context.Context) (func(context.Context) error, erro
 	serviceName := getEnvOrDefault("KAR_TELEMETRY_SERVICE_NAME", "kubevirt-actions-runner")
 	serviceVersion := getEnvOrDefault("KAR_TELEMETRY_SERVICE_VERSION", "unknown")
 
-	res, err := resource.New(ctx,
+	res, err := newResource(ctx,
 		resource.WithAttributes(
 			semconv.ServiceNameKey.String(serviceName),
 			semconv.ServiceVersionKey.String(serviceVersion),
@@ -112,7 +124,7 @@ func createExporter(ctx context.Context, exportType string) (trace.SpanExporter,
 
 		log.Infof("Using stdout exporter")
 
-		exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+		exporter, err := newStdoutExporter()
 		if err != nil {
 			return nil, fmt.Errorf("failed to create stdout exporter: %w", err)
 		}
