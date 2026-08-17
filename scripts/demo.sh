@@ -18,7 +18,7 @@ source _common.sh
 source _utils.sh
 
 export KAR_TELEMETRY_ENABLED=true
-export KAR_TELEMETRY_EXPORT_TYPE=stdout
+export KAR_TELEMETRY_EXPORT_TYPE="${KAR_TELEMETRY_EXPORT_TYPE:-stdout}"
 
 readonly VM_TEMPLATE_NAMESPACE="${KAR_VM_TEMPLATE_NAMESPACE:-default}"
 readonly RUNNER_NAMESPACE="${KAR_RUNNER_NAMESPACE:-kar-runner-demo}"
@@ -57,7 +57,7 @@ prepare_demo_namespaces
 kar_dir="$(mktemp -d)"
 kar_bin="$kar_dir/kar"
 trap 'rm -rf "$kar_dir"' EXIT
-go build -o "$kar_bin" "$(git rev-parse --show-toplevel)/cmd/kar"
+[ -f "$kar_bin" ] || go build -o "$kar_bin" "$(git rev-parse --show-toplevel)/cmd/kar"
 # Run the runner in a namespace different from the VM template namespace.
 kar_kubeconfig="${kar_dir}/config"
 cp "${KUBECONFIG:-$HOME/.kube/config}" "${kar_kubeconfig}"
@@ -68,4 +68,6 @@ KUBECONFIG="${kar_kubeconfig}" timeout 5m "$kar_bin" \
     -t testvm \
     -n "${VM_TEMPLATE_NAMESPACE}" \
     -r test
+
+[ "$KAR_TELEMETRY_EXPORT_TYPE" == "otlp" ] && sudo docker logs rotel | grep -E 'Received traces' || true
 info "Demo completed"

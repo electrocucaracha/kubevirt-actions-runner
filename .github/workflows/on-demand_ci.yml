@@ -55,11 +55,25 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
-      - name: Run demo
+      - name: Install and configure thedemo
         working-directory: ./scripts
         env:
           DEBUG: true
-          PROVISION_PHASES: "install configure demo"
+          PROVISION_PHASES: "install configure"
+        run: ./main.sh
+      - name: Run demo exporting traces locally
+        working-directory: ./scripts
+        env:
+          DEBUG: true
+          PROVISION_PHASES: "demo"
+          KAR_TELEMETRY_EXPORT_TYPE: "stdout"
+        run: ./main.sh
+      - name: Run demo exporting traces to otel collector (rotel)
+        working-directory: ./scripts
+        env:
+          DEBUG: true
+          PROVISION_PHASES: "demo"
+          KAR_TELEMETRY_EXPORT_TYPE: "otlp"
         run: ./main.sh
       - name: Export logs
         if: always()

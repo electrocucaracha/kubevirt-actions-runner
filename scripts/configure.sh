@@ -54,10 +54,15 @@ function _deploy_kubevirt {
     kubectl rollout status daemonset virt-handler -n kubevirt --timeout=5m
 }
 
+function _deploy_rotel {
+    sudo -E docker run -d --rm -p 4317-4318:4317-4318 --name rotel streamfold/rotel --debug-log traces --exporter blackhole
+}
+
 function main {
     _create_cluster
     _deploy_kubevirt
     kubectl apply -f test-data/vm.yaml
+    _deploy_rotel
 }
 
 if [[ ${__name__:-"__main__"} == "__main__" ]]; then
