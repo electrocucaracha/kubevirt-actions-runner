@@ -1,0 +1,139 @@
+# SPDX-license-identifier: Apache-2.0
+##############################################################################
+# Copyright (c) 2026
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+name: "Maintenance: Go Quality Improvements"
+# yamllint disable-line rule:truthy
+on:
+  schedule:
+    - cron: "0 0 15-21 * 5"
+  workflow_dispatch:
+permissions: read-all
+concurrency:
+  group: code-quality-verifiers-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  reduce-tech-debt:
+    name: Reduce Technical Debt
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # jscpd:ignore-start
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
+      - name: Run Copilot CLI
+        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        with:
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: true
+          allow-all-urls: true
+          repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
+          mcp-config: |
+            {
+              "mcpServers": {
+                "github-mcp-server": {
+                  "type": "http",
+                  "url": "https://api.githubcopilot.com/mcp/",
+                  "headers": {
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}"
+                  }
+                }
+              }
+            }
+          # jscpd:ignore-end
+          agent: janitor
+          prompt: |-
+            Reduce technical debt and submit a Pull Request with the improvements.
+
+            Workflow:
+            1. Analyze the repo for unused code, duplication, dead paths, and unnecessary complexity.
+            2. Delete and simplify safely. Preserve behavior and avoid breaking public APIs.
+            3. Validate by running: make test
+            4. Create a new branch and push it:
+               - git checkout -b tech-debt-reduction
+               - git push origin tech-debt-reduction
+            5. Submit Pull Request via GitHub:
+               - Use GitHub CLI: gh pr create \
+                 --title "chore: reduce technical debt" \
+                 --body "Summary of changes, rationale, tests passing, and confirmation of no breaking changes." \
+                 --base ${{ github.event.repository.default_branch }} \
+                 --head tech-debt-reduction
+               - Keep the diff focused and reviewable.
+      - name: Get rtk stats
+        run: rtk gain
+  improve-code-coverage:
+    name: Improve Code Coverage
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # jscpd:ignore-start
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install rtk token saver
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
+          rtk --version
+          rtk init --global --copilot
+      - name: Run Copilot CLI
+        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        with:
+          copilot-token: ${{ secrets.COPILOT_TOKEN }}
+          allow-all-tools: true
+          denied-tools: "shell(rm:*),shell(sudo:*),shell(chown:*),shell(chmod:777),shell(dd:*)"
+          allow-all-paths: true
+          allow-all-urls: true
+          repo-token: ${{ github.actor == 'electrocucaracha[bot]' && secrets.COPILOT_TOKEN || github.token }}
+          mcp-config: |
+            {
+              "mcpServers": {
+                "github-mcp-server": {
+                  "type": "http",
+                  "url": "https://api.githubcopilot.com/mcp/",
+                  "headers": {
+                    "Authorization": "Bearer ${{ secrets.COPILOT_TOKEN }}"
+                  }
+                }
+              }
+            }
+          # jscpd:ignore-end
+          agent: qa-subagent
+          prompt: |-
+            Increase code coverage and submit a Pull Request with the improvements.
+
+            Workflow:
+            1. Analyze the latest results of unit-test and gremlins-test GitHub Actions jobs to identify uncovered code paths and functions.
+            2. Write new tests to cover those paths, ensuring they are meaningful and validate important edge cases.
+            3. Validate by running: make test
+            4. Create a new branch and push it:
+               - git checkout -b increase-code-coverage
+               - git push origin increase-code-coverage
+            5. Submit Pull Request via GitHub:
+               - Use GitHub CLI: gh pr create \
+                 --title "test: increase code coverage" \
+                 --body "Summary of added tests, rationale for coverage improvement, tests passing, and confirmation of no breaking changes." \
+                 --base ${{ github.event.repository.default_branch }} \
+                 --head increase-code-coverage
+               - Keep the diff focused and reviewable.
+      - name: Get rtk stats
+        run: rtk gain
