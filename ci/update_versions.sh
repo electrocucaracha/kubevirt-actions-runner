@@ -39,7 +39,7 @@ run_best_effort() {
 }
 
 update_github_action_hashes() {
-    local gh_actions action is_pinned pinned commit_hash file
+    local gh_actions action commit_hash file
 
     gh_actions=$(grep -rhoE 'uses: [^@]+@' .github |
         sed -E 's/uses: ([^@]+)@/\1/' |
@@ -55,22 +55,7 @@ update_github_action_hashes() {
         'tcort/github-action-markdown-link-check'
     )
 
-    readonly pinned_actions=()
-
     for action in $gh_actions; do
-        is_pinned=false
-        for pinned in "${pinned_actions[@]}"; do
-            if [[ $action == "$pinned" ]]; then
-                is_pinned=true
-                break
-            fi
-        done
-
-        if [[ $is_pinned == true ]]; then
-            echo "Skipping auto-update for pinned action: $action"
-            continue
-        fi
-
         is_exception=false
         for ex in "${exceptions[@]}"; do
             if [[ $action == "$ex" ]]; then
