@@ -67,6 +67,7 @@ var (
 )
 
 func newDefaultCleanupTimeout() time.Duration {
+	//nolint:mnd // 5 minutes is the intended default cleanup window.
 	return 5 * time.Minute
 }
 
@@ -75,6 +76,7 @@ func newDefaultWaitTimeout() time.Duration {
 }
 
 func newShutdownTimeout() time.Duration {
+	//nolint:mnd // 5 seconds is the intended default shutdown window.
 	return 5 * time.Second
 }
 
