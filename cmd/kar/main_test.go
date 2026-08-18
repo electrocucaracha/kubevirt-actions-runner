@@ -71,6 +71,26 @@ func TestDefaultTimeoutConstants(t *testing.T) {
 	}
 }
 
+// TestNewDefaultTimeoutFunctions exercises the constructor functions backing
+// the package-level timeout variables directly, ensuring their arithmetic
+// expressions are covered independently of package initialization order and
+// giving mutation testing a direct, unambiguous target to kill.
+func TestNewDefaultTimeoutFunctions(t *testing.T) {
+	t.Parallel()
+
+	if got := newDefaultCleanupTimeout(); got != 5*time.Minute {
+		t.Fatalf("newDefaultCleanupTimeout() = %v, want %v", got, 5*time.Minute)
+	}
+
+	if got := newDefaultWaitTimeout(); got != 1*time.Hour {
+		t.Fatalf("newDefaultWaitTimeout() = %v, want %v", got, 1*time.Hour)
+	}
+
+	if got := newShutdownTimeout(); got != 5*time.Second {
+		t.Fatalf("newShutdownTimeout() = %v, want %v", got, 5*time.Second)
+	}
+}
+
 func TestGetBuildInfo(t *testing.T) {
 	t.Parallel()
 
