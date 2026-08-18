@@ -39,7 +39,7 @@ fmt: cleanup
 	command -v yamlfmt > /dev/null || curl -s "https://i.jpillora.com/google/yamlfmt!!" | bash
 	yamlfmt -dstar **/*.{yaml,yml}
 	command -v golangci-lint > /dev/null || go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-	golangci-lint run --fix
+	$$(command -v golangci-lint || echo $$HOME/go/bin/golangci-lint) run --fix
 	command -v textlint > /dev/null && npm list --global --depth=0 textlint-rule-terminology > /dev/null 2>&1 || npm install --global textlint textlint-rule-terminology
 	textlint . --fix
 	command -v prettier > /dev/null || npm install prettier
