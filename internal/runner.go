@@ -373,12 +373,7 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 
 	err := rc.virtClient.VirtualMachineInstance(rc.namespace).Delete(
 		ctx, appCtx.GetVMIName(), k8smetav1.DeleteOptions{})
-	if err != nil {
-		if !k8serrors.IsNotFound(err) {
-			log.Printf("fail to delete runner instance %s: %v", appCtx.GetVMIName(), err)
-			span.RecordError(err)
-		}
-	}
+	logDeleteErr(log, span, "runner instance", appCtx.GetVMIName(), err)
 
 	if len(appCtx.GetDataVolumeName()) > 0 {
 		_, spanDeleteDV := tracer.Start(ctx, "DeleteDataVolume",
@@ -389,17 +384,23 @@ func (rc *KubevirtRunner) DeleteResources(ctx context.Context) error {
 
 		err := rc.virtClient.CdiClient().CdiV1beta1().DataVolumes(rc.namespace).Delete(
 			ctx, appCtx.GetDataVolumeName(), k8smetav1.DeleteOptions{})
-		if err != nil {
-			if !k8serrors.IsNotFound(err) {
-				log.Printf("fail to delete runner data volume %s: %v", appCtx.GetDataVolumeName(), err)
-				spanDeleteDV.RecordError(err)
-			}
-		}
+		logDeleteErr(log, spanDeleteDV, "runner data volume", appCtx.GetDataVolumeName(), err)
 
 		spanDeleteDV.End()
 	}
 
 	return nil
+}
+
+// logDeleteErr logs and records a deletion error unless it indicates the
+// resource was already gone, in which case it is silently ignored.
+func logDeleteErr(log *utils.LoggerImpl, span trace.Span, resourceKind, name string, err error) {
+	if err == nil || k8serrors.IsNotFound(err) {
+		return
+	}
+
+	log.Printf("fail to delete %s %s: %v", resourceKind, name, err)
+	span.RecordError(err)
 }
 
 func (rc *KubevirtRunner) refreshVMIStatus(
