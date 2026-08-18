@@ -36,12 +36,9 @@ import (
 )
 
 const (
-	defaultCleanupTimeout = 5 * time.Minute
-	defaultWaitTimeout    = 1 * time.Hour
-	shutdownTimeout       = 5 * time.Second
-	vcsRevisionSetting    = "vcs.revision"
-	vcsTimeSetting        = "vcs.time"
-	vcsModifiedSetting    = "vcs.modified"
+	vcsRevisionSetting = "vcs.revision"
+	vcsTimeSetting     = "vcs.time"
+	vcsModifiedSetting = "vcs.modified"
 )
 
 //nolint:gochecknoglobals
@@ -55,7 +52,31 @@ var (
 	// readBuildInfo is a seam over debug.ReadBuildInfo so tests can exercise
 	// the "no build info available" branch of getBuildInfo deterministically.
 	readBuildInfo = debug.ReadBuildInfo
+
+	// defaultCleanupTimeout, defaultWaitTimeout, and shutdownTimeout are computed by
+	// dedicated functions rather than declared as plain arithmetic constants. Go's
+	// coverage instrumentation does not track top-level const declarations, so
+	// mutation-testing tools (e.g. Gremlins) can never observe a test exercising
+	// those arithmetic expressions and always flag them as "not covered". Wrapping
+	// each value in a function makes the arithmetic part of an instrumented
+	// statement that runs at package initialization and is verified by
+	// TestDefaultTimeoutConstants.
+	defaultCleanupTimeout = newDefaultCleanupTimeout()
+	defaultWaitTimeout    = newDefaultWaitTimeout()
+	shutdownTimeout       = newShutdownTimeout()
 )
+
+func newDefaultCleanupTimeout() time.Duration {
+	return 5 * time.Minute
+}
+
+func newDefaultWaitTimeout() time.Duration {
+	return 1 * time.Hour
+}
+
+func newShutdownTimeout() time.Duration {
+	return 5 * time.Second
+}
 
 type buildInfo struct {
 	gitCommit       string
