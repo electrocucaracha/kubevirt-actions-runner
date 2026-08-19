@@ -13,8 +13,6 @@ set -o errexit
 set -o nounset
 [[ ${DEBUG:-false} != "true" ]] || set -o xtrace
 
-# shellcheck source=scripts/_common.sh
-source _common.sh
 # shellcheck source=./scripts/_utils.sh
 source _utils.sh
 
