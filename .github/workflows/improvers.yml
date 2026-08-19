@@ -10,7 +10,7 @@ name: "Maintenance: Go Quality Improvements"
 # yamllint disable-line rule:truthy
 on:
   schedule:
-    - cron: "0 0 15-21 * 5"
+    - cron: "0 0 15 * *"
   workflow_dispatch:
 permissions: read-all
 concurrency:
