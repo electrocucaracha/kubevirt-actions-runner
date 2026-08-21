@@ -36,7 +36,7 @@ jobs:
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI
-        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        uses: austenstone/copilot-cli@5a9fbe56fd6cdb5e50d329fd87c751748cf5182f # v4.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
@@ -96,7 +96,7 @@ jobs:
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI
-        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        uses: austenstone/copilot-cli@5a9fbe56fd6cdb5e50d329fd87c751748cf5182f # v4.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
