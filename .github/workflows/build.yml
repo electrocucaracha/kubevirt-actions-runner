@@ -63,7 +63,7 @@ jobs:
       - name: Setup Go environment
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "^1.26"
+          go-version: "^1.27"
           cache: false
       - name: Run code coverage analysis
         uses: gwatts/go-coverage-action@2845595538a59d63d1bf55f109c14e104c6f7cb3 # v2.0.0
@@ -83,7 +83,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "^1.26"
+          go-version: "^1.27"
           cache: false
       - uses: GoTestTools/gotestfmt-action@eba2ac97f623e866e7b1b117c99f18b43cd36d18 # v2.3.0
       - name: Run tests
@@ -112,7 +112,7 @@ jobs:
       - name: Setup Go environment
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "^1.26"
+          go-version: "^1.27"
           cache: false
       - name: Run Gremlins mutation tests
         uses: go-gremlins/gremlins-action@9dc8e981be89dbf79258cdd1400c54e762c770fe # v1.0.3
