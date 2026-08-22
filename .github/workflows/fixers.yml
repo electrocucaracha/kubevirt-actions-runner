@@ -39,7 +39,7 @@ jobs:
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI for Docker issues
-        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        uses: austenstone/copilot-cli@5a9fbe56fd6cdb5e50d329fd87c751748cf5182f # v4.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
@@ -123,13 +123,13 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "^1.26"
+          go-version: "^1.27"
           cache: false
       - name: Run golangci-lint tool
         id: golangci-lint
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
         with:
-          version: v2.12.2
+          version: v2.13.1
           install-only: true
       - name: Install rtk token saver
         run: |
@@ -137,7 +137,7 @@ jobs:
           rtk --version
           rtk init --global --copilot
       - name: "Run Copilot CLI"
-        uses: austenstone/copilot-cli@122f2d1522fdec4497d11fe57965ac0112db87e3 # v3.2
+        uses: austenstone/copilot-cli@5a9fbe56fd6cdb5e50d329fd87c751748cf5182f # v4.0
         with:
           copilot-token: ${{ secrets.COPILOT_TOKEN }}
           allow-all-tools: true
