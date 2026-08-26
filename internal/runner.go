@@ -85,21 +85,23 @@ func NewRunner(namespace string, virtClient kubecli.KubevirtClient, waitTimeout 
 }
 
 func generateRunnerInfoVolume() v1.Volume {
-	return v1.Volume{
-		Name: runnerInfoVolume,
-		VolumeSource: v1.VolumeSource{
-			DownwardAPI: &v1.DownwardAPIVolumeSource{
-				Fields: []k8scorev1.DownwardAPIVolumeFile{
-					{
-						Path: runnerInfoPath,
-						FieldRef: &k8scorev1.ObjectFieldSelector{
-							FieldPath: fmt.Sprintf("metadata.annotations['%s']", runnerInfoAnnotation),
-						},
-					},
-				},
-			},
-		},
+	var runnerInfoFile k8scorev1.DownwardAPIVolumeFile
+
+	runnerInfoFile.Path = runnerInfoPath
+	runnerInfoFile.FieldRef = &k8scorev1.ObjectFieldSelector{
+		FieldPath: fmt.Sprintf("metadata.annotations['%s']", runnerInfoAnnotation),
 	}
+
+	var downwardAPI v1.DownwardAPIVolumeSource
+
+	downwardAPI.Fields = []k8scorev1.DownwardAPIVolumeFile{runnerInfoFile}
+
+	var volume v1.Volume
+
+	volume.Name = runnerInfoVolume
+	volume.DownwardAPI = &downwardAPI
+
+	return volume
 }
 
 func (rc *KubevirtRunner) CreateResources(ctx context.Context,
@@ -583,6 +585,7 @@ func (rc *KubevirtRunner) getResources(
 	for _, dvt := range virtualMachine.Spec.DataVolumeTemplates {
 		for _, volume := range virtualMachineInstance.Spec.Volumes {
 			if volume.DataVolume != nil && volume.DataVolume.Name == dvt.Name {
+				//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 				dataVolume = &v1beta1.DataVolume{
 					ObjectMeta: k8smetav1.ObjectMeta{
 						Name: fmt.Sprintf("%s-%s", dvt.Name, runnerName),

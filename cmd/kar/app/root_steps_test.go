@@ -31,6 +31,14 @@ import (
 
 var errExpectedFailure = errors.New("failure")
 
+var (
+	errRootCommandAssertion     = errors.New("root command assertion failed")
+	errCreateResourcesNotCalled = errors.New("CreateResources was not called")
+	errWaitForVMINotCalled      = errors.New("WaitForVirtualMachineInstance was not called")
+	errDeleteResourcesNotCalled = errors.New("DeleteResources was not called")
+	errExpectedCommandFailure   = errors.New("expected command failure")
+)
+
 // mock implements the runner.Runner interface for exercising the root command.
 type mock struct {
 	createErr    error
@@ -81,8 +89,11 @@ type rootCmdCtx struct {
 }
 
 func (rc *rootCmdCtx) reset(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
-	rc.runner = &mock{}
-	rc.cmd = app.NewRootCommand(context.TODO(), rc.runner, app.Opts{})
+	rc.runner = new(mock)
+
+	var opts app.Opts
+
+	rc.cmd = app.NewRootCommand(context.TODO(), rc.runner, opts)
 	rc.result = nil
 
 	return ctx, nil
@@ -92,7 +103,7 @@ func (rc *rootCmdCtx) aMockRunner() error {
 	return nil
 }
 
-//nolint:cyclop // Mirrors the assertions of the original DescribeTable entries.
+//nolint:cyclop,funlen // Mirrors the assertions of the original DescribeTable entries.
 func (rc *rootCmdCtx) executeRootCommand(flag, value, failure string) error {
 	var args []string
 	if flag != "" {
@@ -115,28 +126,37 @@ func (rc *rootCmdCtx) executeRootCommand(flag, value, failure string) error {
 	switch flag {
 	case "-c":
 		if rc.runner.jitConfig != value {
-			return fmt.Errorf("JIT config mismatch: want %q, got %q", value, rc.runner.jitConfig)
+			return fmt.Errorf("%w: JIT config mismatch: want %q, got %q", errRootCommandAssertion, value, rc.runner.jitConfig)
 		}
 	case "-r":
 		if rc.runner.runnerName != value {
-			return fmt.Errorf("runner name mismatch: want %q, got %q", value, rc.runner.runnerName)
+			return fmt.Errorf("%w: runner name mismatch: want %q, got %q", errRootCommandAssertion, value, rc.runner.runnerName)
 		}
 	case "-t":
 		if rc.runner.vmTemplate != value {
-			return fmt.Errorf("VM template mismatch: want %q, got %q", value, rc.runner.vmTemplate)
+			return fmt.Errorf("%w: VM template mismatch: want %q, got %q", errRootCommandAssertion, value, rc.runner.vmTemplate)
 		}
 	case "-n":
 		if rc.runner.vmTemplateNS != value {
-			return fmt.Errorf("VM template namespace mismatch: want %q, got %q", value, rc.runner.vmTemplateNS)
+			return fmt.Errorf(
+				"%w: VM template namespace mismatch: want %q, got %q",
+				errRootCommandAssertion,
+				value,
+				rc.runner.vmTemplateNS,
+			)
 		}
 	}
 
 	if flag != "-n" && rc.runner.vmTemplateNS != "default" {
-		return fmt.Errorf("expected default VM template namespace, got %q", rc.runner.vmTemplateNS)
+		return fmt.Errorf(
+			"%w: expected default VM template namespace, got %q",
+			errRootCommandAssertion,
+			rc.runner.vmTemplateNS,
+		)
 	}
 
 	if !rc.runner.createCalled {
-		return errors.New("CreateResources was not called")
+		return errCreateResourcesNotCalled
 	}
 
 	if failure == "create" {
@@ -144,7 +164,7 @@ func (rc *rootCmdCtx) executeRootCommand(flag, value, failure string) error {
 	}
 
 	if !rc.runner.waitCalled {
-		return errors.New("WaitForVirtualMachineInstance was not called")
+		return errWaitForVMINotCalled
 	}
 
 	if failure == "wait" {
@@ -152,7 +172,7 @@ func (rc *rootCmdCtx) executeRootCommand(flag, value, failure string) error {
 	}
 
 	if !rc.runner.deleteCalled {
-		return errors.New("DeleteResources was not called")
+		return errDeleteResourcesNotCalled
 	}
 
 	return nil
@@ -166,35 +186,35 @@ func (rc *rootCmdCtx) commandExecutionShould(outcome string) error {
 		}
 	case "fail":
 		if rc.result == nil {
-			return errors.New("expected command to fail, but it succeeded")
+			return fmt.Errorf("%w, but it succeeded", errExpectedCommandFailure)
 		}
 	}
 
 	return nil
 }
 
-func InitializeScenario(sc *godog.ScenarioContext) {
-	rc := &rootCmdCtx{}
+func InitializeScenario(scenarioCtx *godog.ScenarioContext) {
+	rootCtx := new(rootCmdCtx)
 
-	sc.Before(rc.reset)
+	scenarioCtx.Before(rootCtx.reset)
 
-	sc.Step(`^a mock runner$`, rc.aMockRunner)
-	sc.Step(`^the root command is executed with flag "([^"]*)" value "([^"]*)" and induced failure "([^"]*)"$`,
-		rc.executeRootCommand)
-	sc.Step(`^the command execution should "([^"]*)"$`, rc.commandExecutionShould)
+	scenarioCtx.Step(`^a mock runner$`, rootCtx.aMockRunner)
+	scenarioCtx.Step(`^the root command is executed with flag "([^"]*)" value "([^"]*)" and induced failure "([^"]*)"$`,
+		rootCtx.executeRootCommand)
+	scenarioCtx.Step(`^the command execution should "([^"]*)"$`, rootCtx.commandExecutionShould)
 }
 
 func TestFeatures(t *testing.T) {
 	t.Parallel()
 
-	suite := godog.TestSuite{
-		ScenarioInitializer: InitializeScenario,
-		Options: &godog.Options{
-			Format:   "pretty",
-			Paths:    []string{"features"},
-			TestingT: t,
-		},
-	}
+	options := new(godog.Options)
+	options.Format = "pretty"
+	options.Paths = []string{"features"}
+	options.TestingT = t
+
+	suite := new(godog.TestSuite)
+	suite.ScenarioInitializer = InitializeScenario
+	suite.Options = options
 
 	if suite.Run() != 0 {
 		t.Fatal("non-zero status returned, failed to run feature tests")

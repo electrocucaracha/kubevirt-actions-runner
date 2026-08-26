@@ -58,14 +58,29 @@ var (
 	errSimulatedDataVolumeCreateFailure = errors.New("simulated data volume create failure")
 	errSimulatedWatchFailure            = errors.New("simulated watch failure")
 	errSimulatedTransientGetFailure     = errors.New("simulated transient get failure")
+	errExpectedErrorContaining          = errors.New("expected error containing substring")
+	errExpectedNilError                 = errors.New("expected nil error")
+	errExpectedRunnerFailedError        = errors.New("expected runner failed error")
+	errExpectedTimeoutError             = errors.New("expected timeout error")
+	errExpectedNoResultYet              = errors.New("expected no result yet")
+	errUnexpectedClosedChannel          = errors.New("errChan closed unexpectedly")
+	errWatchReceiveTimedOut             = errors.New("timed out waiting for watch result")
+	errExpectedVMIName                  = errors.New("expected app context VMI name")
+	errExpectedCreateError              = errors.New("expected create error")
+	errExpectedDataVolumeNameContains   = errors.New("expected data volume name to contain substring")
 )
 
 // panicReporter turns gomock expectation violations into panics, which godog
 // recovers and reports as failed steps.
 type panicReporter struct{}
 
-func (panicReporter) Errorf(format string, args ...interface{}) { panic(fmt.Sprintf(format, args...)) }
-func (panicReporter) Fatalf(format string, args ...interface{}) { panic(fmt.Sprintf(format, args...)) }
+func (panicReporter) Errorf(format string, args ...any) {
+	panic(fmt.Sprintf(format, args...))
+}
+
+func (panicReporter) Fatalf(format string, args ...any) {
+	panic(fmt.Sprintf(format, args...))
+}
 
 // runnerCtx holds the shared state for a single scenario.
 type runnerCtx struct {
@@ -86,7 +101,10 @@ type runnerCtx struct {
 func (rc *runnerCtx) reset(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 	rc.mockCtrl = gomock.NewController(panicReporter{})
 	rc.virtClient = kubecli.NewMockKubevirtClient(rc.mockCtrl)
-	rc.virtClientset = kubevirtfake.NewSimpleClientset(NewVirtualMachineInstance(vmInstanceName), NewVirtualMachine(vmTemplateName))
+	rc.virtClientset = kubevirtfake.NewSimpleClientset(
+		NewVirtualMachineInstance(vmInstanceName),
+		NewVirtualMachine(vmTemplateName),
+	)
 	cdiClientset := cdifake.NewSimpleClientset(NewDataVolume(dataVolumeName))
 
 	rc.virtClient.EXPECT().CdiClient().Return(cdiClientset).AnyTimes()
@@ -111,10 +129,7 @@ func (rc *runnerCtx) after(ctx context.Context, _ *godog.Scenario, err error) (c
 }
 
 func (rc *runnerCtx) expectVirtualMachineAndInstance() {
-	rc.virtClient.EXPECT().VirtualMachine(k8sv1.NamespaceDefault).Return(
-		rc.virtClientset.KubevirtV1().VirtualMachines(k8sv1.NamespaceDefault),
-	)
-	rc.virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
+	rc.expectVirtualMachineWithVMIInterface(
 		rc.virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault),
 	)
 }
@@ -143,11 +158,14 @@ func (rc *runnerCtx) startVMIWatcherWithGet(
 	rc.virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
 	runner.NewAppContext(vmInstanceName, "")
 
+	return rc.startWaitForVMIInBackground(context.Background())
+}
+
+func (rc *runnerCtx) startWaitForVMIInBackground(ctx context.Context) chan error {
 	errChan := make(chan error, 1)
-	karRunner := rc.karRunner
 
 	go func() {
-		errChan <- karRunner.WaitForVirtualMachineInstance(context.Background())
+		errChan <- rc.karRunner.WaitForVirtualMachineInstance(ctx)
 
 		close(errChan)
 	}()
@@ -177,24 +195,32 @@ func (rc *runnerCtx) startReconnectVMIWatcher() (*watch.FakeWatcher, *watch.Fake
 func waitNoReceive(errChan chan error, d time.Duration) error {
 	select {
 	case err, ok := <-errChan:
-		return fmt.Errorf("expected no result yet, got err=%v ok=%v", err, ok)
+		return fmt.Errorf("%w: got err=%s ok=%v", errExpectedNoResultYet, errorString(err), ok)
 	case <-time.After(d):
 		return nil
 	}
+}
+
+func errorString(err error) string {
+	if err == nil {
+		return "<nil>"
+	}
+
+	return err.Error()
 }
 
 func (rc *runnerCtx) receiveResult(timeout time.Duration) error {
 	select {
 	case err, ok := <-rc.errChan:
 		if !ok {
-			return errors.New("errChan closed unexpectedly without a value")
+			return fmt.Errorf("%w without a value", errUnexpectedClosedChannel)
 		}
 
 		rc.result = err
 
 		return nil
 	case <-time.After(timeout):
-		return fmt.Errorf("timed out after %s waiting for a watch result", timeout)
+		return fmt.Errorf("%w after %s", errWatchReceiveTimedOut, timeout)
 	}
 }
 
@@ -210,7 +236,13 @@ func (rc *runnerCtx) createResourcesWith(vmTemplate, runnerName, jitConfig strin
 	}
 
 	rc.lastRunnerName = runnerName
-	rc.result = rc.karRunner.CreateResources(context.Background(), vmTemplate, k8sv1.NamespaceDefault, runnerName, jitConfig)
+	rc.result = rc.karRunner.CreateResources(
+		context.Background(),
+		vmTemplate,
+		k8sv1.NamespaceDefault,
+		runnerName,
+		jitConfig,
+	)
 
 	return nil
 }
@@ -224,7 +256,12 @@ func (rc *runnerCtx) createResultShouldBe(outcome string) error {
 		if rc.lastRunnerName != "" {
 			appCtx := runner.GetAppContext()
 			if appCtx.GetVMIName() != rc.lastRunnerName {
-				return fmt.Errorf("expected VMI name %q, got %q", rc.lastRunnerName, appCtx.GetVMIName())
+				return fmt.Errorf(
+					"%w %q, got %q",
+					errExpectedVMIName,
+					rc.lastRunnerName,
+					appCtx.GetVMIName(),
+				)
 			}
 		}
 
@@ -232,7 +269,7 @@ func (rc *runnerCtx) createResultShouldBe(outcome string) error {
 	}
 
 	if rc.result == nil || rc.result.Error() != outcome {
-		return fmt.Errorf("expected error %q, got %v", outcome, rc.result)
+		return fmt.Errorf("%w %q, got %s", errExpectedCreateError, outcome, errorString(rc.result))
 	}
 
 	return nil
@@ -255,7 +292,13 @@ func (rc *runnerCtx) createButVMICreationFails() error {
 
 	rc.expectVirtualMachineWithVMIInterface(mockVMIInterface)
 
-	rc.result = rc.karRunner.CreateResources(context.Background(), vmTemplateName, k8sv1.NamespaceDefault, "runner-new", "jitConfig")
+	rc.result = rc.karRunner.CreateResources(
+		context.Background(),
+		vmTemplateName,
+		k8sv1.NamespaceDefault,
+		"runner-new",
+		"jitConfig",
+	)
 
 	return nil
 }
@@ -278,7 +321,13 @@ func (rc *runnerCtx) createButVMIAlreadyExists() error {
 	rc.expectVirtualMachineWithVMIInterface(mockVMIInterface)
 
 	rc.lastRunnerName = "runner-existing"
-	rc.result = rc.karRunner.CreateResources(context.Background(), vmTemplateName, k8sv1.NamespaceDefault, "runner-existing", "jitConfig")
+	rc.result = rc.karRunner.CreateResources(
+		context.Background(),
+		vmTemplateName,
+		k8sv1.NamespaceDefault,
+		"runner-existing",
+		"jitConfig",
+	)
 
 	return nil
 }
@@ -304,7 +353,13 @@ func (rc *runnerCtx) createWithDataVolumeCreationFailure() error {
 
 	failingRunner := runner.NewRunner(k8sv1.NamespaceDefault, failingVirtClient, defaultWaitTimeout)
 
-	rc.result = failingRunner.CreateResources(context.Background(), vmTemplateName, k8sv1.NamespaceDefault, runnerWithDV, "jitConfig")
+	rc.result = failingRunner.CreateResources(
+		context.Background(),
+		vmTemplateName,
+		k8sv1.NamespaceDefault,
+		runnerWithDV,
+		"jitConfig",
+	)
 
 	return nil
 }
@@ -322,7 +377,13 @@ func (rc *runnerCtx) createWithDataVolumeSuccess() error {
 	rc.virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(
 		rc.virtClientset.KubevirtV1().VirtualMachineInstances(k8sv1.NamespaceDefault))
 
-	rc.result = rc.karRunner.CreateResources(context.Background(), vmTemplateName, k8sv1.NamespaceDefault, runnerWithDV, "jitConfig")
+	rc.result = rc.karRunner.CreateResources(
+		context.Background(),
+		vmTemplateName,
+		k8sv1.NamespaceDefault,
+		runnerWithDV,
+		"jitConfig",
+	)
 
 	return nil
 }
@@ -330,7 +391,12 @@ func (rc *runnerCtx) createWithDataVolumeSuccess() error {
 func (rc *runnerCtx) appContextDataVolumeShouldContain(sub string) error {
 	appCtx := runner.GetAppContext()
 	if !strings.Contains(appCtx.GetDataVolumeName(), sub) {
-		return fmt.Errorf("expected data volume name to contain %q, got %q", sub, appCtx.GetDataVolumeName())
+		return fmt.Errorf(
+			"%w %q, got %q",
+			errExpectedDataVolumeNameContains,
+			sub,
+			appCtx.GetDataVolumeName(),
+		)
 	}
 
 	return nil
@@ -412,11 +478,11 @@ func (rc *runnerCtx) operationShouldSucceed() error {
 
 func (rc *runnerCtx) operationShouldFailContaining(sub string) error {
 	if rc.result == nil {
-		return fmt.Errorf("expected error containing %q, got nil", sub)
+		return fmt.Errorf("%w: %q, got nil", errExpectedErrorContaining, sub)
 	}
 
 	if !strings.Contains(rc.result.Error(), sub) {
-		return fmt.Errorf("expected error containing %q, got %v", sub, rc.result)
+		return fmt.Errorf("%w: %q, got %s", errExpectedErrorContaining, sub, rc.result.Error())
 	}
 
 	return nil
@@ -447,14 +513,19 @@ func (rc *runnerCtx) vmiReachesPhase(lastPhase string) error {
 func (rc *runnerCtx) watchResultShouldBe(outcome string) error {
 	if outcome == "success" {
 		if rc.result != nil {
-			return fmt.Errorf("expected nil error, got %v", rc.result)
+			return fmt.Errorf("%w: got %s", errExpectedNilError, rc.result.Error())
 		}
 
 		return nil
 	}
 
 	if rc.result == nil || rc.result.Error() != runner.ErrRunnerFailed.Error() {
-		return fmt.Errorf("expected runner failed error, got %v", rc.result)
+		got := "<nil>"
+		if rc.result != nil {
+			got = rc.result.Error()
+		}
+
+		return fmt.Errorf("%w: got %s", errExpectedRunnerFailedError, got)
 	}
 
 	return nil
@@ -498,7 +569,8 @@ func (rc *runnerCtx) givenInitialGetReportsReady() error {
 // vmiBecomesSucceededMilestone verifies that Running+Ready is only a
 // milestone before Succeeded, which is what actually ends the watch.
 func (rc *runnerCtx) vmiBecomesSucceededMilestone() error {
-	if err := waitNoReceive(rc.errChan, consistencyTimeout); err != nil {
+	err := waitNoReceive(rc.errChan, consistencyTimeout)
+	if err != nil {
 		return err
 	}
 
@@ -517,7 +589,11 @@ func (rc *runnerCtx) vmiTransitionsToSucceeded() error {
 }
 
 func (rc *runnerCtx) emitUnrelatedPodEvent() error {
-	pod := &k8sv1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "some-pod", Namespace: k8sv1.NamespaceDefault}}
+	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
+	pod := &k8sv1.Pod{ObjectMeta: metav1.ObjectMeta{
+		Name:      "some-pod",
+		Namespace: k8sv1.NamespaceDefault,
+	}}
 	rc.firstWatcher.Add(pod)
 
 	return nil
@@ -568,11 +644,11 @@ func (rc *runnerCtx) whenWaitTimeoutElapses() error {
 
 func (rc *runnerCtx) watchShouldTimeOut() error {
 	if rc.result == nil {
-		return errors.New("expected a timeout error, got nil")
+		return fmt.Errorf("%w: got nil", errExpectedTimeoutError)
 	}
 
 	if rc.result.Error() != "timeout while waiting for the virtual machine instance" {
-		return fmt.Errorf("expected timeout error, got %v", rc.result)
+		return fmt.Errorf("%w: got %s", errExpectedTimeoutError, errorString(rc.result))
 	}
 
 	return nil
@@ -598,14 +674,8 @@ func (rc *runnerCtx) givenAlwaysClosedWatchForRunningVMI() error {
 	rc.virtClient.EXPECT().VirtualMachineInstance(k8sv1.NamespaceDefault).Return(vmiInterface).AnyTimes()
 	runner.NewAppContext(vmInstanceName, "")
 
-	errChan := make(chan error, 1)
-	karRunner := rc.karRunner
+	errChan := rc.startWaitForVMIInBackground(context.Background())
 
-	go func() {
-		errChan <- karRunner.WaitForVirtualMachineInstance(context.Background())
-
-		close(errChan)
-	}()
 	rc.errChan = errChan
 
 	return nil
@@ -710,70 +780,74 @@ func (rc *runnerCtx) vmiDisappearsBeforeReestablish() error {
 	}, firstWatcher)
 
 	firstWatcher.Stop()
+
 	rc.errChan = errChan
 
 	return rc.receiveResult(3 * time.Second)
 }
 
-//nolint:funlen // Registration wires every step of the runner feature file.
-func InitializeScenario(sc *godog.ScenarioContext) {
-	rc := &runnerCtx{}
+//nolint:funlen,lll // Registration wires every step of the runner feature file.
+func InitializeScenario(scenarioCtx *godog.ScenarioContext) {
+	runnerContext := &runnerCtx{}
 
-	sc.Before(rc.reset)
-	sc.After(rc.after)
+	scenarioCtx.Before(runnerContext.reset)
+	scenarioCtx.After(runnerContext.after)
 
-	sc.Step(`^a fresh KubeVirt runner with the default wait timeout$`, rc.freshRunnerWithDefaultTimeout)
+	scenarioCtx.Step(`^a fresh KubeVirt runner with the default wait timeout$`, runnerContext.freshRunnerWithDefaultTimeout)
 
-	sc.Step(`^resources are created with vm template "([^"]*)", runner name "([^"]*)" and jit config "([^"]*)"$`,
-		rc.createResourcesWith)
-	sc.Step(`^the create result should be "([^"]*)"$`, rc.createResultShouldBe)
-	sc.Step(`^resources are created referencing a nonexistent vm template$`, rc.createWithNonexistentTemplate)
-	sc.Step(`^resources are created but the VMI creation call fails$`, rc.createButVMICreationFails)
-	sc.Step(`^resources are created with an empty vm template namespace$`, rc.createWithEmptyNamespace)
-	sc.Step(`^resources are created but the VMI already exists$`, rc.createButVMIAlreadyExists)
-	sc.Step(`^resources with a data volume template are created but the data volume creation fails$`,
-		rc.createWithDataVolumeCreationFailure)
-	sc.Step(`^resources with a data volume template are created successfully$`, rc.createWithDataVolumeSuccess)
-	sc.Step(`^the created app context data volume name should contain "([^"]*)"$`, rc.appContextDataVolumeShouldContain)
+	scenarioCtx.Step(`^resources are created with vm template "([^"]*)", runner name "([^"]*)" and jit config "([^"]*)"$`,
+		runnerContext.createResourcesWith)
+	scenarioCtx.Step(`^the create result should be "([^"]*)"$`, runnerContext.createResultShouldBe)
+	scenarioCtx.Step(`^resources are created referencing a nonexistent vm template$`, runnerContext.createWithNonexistentTemplate)
+	scenarioCtx.Step(`^resources are created but the VMI creation call fails$`, runnerContext.createButVMICreationFails)
+	scenarioCtx.Step(`^resources are created with an empty vm template namespace$`, runnerContext.createWithEmptyNamespace)
+	scenarioCtx.Step(`^resources are created but the VMI already exists$`, runnerContext.createButVMIAlreadyExists)
+	scenarioCtx.Step(`^resources with a data volume template are created but the data volume creation fails$`,
+		runnerContext.createWithDataVolumeCreationFailure)
+	scenarioCtx.Step(`^resources with a data volume template are created successfully$`, runnerContext.createWithDataVolumeSuccess)
+	scenarioCtx.Step(`^the created app context data volume name should contain "([^"]*)"$`, runnerContext.appContextDataVolumeShouldContain)
 
-	sc.Step(`^the app context is initialized with vmi "([^"]*)" and data volume "([^"]*)"$`, rc.appContextInitialized)
-	sc.Step(`^the app context is initialized with vmi "([^"]*)" and no data volume$`, rc.appContextInitializedNoDV)
-	sc.Step(`^the app context is not initialized$`, rc.appContextNotInitialized)
-	sc.Step(`^resources are deleted$`, rc.resourcesAreDeleted)
-	sc.Step(`^resources are deleted but the VMI delete call fails with a forbidden error$`, rc.deleteButVMIDeleteForbidden)
-	sc.Step(`^resources are deleted but the data volume delete call fails with a forbidden error$`,
-		rc.deleteButDataVolumeDeleteForbidden)
+	scenarioCtx.Step(`^the app context is initialized with vmi "([^"]*)" and data volume "([^"]*)"$`, runnerContext.appContextInitialized)
+	scenarioCtx.Step(`^the app context is initialized with vmi "([^"]*)" and no data volume$`, runnerContext.appContextInitializedNoDV)
+	scenarioCtx.Step(`^the app context is not initialized$`, runnerContext.appContextNotInitialized)
+	scenarioCtx.Step(`^resources are deleted$`, runnerContext.resourcesAreDeleted)
+	scenarioCtx.Step(`^resources are deleted but the VMI delete call fails with a forbidden error$`, runnerContext.deleteButVMIDeleteForbidden)
+	scenarioCtx.Step(`^resources are deleted but the data volume delete call fails with a forbidden error$`,
+		runnerContext.deleteButDataVolumeDeleteForbidden)
 
-	sc.Step(`^the operation should succeed$`, rc.operationShouldSucceed)
-	sc.Step(`^the operation should fail with an error containing "([^"]*)"$`, rc.operationShouldFailContaining)
+	scenarioCtx.Step(`^the operation should succeed$`, runnerContext.operationShouldSucceed)
+	scenarioCtx.Step(`^the operation should fail with an error containing "([^"]*)"$`, runnerContext.operationShouldFailContaining)
 
-	sc.Step(`^a watched vmi$`, rc.givenWatchedVMI)
-	sc.Step(`^the vmi reaches phase "([^"]*)"$`, rc.vmiReachesPhase)
-	sc.Step(`^the watch result should be "([^"]*)"$`, rc.watchResultShouldBe)
-	sc.Step(`^an unrelated pod event is emitted$`, rc.emitUnrelatedPodEvent)
-	sc.Step(`^a failed event for a different vmi name is emitted$`, rc.emitDifferentNamedFailedEvent)
-	sc.Step(`^the vmi reports an unrecognized phase$`, rc.emitUnrecognizedPhase)
-	sc.Step(`^the vmi transitions to Succeeded$`, rc.vmiTransitionsToSucceeded)
+	scenarioCtx.Step(`^a watched vmi$`, runnerContext.givenWatchedVMI)
+	scenarioCtx.Step(`^the vmi reaches phase "([^"]*)"$`, runnerContext.vmiReachesPhase)
+	scenarioCtx.Step(`^the watch result should be "([^"]*)"$`, runnerContext.watchResultShouldBe)
+	scenarioCtx.Step(`^an unrelated pod event is emitted$`, runnerContext.emitUnrelatedPodEvent)
+	scenarioCtx.Step(`^a failed event for a different vmi name is emitted$`, runnerContext.emitDifferentNamedFailedEvent)
+	scenarioCtx.Step(`^the vmi reports an unrecognized phase$`, runnerContext.emitUnrecognizedPhase)
+	scenarioCtx.Step(`^the vmi transitions to Succeeded$`, runnerContext.vmiTransitionsToSucceeded)
 
-	sc.Step(`^a watched vmi that becomes Running and Ready$`, rc.givenWatchedVMIBecomesRunningAndReady)
-	sc.Step(`^a watched vmi whose initial Get already reports Running and Ready$`, rc.givenInitialGetReportsReady)
-	sc.Step(`^the vmi becomes Succeeded$`, rc.vmiBecomesSucceededMilestone)
+	scenarioCtx.Step(`^a watched vmi that becomes Running and Ready$`, runnerContext.givenWatchedVMIBecomesRunningAndReady)
+	scenarioCtx.Step(`^a watched vmi whose initial Get already reports Running and Ready$`, runnerContext.givenInitialGetReportsReady)
+	scenarioCtx.Step(`^the vmi becomes Succeeded$`, runnerContext.vmiBecomesSucceededMilestone)
 
-	sc.Step(`^a runner with a (short|very short) wait timeout$`, rc.givenShortWaitTimeoutRunner)
-	sc.Step(`^a watched vmi that stays Running$`, rc.givenWatchedVMIStaysRunning)
-	sc.Step(`^the wait timeout elapses$`, rc.whenWaitTimeoutElapses)
-	sc.Step(`^the watch should time out$`, rc.watchShouldTimeOut)
-	sc.Step(`^a watch that always returns an already closed stream for a running vmi$`, rc.givenAlwaysClosedWatchForRunningVMI)
-	sc.Step(`^the wait is invoked with an already cancelled context$`, rc.waitInvokedWithCancelledContext)
-	sc.Step(`^the wait is invoked but the Watch call fails$`, rc.waitButWatchFails)
-	sc.Step(`^the wait context is cancelled during a failing Get call$`, rc.waitContextCancelledDuringFailingGet)
+	scenarioCtx.Step(`^a runner with a (short|very short) wait timeout$`, runnerContext.givenShortWaitTimeoutRunner)
+	scenarioCtx.Step(`^a watched vmi that stays Running$`, runnerContext.givenWatchedVMIStaysRunning)
+	scenarioCtx.Step(`^the wait timeout elapses$`, runnerContext.whenWaitTimeoutElapses)
+	scenarioCtx.Step(`^the watch should time out$`, runnerContext.watchShouldTimeOut)
+	scenarioCtx.Step(
+		`^a watch that always returns an already closed stream for a running vmi$`,
+		runnerContext.givenAlwaysClosedWatchForRunningVMI,
+	)
+	scenarioCtx.Step(`^the wait is invoked with an already cancelled context$`, runnerContext.waitInvokedWithCancelledContext)
+	scenarioCtx.Step(`^the wait is invoked but the Watch call fails$`, runnerContext.waitButWatchFails)
+	scenarioCtx.Step(`^the wait context is cancelled during a failing Get call$`, runnerContext.waitContextCancelledDuringFailingGet)
 
-	sc.Step(`^a watch that will be re-established after the first stream closes$`, rc.givenReconnectWatch)
-	sc.Step(`^the first watch stream closes after the vmi becomes Running$`, rc.firstStreamClosesAfterRunning)
-	sc.Step(`^the vmi becomes Running and Ready then the first watch stream closes$`, rc.runningReadyThenFirstStreamCloses)
-	sc.Step(`^the vmi becomes Succeeded on the second watch stream$`, rc.secondStreamVMIBecomesSucceeded)
-	sc.Step(`^the vmi becomes Running then the first watch stream closes and the vmi is no longer found$`,
-		rc.vmiDisappearsBeforeReestablish)
+	scenarioCtx.Step(`^a watch that will be re-established after the first stream closes$`, runnerContext.givenReconnectWatch)
+	scenarioCtx.Step(`^the first watch stream closes after the vmi becomes Running$`, runnerContext.firstStreamClosesAfterRunning)
+	scenarioCtx.Step(`^the vmi becomes Running and Ready then the first watch stream closes$`, runnerContext.runningReadyThenFirstStreamCloses)
+	scenarioCtx.Step(`^the vmi becomes Succeeded on the second watch stream$`, runnerContext.secondStreamVMIBecomesSucceeded)
+	scenarioCtx.Step(`^the vmi becomes Running then the first watch stream closes and the vmi is no longer found$`,
+		runnerContext.vmiDisappearsBeforeReestablish)
 }
 
 func TestFeatures(t *testing.T) {
@@ -794,6 +868,7 @@ func TestFeatures(t *testing.T) {
 }
 
 func NewVirtualMachine(name string) *v1.VirtualMachine {
+	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -808,6 +883,7 @@ func NewVirtualMachine(name string) *v1.VirtualMachine {
 }
 
 func NewVirtualMachineInstance(name string) *v1.VirtualMachineInstance {
+	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachineInstance{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -817,6 +893,7 @@ func NewVirtualMachineInstance(name string) *v1.VirtualMachineInstance {
 }
 
 func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
+	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachineInstance{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -835,6 +912,7 @@ func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
 }
 
 func NewDataVolume(name string) *v1beta1.DataVolume {
+	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1beta1.DataVolume{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -844,6 +922,7 @@ func NewDataVolume(name string) *v1beta1.DataVolume {
 }
 
 func NewVirtualMachineWithDataVolume(name, dvName string) *v1.VirtualMachine {
+	//nolint:modernize // Keep explicit nested types for compatibility with current toolchain checks.
 	return &v1.VirtualMachine{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,

@@ -31,7 +31,8 @@ const testCommandUse = "test"
 func TestInitializeConfig_SkipsChangedFlags(t *testing.T) {
 	t.Setenv("TESTSTR", "from-env")
 
-	cmd := &cobra.Command{Use: testCommandUse}
+	cmd := new(cobra.Command)
+	cmd.Use = testCommandUse
 	cmd.Flags().String("teststr", "default", "test string flag")
 
 	err := cmd.Flags().Set("teststr", "from-cli")
@@ -54,7 +55,8 @@ func TestInitializeConfig_SkipsChangedFlags(t *testing.T) {
 func TestInitializeConfig_SkipsUnsetEnvVars(t *testing.T) {
 	t.Parallel()
 
-	cmd := &cobra.Command{Use: testCommandUse}
+	cmd := new(cobra.Command)
+	cmd.Use = testCommandUse
 	cmd.Flags().String("testunset", "default", "test string flag")
 
 	err := initializeConfig(cmd)
@@ -77,7 +79,8 @@ func TestInitializeConfig_SkipsUnsetEnvVars(t *testing.T) {
 func TestInitializeConfig_AppliesUnsetEnvVars(t *testing.T) {
 	t.Setenv("TESTFROMENV", "value-from-env")
 
-	cmd := &cobra.Command{Use: testCommandUse}
+	cmd := new(cobra.Command)
+	cmd.Use = testCommandUse
 	cmd.Flags().String("testfromenv", "default", "test string flag")
 
 	err := initializeConfig(cmd)
@@ -97,7 +100,8 @@ func TestInitializeConfig_AppliesUnsetEnvVars(t *testing.T) {
 func TestInitializeConfig_InvalidEnvVarValueIsIgnored(t *testing.T) {
 	t.Setenv("TESTBOOLFLAG", "not-a-bool")
 
-	cmd := &cobra.Command{Use: testCommandUse}
+	cmd := new(cobra.Command)
+	cmd.Use = testCommandUse
 	cmd.Flags().Bool("testboolflag", false, "test bool flag")
 
 	err := initializeConfig(cmd)

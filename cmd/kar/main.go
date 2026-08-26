@@ -92,6 +92,7 @@ func getBuildInfo(commit, date, modified string) buildInfo {
 		gitCommit:       commit,
 		buildDate:       date,
 		gitTreeModified: modified,
+		goVersion:       "",
 	}
 
 	info, ok := readBuildInfo()
@@ -185,7 +186,9 @@ func runCleanup(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl) {
 }
 
 func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
-	clientConfig := kubecli.DefaultClientConfig(&pflag.FlagSet{})
+	var flags pflag.FlagSet
+
+	clientConfig := kubecli.DefaultClientConfig(&flags)
 
 	namespace, _, err := clientConfig.Namespace()
 	if err != nil {
@@ -201,7 +204,9 @@ func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
 }
 
 func runMainApp(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl) {
-	rootCmd := app.NewRootCommand(ctx, kr, app.Opts{})
+	var opts app.Opts
+
+	rootCmd := app.NewRootCommand(ctx, kr, opts)
 
 	execErr := rootCmd.Execute()
 	if execErr != nil && !errors.Is(execErr, context.Canceled) {
