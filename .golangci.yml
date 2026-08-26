@@ -38,8 +38,7 @@ linters:
             - kubevirt.io/client-go/kubecli
             - kubevirt.io/client-go/kubevirt/fake
             - kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1
-            - github.com/onsi/ginkgo/v2
-            - github.com/onsi/gomega
+            - github.com/cucumber/godog
             - go.uber.org/zap
             - go.uber.org/mock/gomock
             - go.opentelemetry.io/otel
@@ -69,10 +68,6 @@ linters:
       - builtin$
       - examples$
     rules:
-      - linters:
-          - revive
-        path: _test\.go
-        text: "dot-imports:"
       - linters:
           - revive
         path: _test\.go
