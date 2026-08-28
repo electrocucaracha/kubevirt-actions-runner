@@ -35,7 +35,7 @@ jobs:
           persist-credentials: false
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.46.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: Run Copilot CLI for Docker issues
@@ -129,11 +129,11 @@ jobs:
         id: golangci-lint
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
         with:
-          version: v2.13.1
+          version: v2.13.2
           install-only: true
       - name: Install rtk token saver
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.45.0/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/tags/v0.46.0/install.sh | sh
           rtk --version
           rtk init --global --copilot
       - name: "Run Copilot CLI"
