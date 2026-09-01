@@ -39,7 +39,7 @@ run_best_effort() {
 }
 
 update_github_action_hashes() {
-    local gh_actions action commit_hash file
+    local gh_actions action repository commit_hash file
 
     gh_actions=$(grep -rhoE 'uses: [^@]+@' .github |
         sed -E 's/uses: ([^@]+)@/\1/' |
@@ -68,8 +68,9 @@ update_github_action_hashes() {
             continue
         fi
 
+        repository=$(cut -d/ -f1,2 <<<"$action")
         commit_hash=$(
-            git ls-remote --tags "https://github.com/$action" |
+            git ls-remote --tags "https://github.com/$repository" |
                 awk '
             {
                 sha=$1
@@ -109,8 +110,11 @@ update_github_action_hashes() {
         fi
 
         while IFS= read -r -d '' file; do
-            sed -i -e "s|uses: $action@.*|uses: $action@$commit_hash|g" "$file"
-        done < <(grep -ElRZ "uses: $action@" .github/)
+            if grep -Fq "uses: $action@" "$file"; then
+                sed -i.bak -e "s|uses: $action@.*|uses: $action@$commit_hash|g" "$file"
+                rm -f "${file}.bak"
+            fi
+        done < <(find .github -type f -print0)
     done
 }
 
