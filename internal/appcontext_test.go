@@ -118,8 +118,9 @@ func TestNewAppContextIgnoresSubsequentValues(t *testing.T) {
 // HasAppContext from many goroutines concurrently to verify the mutex-guarded
 // singleton is safe under concurrent access (run with -race to detect data
 // races) and that all callers observe a single, consistent instance.
+//
+//nolint:paralleltest // Uses pararallelism
 func TestAppContextConcurrentAccess(t *testing.T) {
-	t.Parallel()
 	t.Cleanup(runner.CancelAppContext)
 
 	runner.CancelAppContext()
