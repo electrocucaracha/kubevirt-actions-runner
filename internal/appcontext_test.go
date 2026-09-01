@@ -66,6 +66,7 @@ func TestCancelAppContextResetsSingleton(t *testing.T) {
 // the initialization state of the singleton across its full lifecycle:
 // uninitialized, initialized, and reset via CancelAppContext.
 func TestHasAppContextLifecycle(t *testing.T) {
+	t.Parallel()
 	t.Cleanup(runner.CancelAppContext)
 
 	runner.CancelAppContext()
@@ -92,6 +93,7 @@ func TestHasAppContextLifecycle(t *testing.T) {
 // NewAppContext return the existing instance and ignore the new arguments,
 // until CancelAppContext resets it.
 func TestNewAppContextIgnoresSubsequentValues(t *testing.T) {
+	t.Parallel()
 	t.Cleanup(runner.CancelAppContext)
 
 	runner.CancelAppContext()
@@ -117,6 +119,7 @@ func TestNewAppContextIgnoresSubsequentValues(t *testing.T) {
 // singleton is safe under concurrent access (run with -race to detect data
 // races) and that all callers observe a single, consistent instance.
 func TestAppContextConcurrentAccess(t *testing.T) {
+	t.Parallel()
 	t.Cleanup(runner.CancelAppContext)
 
 	runner.CancelAppContext()
@@ -124,16 +127,16 @@ func TestAppContextConcurrentAccess(t *testing.T) {
 	const goroutines = 50
 
 	var (
-		wg        sync.WaitGroup
-		mu        sync.Mutex
+		waitGroup sync.WaitGroup
+		mutex     sync.Mutex
 		instances = make([]*runner.AppContext, 0, goroutines)
 	)
 
-	wg.Add(goroutines)
+	waitGroup.Add(goroutines)
 
-	for i := range goroutines {
+	for routine := range goroutines {
 		go func(idx int) {
-			defer wg.Done()
+			defer waitGroup.Done()
 
 			ctx := runner.NewAppContext("concurrent-vmi", "concurrent-dv")
 
@@ -143,13 +146,14 @@ func TestAppContextConcurrentAccess(t *testing.T) {
 				ctx = runner.GetAppContext()
 			}
 
-			mu.Lock()
+			mutex.Lock()
+
 			instances = append(instances, ctx)
-			mu.Unlock()
-		}(i)
+			mutex.Unlock()
+		}(routine)
 	}
 
-	wg.Wait()
+	waitGroup.Wait()
 
 	if len(instances) != goroutines {
 		t.Fatalf("expected %d recorded instances, got %d", goroutines, len(instances))
