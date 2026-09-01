@@ -69,5 +69,7 @@ KUBECONFIG="${kar_kubeconfig}" timeout 5m "$kar_bin" \
     -n "${VM_TEMPLATE_NAMESPACE}" \
     -r test
 
-[ "$KAR_TELEMETRY_EXPORT_TYPE" == "otlp" ] && sudo docker logs rotel | grep -E 'Received traces' || true
+if [ "$KAR_TELEMETRY_EXPORT_TYPE" == "otlp" ]; then
+    sudo docker logs rotel | grep -E 'Received traces' || true
+fi
 info "Demo completed"
