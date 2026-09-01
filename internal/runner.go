@@ -585,11 +585,8 @@ func (rc *KubevirtRunner) getResources(
 	for _, dvt := range virtualMachine.Spec.DataVolumeTemplates {
 		for _, volume := range virtualMachineInstance.Spec.Volumes {
 			if volume.DataVolume != nil && volume.DataVolume.Name == dvt.Name {
-				//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 				dataVolume = &v1beta1.DataVolume{
-					ObjectMeta: k8smetav1.ObjectMeta{
-						Name: fmt.Sprintf("%s-%s", dvt.Name, runnerName),
-					},
+					Name: fmt.Sprintf("%s-%s", dvt.Name, runnerName),
 					Spec: dvt.Spec,
 				}
 

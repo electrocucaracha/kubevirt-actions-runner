@@ -8,6 +8,10 @@
 ##############################################################################
 rules:
   secrets-outside-env:
+    # These maintenance workflows intentionally don't use GitHub
+    # Environments (overkill for simple automation), so secrets are
+    # referenced directly via `with:`/`env:` inputs rather than through a
+    # dedicated `environment:`. Reviewed and accepted.
     ignore:
       - fixers.yml
       - update.yml

@@ -29,6 +29,9 @@ type AppContext struct {
 	dataVolumeName string
 }
 
+// appContextMu and instance implement the package-level AppContext
+// singleton, so they must be package-scoped globals.
+//
 //nolint:gochecknoglobals
 var (
 	appContextMu sync.Mutex

@@ -41,6 +41,9 @@ const (
 	vcsModifiedSetting = "vcs.modified"
 )
 
+// gitCommit, buildDate, and gitTreeModified are populated via ldflags at
+// build time and must therefore be package-level globals.
+//
 //nolint:gochecknoglobals
 var (
 	// Build-time variables set via ldflags during build.

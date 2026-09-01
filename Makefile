@@ -20,9 +20,13 @@ cleanup:
 
 .PHONY: lint
 lint: cleanup
+	@# Go linting runs via `golangci-lint` (see `make fmt`) using this repo's
+	@# .golangci.yml; codespell and other hooks run via pre-commit, so
+	@# super-linter skips them here to avoid duplicate results.
 	sudo -E $(DOCKER_CMD) run --rm -v $$(pwd):/tmp/lint \
 	-e RUN_LOCAL=true \
 	-e LINTER_RULES_PATH=/ \
+	-e MARKDOWN_CONFIG_FILE=.markdownlint.yml \
 	-e KUBERNETES_KUBECONFORM_OPTIONS='-ignore-missing-schemas' \
 	-e VALIDATE_GO_MODULES=false \
 	-e VALIDATE_GO=false \

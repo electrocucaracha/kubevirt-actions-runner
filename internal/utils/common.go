@@ -53,6 +53,9 @@ func (l *LoggerImpl) Fatal(args ...any) {
 	l.logger.Fatal(args...)
 }
 
+// loggerInstance and loggerOnce implement the package-level GetLogger
+// singleton, so they must be package-scoped globals.
+//
 //nolint:gochecknoglobals
 var (
 	loggerInstance *LoggerImpl

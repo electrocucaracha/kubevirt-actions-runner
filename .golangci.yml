@@ -10,8 +10,13 @@ version: "2"
 linters:
   default: all
   disable:
+    # exhaustruct/exhaustruct_v5 flag any struct literal missing optional
+    # fields, which is impractical noise for large third-party Kubernetes
+    # API structs (e.g. VirtualMachineSpec) with dozens of optional fields.
     - exhaustruct
     - exhaustruct_v5
+    # gomodguard and wsl are superseded by their v2/v5 successors enabled
+    # below; keeping both active would duplicate findings.
     - gomodguard
     - wsl
   enable:
@@ -69,25 +74,27 @@ linters:
       - builtin$
       - examples$
     rules:
-      - linters:
-          - revive
-        path: _test\.go
-        text: "var-naming:"
-      - linters:
-          - revive
-        path: internal/utils/common\.go
-        text: "var-naming:"
-      - linters:
-          - paralleltest
-        path: internal/utils/common_test\.go
-        text: "TestGetLogger"
+      # TestCancelAppContextResetsSingleton mutates a package-level
+      # singleton and must run sequentially with its own cleanup, so it
+      # cannot be marked parallel without introducing test flakiness.
       - linters:
           - paralleltest
         path: internal/appcontext_test\.go
         text: "TestCancelAppContextResetsSingleton"
+      # getClientAndNamespace returns kubecli.KubevirtClient, an interface
+      # from the upstream KubeVirt client library required for testability
+      # (fakeable client injection); there is no concrete type to return.
       - linters:
           - ireturn
-        text: "returns interface"
+        path: cmd/kar/main\.go
+        text: "getClientAndNamespace returns interface"
+      # createExporter selects between multiple trace.SpanExporter
+      # implementations (OTLP, stdout) at runtime, so returning the
+      # interface type is required by design.
+      - linters:
+          - ireturn
+        path: internal/telemetry\.go
+        text: "createExporter returns interface"
 formatters:
   enable:
     - gci
