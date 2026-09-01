@@ -9,6 +9,150 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [25.0.2] - 2026-08-31
+
+### Changed
+
+- Optimized the concurrency model in the TestAppContextConcurrentAccess test to ensure reliable race detection by disabling explicit parallelism and adding a nolint directive to clarify the rationale. [5fb3e6f7](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5fb3e6f7be854294a65f5663bd71f52ab6d6f12b)
+
+## [25.0.1] - 2026-08-31
+
+### Changed
+
+- Optimized test concurrency by marking all relevant tests in the appcontext package as parallel, allowing them to run concurrently and reducing overall test suite execution time without altering functional behavior or compromising test reliability. [a60b0639](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a60b0639fbbeef7bc98cb3e2067642ac7fd97e0b)
+
+## [25.0.0] - 2026-08-31
+
+### Removed
+
+- Simplified the workflow configuration by eliminating the redundant secrets inheritance directive, which had no impact on workflow execution. [d081b88f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d081b88fd32a7a8cb625cb46535501fc54d19cc4)
+
+## [24.1.1] - 2026-08-31
+
+### Fixed
+
+- Improved the robustness of the GitHub Action hash update process in the CI workflow to prevent accidental changes to unrelated files. [1920a7ca](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1920a7ca465ecabaaa2c635da49e5dc05813478a)
+
+## [24.1.0] - 2026-08-31
+
+### Added
+
+- Enabled thorough testing of the AppContext singleton's safety-critical behavior, including singleton idempotency and thread-safety, through the addition of new unit tests covering its lifecycle and concurrent access scenarios. [9742be58](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9742be589d8ad9650d567c6f9a77ec4a2984dfb5)
+
+## [24.0.1] - 2026-08-31
+
+### Changed
+
+- The demo.sh script has been modernized to adhere to best practices by replacing a potentially ambiguous pattern with an explicit if statement. [d2f4b7b3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d2f4b7b3a25ee4f5fe6fb749b3ac32113799b32e)
+
+## [24.0.0] - 2026-08-31
+
+### Removed
+
+- Simplified the project's linter configuration by removing unnecessary rule suppressions, aligning with the project's settings and improving code quality. [931055e6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/931055e61fc4e985c5e22d9ee9c23e074e0938db)
+
+## [23.2.4] - 2026-08-31
+
+### Changed
+
+- Simplified the quality improvers workflow by replacing two custom job definitions with a single call to a reusable workflow, reducing maintenance overhead and ensuring consistency. [de11488c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/de11488c7cc4620f848b71337fffe6c7d7db3e59)
+
+## [23.2.3] - 2026-08-25
+
+### Changed
+
+- Improved error reporting and scenario context usage in test helpers, making test failures easier to diagnose and future refactoring less error-prone. [381bf333](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/381bf333c2c196e7b97afc28a9ff3a04d41bad67)
+
+## [23.2.2] - 2026-08-25
+
+### Changed
+
+- BREAKING: Migrated the test suite to the goddog BDD framework, enabling test invocation and reporting with goddog and Gherkin feature files, and requiring the removal of Ginkgo/Gomega-based tests. [984b1515](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/984b1515cfe53241964249f293741aab8f9a5df6)
+
+## [23.2.1] - 2026-08-21
+
+### Changed
+
+- Updated the Buy Me a Coffee username to "electrocuce" to resolve a mismatch that could cause confusion among supporters, ensuring donations reach the intended recipient without issue. [f54f9799](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f54f9799d9ea56dde5328fc682dc48949535b4d3)
+
+## [23.2.0] - 2026-08-21
+
+### Added
+
+- Enabled funding configuration for GitHub Sponsors and Buy Me a Coffee links, allowing users to contribute to the project's maintenance with no impact on code or functionality. [3f5ea4fe](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3f5ea4fe955349a9d13c7e172bdf56603db2cfa2)
+
+## [23.1.5] - 2026-08-21
+
+### Changed
+
+- Upgraded the project to use the latest Go version and indirect dependencies to ensure compatibility with the latest language features and security updates, reducing the risk of incompatibilities and improving long-term maintainability. [e2142693](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e214269380e730fc1bbe3a39a0210b3a111e3b6d)
+
+## [23.1.4] - 2026-08-21
+
+### Changed
+
+- Upgraded the base image to Go 1.27 on Alpine 3.24, ensuring compatibility with newer dependencies and benefiting from upstream security patches. [e9eb98ba](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e9eb98ba135068751637d813ef39e593d4957501)
+
+## [23.1.3] - 2026-08-21
+
+### Changed
+
+- Upgraded CI tool versions and Go to 1.27 in GitHub Actions workflows to ensure compatibility with the latest language features and upstream support, and to maintain CI reliability and keep the toolchain current. [579e70a6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/579e70a6b5dd8685623b6b5b77f48fb9ceee730f)
+
+## [23.1.2] - 2026-08-21
+
+### Changed
+
+- Optimized textlint and prettier usage by switching to local devDependencies, eliminating the need for global installations and ensuring consistent versions across developer machines and CI. [2bfae32e](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2bfae32e3a1d223cce879ff227ba6dcd24b0bdf1)
+
+## [23.1.1] - 2026-08-18
+
+### Changed
+
+- Stabilized the workflow execution schedule to run reliably on the 15th of every month, ensuring predictable and complete coverage by avoiding inconsistent execution dates and missed months. [754adf21](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/754adf216896684e49568dab5b73eb293eba901f)
+
+## [23.1.0] - 2026-08-18
+
+### Added
+
+- Enabled deterministic testing for environment variable flag binding, ensuring this branch is exercised and covered outside of GitHub Actions with 100% coverage. [7aace09f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/7aace09f938cadf5c64827f2fa96685168413556)
+
+## [23.0.0] - 2026-08-18
+
+### Removed
+
+- Simplified configure.sh to no longer depend on the unused _common.sh script, reducing unnecessary complexity and dependencies. [ffa29163](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ffa29163424dc56c4e51bfeb74a5be7c07ffcf76)
+
+## [22.1.1] - 2026-08-17
+
+### Changed
+
+- Simplified deletion error handling for runner resources by introducing a new logDeleteErr helper function that preserves the original behavior of ignoring NotFound errors. [3df7e313](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3df7e3139dcaebce105cb735fe6cc9d0c877dd09)
+
+## [22.1.0] - 2026-08-17
+
+### Added
+
+- Enabled explicit documentation of intentional default values for cleanup and shutdown timeouts, preventing linting warnings about magic numbers without introducing functional changes. [9d3f7c8d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9d3f7c8d352d03dcb17ec475b926c3c0b55bd4ef)
+
+## [22.0.5] - 2026-08-17
+
+### Fixed
+
+- Resolved the fmt target's golangci-lint execution to correctly handle cases where the binary is not in the system's PATH, thereby improving developer experience on fresh setups and CI environments. [a4ab88d4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a4ab88d4862fb5439f0351cc68cdb1283d3ec651)
+
+## [22.0.4] - 2026-08-17
+
+### Changed
+
+- Improved mutation testing coverage by relocating arithmetic expressions for default timeouts to instrumented function bodies, enabling 100% coverage with the Gremlins tool and no change in runtime behavior. [452cdefa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/452cdefad3fcd5f2f53d4edce36209de32e86c3c)
+
+## [22.0.3] - 2026-08-16
+
+### Changed
+
+- Updated the wordlist with new terms and corrected the ordering of datavolumes to maintain alphabetical consistency, ensuring the wordlist remains comprehensive and up to date for spelling and linting tools with no breaking behavior or API changes. [45bb9bdd](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/45bb9bddd8f6e1558f106bcd754b26f2760f5ec8)
+
 ## [22.0.2] - 2026-08-16
 
 ### Changed
