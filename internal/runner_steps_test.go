@@ -589,11 +589,10 @@ func (rc *runnerCtx) vmiTransitionsToSucceeded() error {
 }
 
 func (rc *runnerCtx) emitUnrelatedPodEvent() error {
-	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
-	pod := &k8sv1.Pod{ObjectMeta: metav1.ObjectMeta{
+	pod := &k8sv1.Pod{
 		Name:      "some-pod",
 		Namespace: k8sv1.NamespaceDefault,
-	}}
+	}
 	rc.firstWatcher.Add(pod)
 
 	return nil
@@ -868,12 +867,9 @@ func TestFeatures(t *testing.T) {
 }
 
 func NewVirtualMachine(name string) *v1.VirtualMachine {
-	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachine{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: k8sv1.NamespaceDefault,
-		},
+		Name:      name,
+		Namespace: k8sv1.NamespaceDefault,
 		Spec: v1.VirtualMachineSpec{
 			Template: &v1.VirtualMachineInstanceTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{},
@@ -883,22 +879,16 @@ func NewVirtualMachine(name string) *v1.VirtualMachine {
 }
 
 func NewVirtualMachineInstance(name string) *v1.VirtualMachineInstance {
-	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachineInstance{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: k8sv1.NamespaceDefault,
-		},
+		Name:      name,
+		Namespace: k8sv1.NamespaceDefault,
 	}
 }
 
 func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
-	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1.VirtualMachineInstance{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: k8sv1.NamespaceDefault,
-		},
+		Name:      name,
+		Namespace: k8sv1.NamespaceDefault,
 		Status: v1.VirtualMachineInstanceStatus{
 			Phase: v1.Running,
 			Conditions: []v1.VirtualMachineInstanceCondition{
@@ -912,26 +902,20 @@ func NewVirtualMachineInstanceReady(name string) *v1.VirtualMachineInstance {
 }
 
 func NewDataVolume(name string) *v1beta1.DataVolume {
-	//nolint:modernize // Keep explicit nested type for compatibility with current toolchain checks.
 	return &v1beta1.DataVolume{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: k8sv1.NamespaceDefault,
-		},
+		Name:      name,
+		Namespace: k8sv1.NamespaceDefault,
 	}
 }
 
 func NewVirtualMachineWithDataVolume(name, dvName string) *v1.VirtualMachine {
-	//nolint:modernize // Keep explicit nested types for compatibility with current toolchain checks.
 	return &v1.VirtualMachine{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: k8sv1.NamespaceDefault,
-		},
+		Name:      name,
+		Namespace: k8sv1.NamespaceDefault,
 		Spec: v1.VirtualMachineSpec{
 			DataVolumeTemplates: []v1.DataVolumeTemplateSpec{
 				{
-					ObjectMeta: metav1.ObjectMeta{Name: dvName},
+					Name: dvName,
 				},
 			},
 			Template: &v1.VirtualMachineInstanceTemplateSpec{
@@ -939,10 +923,8 @@ func NewVirtualMachineWithDataVolume(name, dvName string) *v1.VirtualMachine {
 					Volumes: []v1.Volume{
 						{
 							Name: "disk0",
-							VolumeSource: v1.VolumeSource{
-								DataVolume: &v1.DataVolumeSource{
-									Name: dvName,
-								},
+							DataVolume: &v1.DataVolumeSource{
+								Name: dvName,
 							},
 						},
 					},

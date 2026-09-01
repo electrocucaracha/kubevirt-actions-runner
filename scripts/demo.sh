@@ -52,7 +52,7 @@ trap get_status ERR
 info "Running a alpine demo instance"
 ensure_distinct_namespaces
 prepare_demo_namespaces
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091 # file is generated at install time by install_pkg; not present for static analysis.
 [ -f /etc/profile.d/path.sh ] && . /etc/profile.d/path.sh
 kar_dir="$(mktemp -d)"
 kar_bin="$kar_dir/kar"

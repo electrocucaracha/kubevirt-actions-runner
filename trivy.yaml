@@ -7,4 +7,8 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 misconfigurations:
+  # AVD-DS-0026 (missing HEALTHCHECK): kar runs as a short-lived, one-shot
+  # CLI job (not a long-running service) built FROM scratch, which has no
+  # shell to execute a HEALTHCHECK command. Mirrors the checkov skip in
+  # Dockerfile for the same reason.
   - id: AVD-DS-0026

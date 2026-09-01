@@ -180,7 +180,7 @@ trap format_changes EXIT
 
 if ! command -v go >/dev/null; then
     curl -fsSL http://bit.ly/install_pkg | PKG=go-lang bash
-    # shellcheck disable=SC1091
+    # shellcheck disable=SC1091 # file is generated at install time by install_pkg; not present for static analysis.
     source /etc/profile.d/path.sh
 fi
 

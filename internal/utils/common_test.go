@@ -43,7 +43,7 @@ func TestFatalExitsProcess(t *testing.T) {
 		return
 	}
 
-	//nolint:gosec
+	//nolint:gosec // re-executes the test binary itself (os.Args[0]); not user-controlled input.
 	cmd := exec.CommandContext(context.Background(), os.Args[0], "-test.run=TestFatalExitsProcess")
 
 	cmd.Env = append(os.Environ(), "KAR_TEST_INVOKE_FATAL=1")
