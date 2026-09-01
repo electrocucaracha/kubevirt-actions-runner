@@ -23,6 +23,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"sync"
 	"testing"
 
 	runner "github.com/electrocucaracha/kubevirt-actions-runner/internal"
@@ -58,6 +59,110 @@ func TestCancelAppContextResetsSingleton(t *testing.T) {
 
 	if got := ctx.GetDataVolumeName(); got != "second-dv" {
 		t.Fatalf("expected reset data volume name, got %q", got)
+	}
+}
+
+// TestHasAppContextLifecycle verifies that HasAppContext directly reflects
+// the initialization state of the singleton across its full lifecycle:
+// uninitialized, initialized, and reset via CancelAppContext.
+func TestHasAppContextLifecycle(t *testing.T) {
+	t.Cleanup(runner.CancelAppContext)
+
+	runner.CancelAppContext()
+
+	if runner.HasAppContext() {
+		t.Fatal("expected HasAppContext to be false before initialization")
+	}
+
+	runner.NewAppContext("lifecycle-vmi", "lifecycle-dv")
+
+	if !runner.HasAppContext() {
+		t.Fatal("expected HasAppContext to be true after initialization")
+	}
+
+	runner.CancelAppContext()
+
+	if runner.HasAppContext() {
+		t.Fatal("expected HasAppContext to be false after CancelAppContext")
+	}
+}
+
+// TestNewAppContextIgnoresSubsequentValues verifies the documented behavior
+// that once the AppContext singleton is created, further calls to
+// NewAppContext return the existing instance and ignore the new arguments,
+// until CancelAppContext resets it.
+func TestNewAppContextIgnoresSubsequentValues(t *testing.T) {
+	t.Cleanup(runner.CancelAppContext)
+
+	runner.CancelAppContext()
+
+	first := runner.NewAppContext("original-vmi", "original-dv")
+	second := runner.NewAppContext("ignored-vmi", "ignored-dv")
+
+	if first != second {
+		t.Fatal("expected NewAppContext to return the same singleton instance on subsequent calls")
+	}
+
+	if got := second.GetVMIName(); got != "original-vmi" {
+		t.Fatalf("expected VMI name to remain %q, got %q", "original-vmi", got)
+	}
+
+	if got := second.GetDataVolumeName(); got != "original-dv" {
+		t.Fatalf("expected data volume name to remain %q, got %q", "original-dv", got)
+	}
+}
+
+// TestAppContextConcurrentAccess exercises NewAppContext, GetAppContext, and
+// HasAppContext from many goroutines concurrently to verify the mutex-guarded
+// singleton is safe under concurrent access (run with -race to detect data
+// races) and that all callers observe a single, consistent instance.
+func TestAppContextConcurrentAccess(t *testing.T) {
+	t.Cleanup(runner.CancelAppContext)
+
+	runner.CancelAppContext()
+
+	const goroutines = 50
+
+	var (
+		wg        sync.WaitGroup
+		mu        sync.Mutex
+		instances = make([]*runner.AppContext, 0, goroutines)
+	)
+
+	wg.Add(goroutines)
+
+	for i := range goroutines {
+		go func(idx int) {
+			defer wg.Done()
+
+			ctx := runner.NewAppContext("concurrent-vmi", "concurrent-dv")
+
+			_ = runner.HasAppContext()
+
+			if idx%2 == 0 {
+				ctx = runner.GetAppContext()
+			}
+
+			mu.Lock()
+			instances = append(instances, ctx)
+			mu.Unlock()
+		}(i)
+	}
+
+	wg.Wait()
+
+	if len(instances) != goroutines {
+		t.Fatalf("expected %d recorded instances, got %d", goroutines, len(instances))
+	}
+
+	for _, inst := range instances {
+		if inst != instances[0] {
+			t.Fatal("expected all goroutines to observe the same singleton instance")
+		}
+	}
+
+	if got := instances[0].GetVMIName(); got != "concurrent-vmi" {
+		t.Fatalf("expected VMI name %q, got %q", "concurrent-vmi", got)
 	}
 }
 
