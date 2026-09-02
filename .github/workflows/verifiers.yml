@@ -40,7 +40,7 @@ jobs:
         id: golangci-lint
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
         with:
-          version: v2.13.1
+          version: v2.13.2
           args: --allow-parallel-runners --output.json.path linter-errors.json
       - uses: actions/ai-inference@2c43c91ae16266ca159d311430343c67a5ffa222 # v3
         id: ai-linter-analysis
@@ -92,7 +92,7 @@ jobs:
             printf "\n%s\n" "$DELIM"
           } >> "$GITHUB_OUTPUT"
         # jscpd:ignore-end
-      - uses: jayqi/failed-build-issue-action@1a893bbf43ef1c2a8705e2b115cd4f0fe3c5649b # v1.2.0
+      - uses: jayqi/failed-build-issue-action@940568ce50eeef3f31a920614cefcc6102d2f930 # v1.3.0
         if: failure()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
