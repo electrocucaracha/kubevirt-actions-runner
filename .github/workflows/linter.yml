@@ -48,7 +48,7 @@ jobs:
       contents: read
       models: read
       issues: write
-    uses: electrocucaracha/gh-workflows/.github/workflows/linter.yml@6c4b29985a7b0b99057f4f03c91b174a712617a6 # v5.0.0
+    uses: electrocucaracha/gh-workflows/.github/workflows/linter.yml@7362342ec4b465d80999556fae6bb61b3e56f010 # v7.0.8
     with:
       validate_overrides: |-
         {
@@ -60,3 +60,5 @@ jobs:
           "SAVE_SUPER_LINTER_OUTPUT": true,
           "KUBERNETES_KUBECONFORM_OPTIONS": "-ignore-missing-schemas"
         }
+    secrets:
+      COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
