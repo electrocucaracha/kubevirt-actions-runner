@@ -9,6 +9,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [25.3.1] - 2026-09-15
+
+### Changed
+
+- Upgraded CI tools and Go module dependencies to resolve bugfixes and improve compatibility with upstream toolchains. [c606467c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c606467ce9c1a2b38d926c1006b8643b55b57617)
+
+## [25.3.0] - 2026-09-15
+
+### Added
+
+- Enabled the Improvers workflow to utilize GitHub Copilot features during execution by adding the COPILOT_TOKEN secret to its workflow secrets. [970876d6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/970876d61beec062e2de6331248585714919e6b8)
+
+## [25.2.9] - 2026-09-10
+
+### Changed
+
+- Updated GitHub Actions workflows to use the latest version of the rtk token saver, changing the install script URL from v0.47.0 to v0.48.0 and providing users with access to the latest features and security patches. [fc5a1297](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fc5a12972a09e5854c9bc5aa7bb339ccf509adda)
+
+## [25.2.8] - 2026-09-05
+
+### Changed
+
+- Updated the linter workflow to version v7.0.8, enabling GitHub Copilot access for configurations that require it. [e6a99f23](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/e6a99f2356a55a35a876f98cf29053ed3ea53448)
+
+## [25.2.7] - 2026-09-05
+
+### Changed
+
+- Optimized the GitHub Actions workflow for improvers to leverage the latest improvements and fixes from the electrocucaracha/gh-workflows template, version 7.0.8. [c24f3817](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/c24f381719a79b2eeee944c1b3c00c5e0e9b19e9)
+
+## [25.2.6] - 2026-09-05
+
+### Changed
+
+- Updated the pre-commit hook ai-prepare-commit-msg to v15.4.2, incorporating the latest fixes and features for improved commit message preparation. [cfd0cdc4](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/cfd0cdc44085f4faf68905d4c0d88d253050a9f8)
+
+## [25.2.5] - 2026-09-04
+
+### Changed
+
+- Upgraded GitHub Actions workflows to use the latest version of the rtk token saver, requiring users who rely on it to update their workflows to use the new version v0.47.0. [815166f0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/815166f08d9733c7d6492150a341f4c5998a8875)
+
+## [25.2.4] - 2026-09-01
+
+### Changed
+
+- Updated multiple Go module dependencies to their latest compatible patch or minor releases, ensuring compatibility with upstream improvements and bugfixes. [47825a3c](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/47825a3cb4168c4aed5fcdc8d0752159c050da52)
+
+## [25.2.3] - 2026-09-01
+
+### Changed
+
+- Upgraded several GitHub Actions and auxiliary tools in CI workflows to their latest versions, addressing bugfixes, security improvements, and compatibility fixes provided by upstream maintainers. [2c785282](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2c785282f5bae126df33bcbf5906a036cdaf2823)
+
+## [25.2.2] - 2026-09-01
+
+### Changed
+
+- Simplified the super-linter job implementation by invoking a reusable workflow, centralizing configuration and reducing maintenance overhead, while preserving previous linter override values. [5b3bce0d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5b3bce0d97c0e40bb1288d049f975929646f963e)
+
+## [25.2.1] - 2026-09-01
+
+### Changed
+
+- Optimized code quality and commit message preparation by updating shellcheck-py to v0.11.0.1-1 and ai-prepare-commit-msg to v14.0.0. [2d440a37](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/2d440a3794063d1a27f80e26a35223e8da864bd7)
+
+## [25.2.0] - 2026-09-01
+
+### Added
+
+- Prettier formatting is now configured to exclude CHANGELOG.md, ensuring release notes retain their intended formatting and are not altered by automated tools. [4989d8a3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4989d8a367425944a872bad9cf7823c769125378)
+
+## [25.1.1] - 2026-08-31
+
+### Changed
+
+- Expanded the wordlist with additional terms, abbreviations, and variants such as "aab", "bcd", "devDependencies", and "idempotency" to improve recognition of domain-specific words, reduce false positives, and support new code and documentation patterns. [bb2daca1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/bb2daca1e90595650015f30ac830caff0042aaa8)
+
+## [25.1.0] - 2026-08-31
+
+### Added
+
+- Stabilized the changelog with detailed entries for releases 22.0.3 to 25.0.2, accurately reflecting recent project history and providing clear context for users and contributors. [9bbd52c0](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9bbd52c0fb01e37b21311f9a4f4ffcd2f725bf8e)
+
 ## [25.0.2] - 2026-08-31
 
 ### Changed
