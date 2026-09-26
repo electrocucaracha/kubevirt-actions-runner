@@ -40,7 +40,7 @@ jobs:
         id: golangci-lint
         uses: golangci/golangci-lint-action@82606bf257cbaff209d206a39f5134f0cfbfd2ee # v9.2.1
         with:
-          version: v2.13.2
+          version: v2.14.0
           args: --allow-parallel-runners --output.json.path linter-errors.json
       - uses: actions/ai-inference@2c43c91ae16266ca159d311430343c67a5ffa222 # v3
         id: ai-linter-analysis
