@@ -15,9 +15,9 @@ require (
 	go.opentelemetry.io/otel/trace v1.47.0
 	go.uber.org/mock v0.6.0
 	go.uber.org/zap v1.28.0
-	k8s.io/api v0.37.1
-	k8s.io/apimachinery v0.37.1
-	k8s.io/client-go v0.37.1
+	k8s.io/api v0.34.3
+	k8s.io/apimachinery v0.34.3
+	k8s.io/client-go v0.34.3
 	kubevirt.io/api v1.9.0
 	kubevirt.io/client-go v1.9.0
 	kubevirt.io/containerized-data-importer-api v1.66.1
