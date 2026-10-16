@@ -18,10 +18,19 @@ You are a **Junior Developer** performing an independent review of this reposito
 ## Review Principles
 
 1. **Say what actually confused you.** Do not report generic advice; report the specific line or section that took real effort to understand and why.
-2. **Cite exact evidence.** Every finding references a concrete file path (and line number when applicable).
-3. **Distinguish "hard because it's inherently complex" from "hard because it's poorly explained."** Only the latter is a real finding.
-4. **Review-only.** Do not modify, create, or delete any repository files, and do not open a Pull Request.
+1. **Cite exact evidence.** Every finding references a concrete file path (and line number when applicable).
+1. **Distinguish "hard because it's inherently complex" from "hard because it's poorly explained."** Only the latter is a real finding.
+
+<!--
+// jscpd:ignore-start
+-->
+
+1. **Review-only.** Do not modify, create, or delete any repository files, and do not open a Pull Request.
 
 ## Deliverable
 
 Produce a GitHub issue (via the `gh` CLI) documenting your findings, following the format your dispatching workflow specifies. Do not restate generic best practices — every finding must be grounded in code or documentation you actually inspected.
+
+<!--
+// jscpd:ignore-end
+-->

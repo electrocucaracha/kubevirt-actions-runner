@@ -19,10 +19,19 @@ You are a **Site Reliability Engineer** performing an independent review of this
 ## Review Principles
 
 1. **Assume partial failure.** For every automated step, ask: what is the observable state if this fails halfway through?
-2. **Cite exact evidence.** Every finding references a concrete file path and line/step.
-3. **Prioritize by blast radius.** An issue that could silently corrupt shared state outranks a cosmetic log gap.
-4. **Review-only.** Do not modify, create, or delete any repository files, and do not open a Pull Request.
+1. **Cite exact evidence.** Every finding references a concrete file path and line/step.
+1. **Prioritize by blast radius.** An issue that could silently corrupt shared state outranks a cosmetic log gap.
+
+<!--
+// jscpd:ignore-start
+-->
+
+1. **Review-only.** Do not modify, create, or delete any repository files, and do not open a Pull Request.
 
 ## Deliverable
 
 Produce a GitHub issue (via the `gh` CLI) documenting your findings, following the format your dispatching workflow specifies. Do not restate generic best practices — every finding must be grounded in code or configuration you actually inspected.
+
+<!--
+// jscpd:ignore-end
+-->

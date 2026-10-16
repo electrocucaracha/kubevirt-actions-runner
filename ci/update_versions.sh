@@ -121,6 +121,60 @@ update_agents() {
         done
 }
 
+# Requires Go and jq. Resolve the KubeVirt release before updating other modules.
+update_go_modules() {
+    local metadata version gomod dependencies replacements modules module replacement
+    local targets=()
+
+    metadata=$(go mod download -json kubevirt.io/client-go@latest) || return 1
+    version=$(jq -er '.Version | select(startswith("v"))' <<<"$metadata") || return 1
+    gomod=$(jq -er '.GoMod | select(length > 0)' <<<"$metadata") || return 1
+    metadata=$(go mod edit -json "$gomod") || return 1
+
+    # Published modules, unlike the monorepo, contain usable client-go requirements.
+    # Keep KubeVirt and its Kubernetes dependencies together; -u would override them.
+    dependencies=$(jq -er '
+        [.Require[]? | select(.Path | startswith("k8s.io/") or startswith("kubevirt.io/"))]
+        | if (map(.Path) | index("k8s.io/api")) != null
+            and (map(.Path) | index("k8s.io/apimachinery")) != null
+            and (map(.Path) | index("k8s.io/client-go")) != null
+        then .[]
+            | select(.Path != "kubevirt.io/api" and .Path != "kubevirt.io/client-go")
+            | "\(.Path)@\(.Version)"
+        else error("KubeVirt client module is missing Kubernetes requirements")
+        end
+    ' <<<"$metadata") || return 1
+    replacements=$(jq -er '
+        [.Replace[]? | select(.Old.Path | startswith("k8s.io/"))]
+        | map(if .New.Version == null or .New.Version == ""
+            then error("KubeVirt Kubernetes replacement has no module version")
+            else "\(.Old.Path)=\(.New.Path)@\(.New.Version)" end)
+        | join("\n")
+    ' <<<"$metadata") || return 1
+    modules=$(go list -m -f '{{if and (not .Main) (not .Indirect)}}{{.Path}}{{end}}' all) || return 1
+
+    targets=("kubevirt.io/api@${version}" "kubevirt.io/client-go@${version}")
+    while IFS= read -r module; do
+        [[ -z $module ]] || targets+=("$module")
+    done <<<"$dependencies"
+    while IFS= read -r module; do
+        case "$module" in
+        "" | k8s.io/* | kubevirt.io/*) continue ;;
+        esac
+        targets+=("${module}@latest")
+    done <<<"$modules"
+    while IFS= read -r replacement; do
+        [[ -z $replacement ]] || go mod edit "-replace=${replacement}" || return 1
+    done <<<"$replacements"
+
+    go get "${targets[@]}"
+}
+
+# Allow the module update to be tested without running unrelated maintenance.
+if [[ ${BASH_SOURCE[0]} != "$0" ]]; then
+    return 0
+fi
+
 trap format_changes EXIT
 
 if ! command -v go >/dev/null; then
@@ -135,16 +189,7 @@ if [[ ! $go_version =~ ^[0-9]+\.[0-9]+$ ]]; then
     echo "ERROR: could not extract a valid Go major.minor version (got: '${go_version}')" >&2
     exit 1
 fi
-# Get direct modules from go.mod and upgrade them
-mapfile -t direct_modules < <(
-    go list -m -f '{{if not .Indirect}}{{.Path}}{{end}}' all |
-        grep -v '^$' |
-        grep -v "$(go list -m)"
-)
-
-if ((${#direct_modules[@]})); then
-    run_best_effort "updating direct Go modules" go get -u "${direct_modules[@]}"
-fi
+run_best_effort "updating Go modules with KubeVirt constraints" update_go_modules
 
 echo "==> Tidying modules"
 run_best_effort "tidying Go modules" go mod tidy -go="${go_version}"
