@@ -9,6 +9,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [26.1.3] - 2026-10-16
+
+### Changed
+
+- Enabled consistent formatting across environments by automating global installation and direct execution of textlint, golangci-lint, and markdownlint, and simplifying prettier runs without requiring the --no-install flag. [9746167a](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9746167aa10326823f37126150d142d1bad82c1e)
+
+## [26.1.2] - 2026-10-16
+
+### Changed
+
+- Updated documentation links to correctly point to referenced scripts and templates, resolving navigation errors for readers accessing setup-testbed.md and quickstart.md. [84931416](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8493141684eb80f42cf434cf17e55f81c655367b)
+
+## [26.1.1] - 2026-10-16
+
+### Changed
+
+- Optimized agent functionality by replacing unused tools with graphify and updating workflow references to the latest upstream versions, while also upgrading dependencies and tool versions in CI and pre-commit configs. [109083cf](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/109083cfbec37d2e5ce519badaf74969bf7d1639)
+
+## [26.1.0] - 2026-10-15
+
+### Added
+
+- Enabled structured, role-based review processes for code and documentation quality through the introduction of detailed Markdown definitions for various independent review roles and updated workflow permissions to support issue creation for new agent processes. [f35643e5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/f35643e5f71d76b7427c37b0748931ea0e82ff60)
+
+## [26.0.5] - 2026-10-11
+
+### Changed
+
+- Updated GitHub Actions dependencies to reference the latest commit hashes and action versions in workflow files, ensuring the workflows use the most recent, secure, and feature-complete versions of their dependencies. [ffa434a2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/ffa434a295614e28c3091fbf07c79c11b3dea007)
+
+## [26.0.4] - 2026-10-09
+
+### Changed
+
+- Resolved compatibility issues with dependent modules by downgrading k8s.io modules from v0.37.1 to v0.34.3 and updating the linter workflow to v9.4.1. [850a5916](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/850a59160488d1e4dfaf39524397099e95ec8398)
+
+## [26.0.3] - 2026-09-25
+
+### Changed
+
+- Updated GitHub Actions workflows to use newer versions of dependencies, including rtk token saver and golangci-lint, and the latest versions of the electrocucaracha/gh-workflows repository, requiring users to update their local dependencies. [beb8c2f5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/beb8c2f5721cead258eb39c350d251455ffdc650)
+
+## [26.0.2] - 2026-09-18
+
+### Changed
+
+- Centralized version file automation by adopting a shared workflow from electrocucaracha/gh-workflows, reducing maintenance overhead and ensuring consistency. [24e68ad2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/24e68ad246e425afa73aac2992f7fee416fa0659)
+
+## [26.0.1] - 2026-09-18
+
+### Changed
+
+- Updated dependencies to use newer versions, specifically v9.1.2 for gh-workflows and v17.0.1 for ai-prepare-commit-msg, without introducing any breaking behavior, migration requirements, or changes to the API or CLI contract. [1eab58c5](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/1eab58c50e3ca4d05e6ef0321cd74c3bbbe73a28)
+
+## [26.0.0] - 2026-09-15
+
+### Removed
+
+- Simplified CI maintenance by eliminating redundancy and relying exclusively on pyspelling for spelling checks. [3ae438bd](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/3ae438bd8325d63ec3ae7d9c394693048bd127fe)
+
+## [25.4.0] - 2026-09-15
+
+### Added
+
+- Enabled improved spell check recognition for domain-specific terms by expanding the wordlist with new entries and variants. [dd937003](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dd9370033793abfe4c4635de9354f46350cb80eb)
+
 ## [25.3.1] - 2026-09-15
 
 ### Changed
