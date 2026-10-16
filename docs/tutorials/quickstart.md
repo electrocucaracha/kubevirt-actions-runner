@@ -36,7 +36,7 @@ kubectl get namespace "${namespace}" || kubectl create namespace "${namespace}"
 kubectl apply -f scripts/vm_template.yml -n "${namespace}"
 ```
 
-Example snippet from [`vm.yaml`](../scripts/test-data/vm.yaml):
+Example snippet from [`vm.yaml`](../../scripts/test-data/vm.yaml):
 
 ```yaml
 apiVersion: kubevirt.io/v1

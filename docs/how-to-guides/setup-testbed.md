@@ -42,7 +42,7 @@ For a detailed view of the deployment and runtime sequence, see the
 
 ## Automated install
 
-The [`main.sh` script](../scripts/main.sh) orchestrates the full setup:
+The [`main.sh` script](../../scripts/main.sh) orchestrates the full setup:
 
 - Tool installation
 - Kubernetes cluster creation
@@ -56,13 +56,13 @@ cd scripts
 
 ### What the automation does
 
-- Install tools: runs [`install.sh`](../scripts/install.sh).
+- Install tools: runs [`install.sh`](../../scripts/install.sh).
   - Installs `kind`, `kubectl`, `docker`, `go` and `helm` when they are not present.
 
-- Configure cluster: runs [`configure.sh`](../scripts/configure.sh).
+- Configure cluster: runs [`configure.sh`](../../scripts/configure.sh).
   - Creates a local Kubernetes cluster with `kind` (if it does not already exist).
   - Installs the KubeVirt operator and required components.
-  - Applies [a runner VM template](../scripts/test-data/vm.yaml) used by the scripts.
+  - Applies [a runner VM template](../../scripts/test-data/vm.yaml) used by the scripts.
     That template is an example base object the runner clones into
     ephemeral `VirtualMachineInstance` (VMI) objects when processing jobs.
 
