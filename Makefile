@@ -38,13 +38,13 @@ lint: cleanup
 .PHONY: fmt
 fmt: cleanup
 	@go fmt ./...
+	command -v golangci-lint > /dev/null || go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+	$$(command -v golangci-lint || echo $$HOME/go/bin/golangci-lint) run --fix
+	command -v textlint > /dev/null && npm list --global --depth=0 textlint-rule-terminology > /dev/null 2>&1 || sudo npm install --global textlint textlint-rule-terminology
+	textlint . --fix
 	command -v shfmt > /dev/null || curl -s "https://i.jpillora.com/mvdan/sh!!?as=shfmt" | bash
 	shfmt -l -w -s -i 4 .
 	command -v yamlfmt > /dev/null || curl -s "https://i.jpillora.com/google/yamlfmt!!" | bash
 	yamlfmt -dstar **/*.{yaml,yml}
-	command -v golangci-lint > /dev/null || go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
-	$$(command -v golangci-lint || echo $$HOME/go/bin/golangci-lint) run --fix
-	npm list --depth=0 textlint textlint-rule-terminology >/dev/null 2>&1 || npm install --save-dev textlint textlint-rule-terminology
-	npx --no-install textlint . --fix
-	npm list --depth=0 prettier >/dev/null 2>&1 || npm install --save-dev prettier
-	npx --no-install prettier . --write --ignore-unknown
+	npx prettier . --write
+	npx markdownlint-cli2 --fix CHANGELOG.md
