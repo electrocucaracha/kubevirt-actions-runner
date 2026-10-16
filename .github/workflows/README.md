@@ -36,13 +36,12 @@ flowchart TD
     B1 --> B3[on-demand_ci.yml]
 
     C --> C1[Review-triggered workflows]
-    C1 --> C2[spell.yml]
     C1 --> C3[on-demand_ci.yml]
 
     D --> D1[Push-triggered workflows]
     D1 --> D2[build.yml]
     D1 --> D3[linter.yml]
-    D1 --> D4[pages.yml, spell.yml, on-demand_ci.yml, verifiers.yml]
+    D1 --> D4[pages.yml, on-demand_ci.yml, verifiers.yml]
     D4 --> D5[Run only when path filters match]
 
     E --> E1[build.yml]
@@ -70,7 +69,6 @@ flowchart TD
 | [linter.yml](./linter.yml)             | **CI: Lint and Static Checks**. Measures SLOC, validates documentation links, runs `super-linter`, and files an issue with AI-assisted analysis when linting fails.                                                                                                                                                              | `push`, `pull_request`                                                                                                                                        |
 | [on-demand_ci.yml](./on-demand_ci.yml) | **CI: End-to-End Validation**. Validates shell script formatting and runs the functional self-hosted demo. It always exports and uploads Kind cluster logs for diagnostics.                                                                                                                                                      | `push` for `*.go` and `*.sh` changes outside `.github/**`, `pull_request` on `opened`, `synchronize`, or `reopened`, and `pull_request_review` on `submitted` |
 | [pages.yml](./pages.yml)               | **Docs: Build and Deploy GitHub Pages**. Stages docs content, builds the Jekyll site, uploads artifacts, and deploys to GitHub Pages.                                                                                                                                                                                            | `workflow_dispatch`, `push` to `master` when `docs/**`, `ci/prepare_pages_site.py`, or `.github/workflows/pages.yml` change                                   |
-| [spell.yml](./spell.yml)               | **Docs: Spelling Validation**. Verifies docs spelling using both `reviewdog/action-misspell` and `pyspelling`.                                                                                                                                                                                                                   | `push` for Markdown changes outside `.github/**`, `pull_request_review` on `submitted`                                                                        |
 | [update.yml](./update.yml)             | **Maintenance: Scheduled Dependency Version Updates**. Runs automated version refresh commands and opens a pull request with updated managed version files.                                                                                                                                                                      | Weekly schedule (`0 0 * * 5`) and `workflow_dispatch`                                                                                                         |
 | [verifiers.yml](./verifiers.yml)       | **Maintenance: Go Quality Verification and Improvements**. Runs `golangci-lint`, files issues with AI-generated analysis on failures, and on non-push runs launches janitor/QA Copilot tasks to reduce technical debt and improve code coverage through PRs.                                                                     | `push` for `*.go` changes, weekly schedule (`0 0 * * 5`), and `workflow_dispatch`                                                                             |
 
