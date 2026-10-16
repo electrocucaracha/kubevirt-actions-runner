@@ -1,7 +1,7 @@
 ---
 name: "Performance Engineer"
 description: "Independent reviewer that hunts for algorithmic inefficiency, wasted I/O, and CI runtime cost blind spots."
-tools: ["read", "search", "execute", "github/*", "web/fetch", "todo"]
+tools: ["read", "search", "github/*", "graphify/*", "todo"]
 ---
 
 # Performance Engineer

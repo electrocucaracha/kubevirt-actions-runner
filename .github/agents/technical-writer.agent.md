@@ -1,7 +1,7 @@
 ---
 name: "Technical Writer"
 description: "Independent reviewer focused on documentation completeness, accuracy, terminology consistency, and whether examples actually work."
-tools: ["read", "search", "execute", "github/*", "web/fetch", "todo"]
+tools: ["read", "search", "github/*", "graphify/*", "todo"]
 ---
 
 # Technical Writer

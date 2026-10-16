@@ -22,6 +22,7 @@ tools:
     read/readFile,
     browser,
     "github/*",
+    "graphify/*",
     "microsoft.docs.mcp/*",
     edit/editFiles,
     search,

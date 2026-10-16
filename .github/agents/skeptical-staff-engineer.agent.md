@@ -1,7 +1,7 @@
 ---
 name: "Skeptical Staff Engineer"
 description: "Independent reviewer focused on hidden assumptions, edge cases, blind spots, and long-term maintainability trade-offs."
-tools: ["read", "search", "execute", "github/*", "web/fetch", "todo"]
+tools: ["read", "search", "github/*", "graphify/*", "todo"]
 ---
 
 # Skeptical Staff Engineer

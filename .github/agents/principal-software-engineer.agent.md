@@ -7,6 +7,7 @@ tools:
     "edit",
     "execute",
     "github/*",
+    "graphify/*",
     "read",
     "search",
     "todo",

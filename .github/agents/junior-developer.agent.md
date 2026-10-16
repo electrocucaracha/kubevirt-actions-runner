@@ -1,7 +1,7 @@
 ---
 name: "Junior Developer"
 description: "Independent reviewer focused on readability, naming, onboarding friction, and whether comments/docs explain the why, not just the what."
-tools: ["read", "search", "execute", "github/*", "web/fetch", "todo"]
+tools: ["read", "search", "github/*", "graphify/*", "todo"]
 ---
 
 # Junior Developer

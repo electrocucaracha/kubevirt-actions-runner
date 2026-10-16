@@ -104,6 +104,23 @@ update_dockerfile_base_image() {
     fi
 }
 
+update_agents() {
+    local repo="https://github.com/electrocucaracha/gh-workflows/tree/main/.github/agents"
+    local raw="https://raw.githubusercontent.com/electrocucaracha/gh-workflows/main/.github/agents"
+
+    mkdir -p "$DEST"
+
+    curl -fsSL "$repo" |
+        grep -oE 'href="/electrocucaracha/gh-workflows/blob/main/\.github/agents/[^"]+"' |
+        cut -d '"' -f 2 |
+        sed 's|.*/||' |
+        sort -u |
+        while IFS= read -r file; do
+            curl -fsSL "$raw/$file" -o ".github/agents/$file"
+            echo "Updated: $file"
+        done
+}
+
 trap format_changes EXIT
 
 if ! command -v go >/dev/null; then
@@ -159,6 +176,7 @@ run_best_effort "updating the Dockerfile base image" update_dockerfile_base_imag
 run_best_effort "updating golangci-lint version" update_action_version "golangci/golangci-lint" "golangci/golangci-lint-action"
 run_best_effort "updating gremlins version" update_action_version "go-gremlins/gremlins" "go-gremlins/gremlins-action"
 run_best_effort "updating rtk version" update_rtk_version
+run_best_effort "updating agents definition" update_agents
 
 if [[ $has_errors == "true" ]]; then
     failed_summary=$(

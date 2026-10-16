@@ -1,7 +1,7 @@
 ---
 name: "Accessibility Specialist"
 description: "Independent reviewer focused on documentation clarity, inclusive language, and usability for contributors of varying experience levels."
-tools: ["read", "search", "execute", "github/*", "web/fetch", "todo"]
+tools: ["read", "search", "github/*", "graphify/*", "todo"]
 ---
 
 # Accessibility Specialist

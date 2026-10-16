@@ -450,7 +450,7 @@ func (rc *runnerCtx) deleteButDataVolumeDeleteForbidden() error {
 
 	failingCdiClientset := cdifake.NewSimpleClientset(NewDataVolume(dataVolumeName))
 	failingCdiClientset.PrependReactor("delete", "datavolumes", func(_ k8stesting.Action) (bool, runtime.Object, error) {
-		return true, nil, forbiddenErr
+		return true, nil, fmt.Errorf("check resource permissions: %w", forbiddenErr)
 	})
 
 	mockVMIInterface := kubecli.NewMockVirtualMachineInstanceInterface(rc.mockCtrl)
