@@ -47,4 +47,4 @@ fmt: cleanup
 	command -v yamlfmt > /dev/null || curl -s "https://i.jpillora.com/google/yamlfmt!!" | bash
 	yamlfmt -dstar **/*.{yaml,yml}
 	npx prettier . --write
-	npx markdownlint-cli2 --fix CHANGELOG.md
+	npx markdownlint-cli2 --fix .
