@@ -9,6 +9,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [28.0.0] - 2026-11-04
+
+### Removed
+
+- Simplified variable references in conditionals by removing unnecessary quotes, improving readability and adherence to shell scripting best practices, with no behavioral change expected. [dfa307aa](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/dfa307aa3a0b5062b0434f99b7f5be0b94119217)
+
+## [27.1.1] - 2026-11-04
+
+### Fixed
+
+- Resolved resource cleanup issues by ensuring that kar waits synchronously for cleanup to finish or the configured timeout to expire before exiting, thereby improving reliability and predictability around resource cleanup. [b1b5e3eb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/b1b5e3ebcc094b4b909499276c560f56c9d2a082)
+
+## [27.1.0] - 2026-11-04
+
+### Added
+
+- Enabled consistent Copilot workflow across the project by introducing settings to configure plugins sourced from electrocucaracha/skills and providing contributing guidelines with setup steps and links for inspecting installed plugins. [795e10cb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/795e10cb4811bd0497a86c2e057ecfcc4842651c)
+
+## [27.0.3] - 2026-11-04
+
+### Changed
+
+- Optimized the main application entry point to exit with the correct status code for success or error scenarios, enabling consumers to reliably distinguish between normal completion and error cases. [fb165f49](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/fb165f495a5904af1ff98863464d6ae49fbbc50e)
+
+## [27.0.2] - 2026-10-30
+
+### Changed
+
+- Updated GitHub Actions workflows to utilize the latest versions of various actions and tools, requiring re-running the workflows to ensure updated behavior. [750f2d4b](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/750f2d4beb8982cbde61506248163a61e417e636)
+
+## [27.0.1] - 2026-10-16
+
+### Changed
+
+- Standardized review guidelines across agents by reordering review principles to prioritize evidence and prioritization, and introduced jscpd ignore blocks to prevent duplication detection issues. [9f09c358](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/9f09c35805e5ced26a98a2fc749fa93494b4e1d3)
+
+## [27.0.0] - 2026-10-16
+
+### Removed
+
+- Simplified the CI process by eliminating the need for spelling validation. [59ce46f3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/59ce46f3abaad40db1d35ab0ff693b6267a0b1f5)
+
+## [26.2.1] - 2026-10-16
+
+### Changed
+
+- Expanded markdownlint to run on all files in the repository, ensuring consistent Markdown style and catching formatting issues across all documentation. [5d24ace2](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5d24ace2c95f693a3479b2f5f43941bad1671ece)
+
+## [26.2.0] - 2026-10-16
+
+### Added
+
+- Updated the changelog to reflect new features, dependency upgrades, and workflow changes from versions 26.1.3 through 26.0.0 and 25.4.0, ensuring users and developers have a comprehensive log of changes and enhancements. [da3d1eb1](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/da3d1eb10e52fa3ff90bca561b9cf727b1a36a26)
+
 ## [26.1.3] - 2026-10-16
 
 ### Changed
