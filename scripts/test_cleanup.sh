@@ -23,7 +23,7 @@ readonly template_namespace
 readonly wait_timeout="${KAR_CLEANUP_TEST_WAIT_TIMEOUT:-2s}"
 readonly cleanup_timeout="${KAR_CLEANUP_TEST_TIMEOUT:-30s}"
 
-if [[ -z "${test_namespace}" || -z "${template_name}" ]]; then
+if [[ -z ${test_namespace} || -z ${template_name} ]]; then
     printf '%s\n' \
         'Set KAR_CLEANUP_TEST_NAMESPACE and KAR_CLEANUP_TEST_TEMPLATE to a' \
         'disposable namespace and an unschedulable VM template.' >&2
@@ -68,8 +68,7 @@ else
     kar_exit_code=$?
 fi
 
-if [[ "${kar_exit_code}" -ne 1 ]] \
-    || ! grep -Fq 'failed to wait for resources' "${kar_log}"; then
+if [[ ${kar_exit_code} -ne 1 ]] || ! grep -Fq 'failed to wait for resources' "${kar_log}"; then
     cat "${kar_log}"
     printf '%s (exit code %s).\n' \
         'kar did not fail because of the expected VMI wait timeout' \
@@ -84,14 +83,14 @@ if ! vmi_resource="$(kubectl -n "${test_namespace}" get vmi "${runner_name}" \
     exit 1
 fi
 
-if [[ -z "${vmi_resource}" ]]; then
+if [[ -z ${vmi_resource} ]]; then
     printf 'PASS: VMI %s was deleted before verification.\n' "${runner_name}"
     exit 0
 fi
 
 deletion_timestamp="$(kubectl -n "${test_namespace}" get vmi "${runner_name}" \
     -o 'jsonpath={.metadata.deletionTimestamp}')"
-if [[ -z "${deletion_timestamp}" ]]; then
+if [[ -z ${deletion_timestamp} ]]; then
     printf 'VMI %s still exists without a deletion timestamp.\n' \
         "${runner_name}" >&2
     printf 'Inspect it with: kubectl -n %s get vmi %s -o yaml\n' \
