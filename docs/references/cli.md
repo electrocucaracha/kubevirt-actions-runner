@@ -45,6 +45,12 @@ When interrupted by `SIGTERM` or `Ctrl-C`,
 the runner enters cleanup and attempts to remove created resources
 within the configured cleanup timeout.
 
+## Exit status
+
+`kar` exits with status `0` when the command succeeds or help is requested.
+It exits with status `1` when Kubernetes client setup or command execution fails,
+including invalid flags and runner errors.
+
 ## Centralized template strategy
 
 `--kubevirt-vm-template-namespace` lets you retrieve the VM template from a namespace

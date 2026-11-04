@@ -206,18 +206,29 @@ func getClientAndNamespace() (kubecli.KubevirtClient, string, error) {
 	return virtClient, namespace, nil
 }
 
-func runMainApp(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl) {
+func runMainApp(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl, args []string) int {
 	var opts app.Opts
 
 	rootCmd := app.NewRootCommand(ctx, kr, opts)
+	rootCmd.SetArgs(args)
 
 	execErr := rootCmd.Execute()
-	if execErr != nil && !errors.Is(execErr, context.Canceled) {
+	if execErr == nil {
+		return 0
+	}
+
+	if !errors.Is(execErr, context.Canceled) {
 		log.Println("execute command failed:", execErr)
 	}
+
+	return 1
 }
 
 func main() {
+	os.Exit(run())
+}
+
+func run() int {
 	log := utils.GetLogger()
 	buildInfo := getBuildInfo(gitCommit, buildDate, gitTreeModified)
 	log.Printf("starting kubevirt action runner\ncommit: %v\tmodified: %v\tdate: %v\tgo: %v\n",
@@ -236,7 +247,7 @@ func main() {
 	if err != nil {
 		log.Warnf("error getting client or namespace: %v\n", err)
 
-		return
+		return 1
 	}
 
 	waitTimeout := getDurationEnvOrDefault("KAR_WAIT_TIMEOUT", defaultWaitTimeout)
@@ -254,5 +265,5 @@ func main() {
 		runCleanup(ctx, kubevirtRunner, log)
 	}()
 
-	runMainApp(ctx, kubevirtRunner, log)
+	return runMainApp(ctx, kubevirtRunner, log, os.Args[1:])
 }

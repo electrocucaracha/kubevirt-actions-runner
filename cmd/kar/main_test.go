@@ -22,12 +22,18 @@ import (
 	"context"
 	"errors"
 	"os"
+	"os/exec"
 	"runtime/debug"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/electrocucaracha/kubevirt-actions-runner/internal/utils"
 )
+
+const testCommandName = "kar"
+
+const cliHelperModeEnv = "KAR_CLI_HELPER_MODE"
 
 var errMainTestFailure = errors.New("simulated failure")
 
@@ -487,76 +493,164 @@ func TestRunMainApp(t *testing.T) {
 
 	log := utils.GetLogger()
 
-	t.Run("logs nothing extra when execution succeeds", func(t *testing.T) {
+	t.Run("returns success when execution succeeds", func(t *testing.T) {
 		t.Parallel()
 
 		runner := &mockRunner{}
-		// runMainApp should not panic and should invoke the root command
-		// against the provided runner without requiring a real KubeVirt client.
-		runMainApp(context.Background(), runner, log)
+		if got := runMainApp(context.Background(), runner, log, []string{}); got != 0 {
+			t.Fatalf("runMainApp() = %d, want 0", got)
+		}
 	})
 
-	t.Run("logs failure when execution returns a non-cancellation error", func(t *testing.T) {
+	t.Run("returns failure when runner execution fails", func(t *testing.T) {
 		t.Parallel()
 
 		runner := &mockRunner{createErr: errMainTestFailure}
-		runMainApp(context.Background(), runner, log)
+		if got := runMainApp(context.Background(), runner, log, []string{}); got != 1 {
+			t.Fatalf("runMainApp() = %d, want 1", got)
+		}
 	})
 
-	t.Run("suppresses logging when execution is cancelled", func(t *testing.T) {
+	t.Run("returns failure when execution is cancelled", func(t *testing.T) {
 		t.Parallel()
 
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel()
 
-		runner := &mockRunner{}
-		runMainApp(ctx, runner, log)
+		runner := &mockRunner{waitErr: context.Canceled}
+		if got := runMainApp(ctx, runner, log, []string{}); got != 1 {
+			t.Fatalf("runMainApp() = %d, want 1", got)
+		}
 	})
 }
 
-// TestMain_DirectInvocation exercises the real main() entrypoint directly
-// (in-process) rather than through a re-exec'd subprocess, so that its
-// statements are attributed to this test binary's coverage profile.
+// TestRun_DirectInvocation exercises run() in-process so its statements are
+// attributed to this test binary's coverage profile.
 //
-// These subtests intentionally avoid t.Parallel(): main() temporarily
+// These subtests intentionally avoid t.Parallel(): run() temporarily
 // overrides the process-wide os.Args so that cobra parses a controlled
 // argument list instead of the `go test` binary's own flags. Top-level tests
 // that call t.Parallel() defer their bodies until every non-parallel
 // top-level test (including this one) has finished, so there is no risk of a
 // concurrent test observing the temporarily mutated os.Args.
-func TestMain_DirectInvocation(t *testing.T) {
+func TestRun_DirectInvocation(t *testing.T) {
 	origArgs := os.Args
 	defer func() { os.Args = origArgs }()
 
 	t.Run("returns early when client/namespace resolution fails", func(t *testing.T) {
-		os.Args = []string{"kar"}
+		os.Args = []string{testCommandName}
 
 		t.Setenv("KUBECONFIG", writeTempKubeconfig(t, malformedKubeconfig))
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 
-		// main() should log the resolution error and return early, without
+		// run() should report the resolution error and return early, without
 		// panicking or reaching the runner/command-execution setup below it.
-		main()
+		if got := run(); got != 1 {
+			t.Fatalf("run() = %d, want 1", got)
+		}
 	})
 
 	t.Run("proceeds through command execution and signal-triggered cleanup", func(t *testing.T) {
-		os.Args = []string{"kar"}
+		os.Args = []string{testCommandName}
 
 		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
 		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
 		t.Setenv("KAR_CLEANUP_TIMEOUT", "5s")
 
 		// With no jitconfig flag supplied, the root command's RunE fails fast
-		// (without making any real KubeVirt API call), so main() reaches the
+		// (without making any real KubeVirt API call), so run() reaches the
 		// end of its body quickly. Its deferred stop() then cancels the
 		// signal-notification context, unblocking the cleanup goroutine,
 		// which attempts (and fails fast against) a real DeleteResources
 		// call, exercising that goroutine's error-logging path as well.
-		main()
+		if got := run(); got != 1 {
+			t.Fatalf("run() = %d, want 1", got)
+		}
 
 		// Give the cleanup goroutine a brief moment to finish running before
 		// this subtest returns, so its coverage counters are recorded
 		// deterministically rather than racing the test binary's exit.
 		time.Sleep(200 * time.Millisecond)
 	})
+
+	t.Run("returns failure for invalid flags", func(t *testing.T) {
+		os.Args = []string{testCommandName, "--invalid-flag"}
+
+		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
+		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+
+		if got := run(); got != 1 {
+			t.Fatalf("run() = %d, want 1", got)
+		}
+	})
+
+	t.Run("returns success for help", func(t *testing.T) {
+		os.Args = []string{testCommandName, "--help"}
+
+		t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
+		t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+
+		if got := run(); got != 0 {
+			t.Fatalf("run() = %d, want 0", got)
+		}
+	})
+}
+
+func TestCLIProcessExitStatus(t *testing.T) {
+	tests := []struct {
+		name         string
+		mode         string
+		wantExitCode int
+		wantOutput   string
+	}{
+		{name: "invalid flag exits with failure", mode: "invalid-flag", wantExitCode: 1},
+		{name: "help exits successfully", mode: "help", wantOutput: "Usage:"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Setenv(cliHelperModeEnv, test.mode)
+			t.Setenv("KUBECONFIG", t.TempDir()+"/nonexistent-kubeconfig")
+			t.Setenv("KAR_TELEMETRY_ENABLED", "false")
+
+			//nolint:gosec // The test invokes its own binary with a fixed test selector.
+			cmd := exec.CommandContext(t.Context(), os.Args[0], "-test.run=^TestCLIHelperProcess$")
+			output, err := cmd.CombinedOutput()
+
+			if test.wantExitCode == 0 {
+				if err != nil {
+					t.Fatalf("CLI process failed: %v\n%s", err, output)
+				}
+			} else {
+				var exitErr *exec.ExitError
+				if !errors.As(err, &exitErr) {
+					t.Fatalf("expected CLI process exit code %d, got err=%v\n%s", test.wantExitCode, err, output)
+				}
+
+				if got := exitErr.ExitCode(); got != test.wantExitCode {
+					t.Fatalf("CLI process exit code = %d, want %d\n%s", got, test.wantExitCode, output)
+				}
+			}
+
+			if test.wantOutput != "" && !strings.Contains(string(output), test.wantOutput) {
+				t.Fatalf("CLI output does not contain %q:\n%s", test.wantOutput, output)
+			}
+		})
+	}
+}
+
+func TestCLIHelperProcess(t *testing.T) {
+	t.Parallel()
+
+	switch os.Getenv(cliHelperModeEnv) {
+	case "invalid-flag":
+		os.Args = []string{testCommandName, "--invalid-flag"}
+	case "help":
+		os.Args = []string{testCommandName, "--help"}
+	default:
+		return
+	}
+
+	main()
+	t.Fatal("main() returned without exiting")
 }
