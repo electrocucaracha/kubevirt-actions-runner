@@ -21,6 +21,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"runtime/debug"
@@ -35,14 +36,23 @@ const testCommandName = "kar"
 
 const cliHelperModeEnv = "KAR_CLI_HELPER_MODE"
 
+const cleanupWaitHelperModeEnv = "KAR_CLEANUP_TEST_MODE"
+
+const cleanupFinishedMarker = "cleanup request finished"
+
+const testTrueString = "true"
+
 var errMainTestFailure = errors.New("simulated failure")
+
+var errMainTestWaitTimeout = errors.New("timeout while waiting for the virtual machine instance")
 
 // mockRunner is a lightweight stand-in for runner.Runner used to exercise
 // runMainApp without touching a real KubeVirt client.
 type mockRunner struct {
-	createErr error
-	waitErr   error
-	deleteErr error
+	createErr  error
+	waitErr    error
+	deleteErr  error
+	deleteFunc func(context.Context) error
 }
 
 func (m *mockRunner) CreateResources(_ context.Context, _, _, _, _ string) error {
@@ -53,7 +63,11 @@ func (m *mockRunner) WaitForVirtualMachineInstance(_ context.Context) error {
 	return m.waitErr
 }
 
-func (m *mockRunner) DeleteResources(_ context.Context) error {
+func (m *mockRunner) DeleteResources(ctx context.Context) error {
+	if m.deleteFunc != nil {
+		return m.deleteFunc(ctx)
+	}
+
 	return m.deleteErr
 }
 
@@ -167,7 +181,7 @@ func TestApplyVCSSettings(t *testing.T) {
 		out.applyVCSSettings([]debug.BuildSetting{
 			{Key: "vcs.revision", Value: "abc123"},
 			{Key: "vcs.time", Value: "2026-01-01T00:00:00Z"},
-			{Key: "vcs.modified", Value: "true"},
+			{Key: "vcs.modified", Value: testTrueString},
 			{Key: "vcs.unrelated", Value: "ignored"},
 		})
 
@@ -179,8 +193,8 @@ func TestApplyVCSSettings(t *testing.T) {
 			t.Fatalf("expected buildDate %q, got %q", "2026-01-01T00:00:00Z", out.buildDate)
 		}
 
-		if out.gitTreeModified != "true" {
-			t.Fatalf("expected gitTreeModified %q, got %q", "true", out.gitTreeModified)
+		if out.gitTreeModified != testTrueString {
+			t.Fatalf("expected gitTreeModified %q, got %q", testTrueString, out.gitTreeModified)
 		}
 	})
 
@@ -524,6 +538,84 @@ func TestRunMainApp(t *testing.T) {
 	})
 }
 
+func TestRunAndCleanupWaitsForCleanup(t *testing.T) {
+	t.Setenv("KAR_CLEANUP_TIMEOUT", "1s")
+
+	log := utils.GetLogger()
+	cleanupStarted := make(chan struct{})
+	releaseCleanup := make(chan struct{}, 1)
+
+	runner := &mockRunner{
+		waitErr: errMainTestWaitTimeout,
+		deleteFunc: func(ctx context.Context) error {
+			close(cleanupStarted)
+
+			select {
+			case <-releaseCleanup:
+				return nil
+			case <-ctx.Done():
+				return ctx.Err()
+			}
+		},
+	}
+
+	ctx, stop := context.WithCancel(context.Background())
+	t.Cleanup(stop)
+
+	exitCode := make(chan int, 1)
+	go func() {
+		exitCode <- runAndCleanup(ctx, stop, runner, log, []string{})
+	}()
+
+	select {
+	case <-cleanupStarted:
+	case <-time.After(time.Second):
+		t.Fatal("cleanup did not start")
+	}
+
+	select {
+	case got := <-exitCode:
+		releaseCleanup <- struct{}{}
+
+		t.Fatalf("runAndCleanup() returned %d before cleanup completed", got)
+	case <-time.After(20 * time.Millisecond):
+	}
+
+	releaseCleanup <- struct{}{}
+
+	if got := <-exitCode; got != 1 {
+		t.Fatalf("runAndCleanup() = %d, want 1", got)
+	}
+}
+
+func TestRunAndCleanupHonorsCleanupTimeout(t *testing.T) {
+	t.Setenv("KAR_CLEANUP_TIMEOUT", "20ms")
+
+	cleanupTimedOut := make(chan struct{})
+	runner := &mockRunner{
+		waitErr: errMainTestWaitTimeout,
+		deleteFunc: func(ctx context.Context) error {
+			<-ctx.Done()
+			close(cleanupTimedOut)
+
+			return ctx.Err()
+		},
+	}
+
+	ctx, stop := context.WithCancel(context.Background())
+	defer stop()
+
+	if got := runAndCleanup(ctx, stop, runner, utils.GetLogger(), []string{}); got != 1 {
+		t.Fatalf("runAndCleanup() = %d, want 1", got)
+	}
+
+	select {
+	case <-cleanupTimedOut:
+	default:
+		t.Fatal("cleanup did not finish through its configured timeout")
+	}
+}
+
 // TestRun_DirectInvocation exercises run() in-process so its statements are
 // attributed to this test binary's coverage profile.
 //
@@ -558,19 +650,11 @@ func TestRun_DirectInvocation(t *testing.T) {
 		t.Setenv("KAR_CLEANUP_TIMEOUT", "5s")
 
 		// With no jitconfig flag supplied, the root command's RunE fails fast
-		// (without making any real KubeVirt API call), so run() reaches the
-		// end of its body quickly. Its deferred stop() then cancels the
-		// signal-notification context, unblocking the cleanup goroutine,
-		// which attempts (and fails fast against) a real DeleteResources
-		// call, exercising that goroutine's error-logging path as well.
+		// without making any real KubeVirt API call. runAndCleanup then calls
+		// DeleteResources synchronously, exercising its error-logging path.
 		if got := run(); got != 1 {
 			t.Fatalf("run() = %d, want 1", got)
 		}
-
-		// Give the cleanup goroutine a brief moment to finish running before
-		// this subtest returns, so its coverage counters are recorded
-		// deterministically rather than racing the test binary's exit.
-		time.Sleep(200 * time.Millisecond)
 	})
 
 	t.Run("returns failure for invalid flags", func(t *testing.T) {
@@ -653,4 +737,48 @@ func TestCLIHelperProcess(t *testing.T) {
 
 	main()
 	t.Fatal("main() returned without exiting")
+}
+
+func TestCleanupWaitsBeforeProcessExit(t *testing.T) {
+	t.Parallel()
+
+	ctx, cancel := context.WithTimeout(t.Context(), 5*time.Second)
+	defer cancel()
+
+	//nolint:gosec // The test invokes its own binary with a fixed test selector.
+	cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^TestCleanupWaitHelperProcess$")
+
+	cmd.Env = append(os.Environ(), cleanupWaitHelperModeEnv+"="+testTrueString)
+	output, err := cmd.CombinedOutput()
+
+	var exitErr *exec.ExitError
+	if !errors.As(err, &exitErr) || exitErr.ExitCode() != 1 {
+		t.Fatalf("helper process exit error = %v, want exit code 1\n%s", err, output)
+	}
+
+	if !strings.Contains(string(output), cleanupFinishedMarker) {
+		t.Fatalf("process exited before cleanup finished:\n%s", output)
+	}
+}
+
+func TestCleanupWaitHelperProcess(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv(cleanupWaitHelperModeEnv) != testTrueString {
+		return
+	}
+
+	runner := &mockRunner{
+		waitErr: errMainTestWaitTimeout,
+		deleteFunc: func(context.Context) error {
+			time.Sleep(50 * time.Millisecond)
+
+			_, _ = fmt.Fprintln(os.Stdout, cleanupFinishedMarker)
+
+			return nil
+		},
+	}
+
+	ctx, stop := context.WithCancel(context.Background())
+	os.Exit(runAndCleanup(ctx, stop, runner, utils.GetLogger(), []string{}))
 }

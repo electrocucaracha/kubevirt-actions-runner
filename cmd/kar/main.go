@@ -224,6 +224,21 @@ func runMainApp(ctx context.Context, kr runner.Runner, log *utils.LoggerImpl, ar
 	return 1
 }
 
+func runAndCleanup(
+	ctx context.Context,
+	stop context.CancelFunc,
+	runnerInstance runner.Runner,
+	log *utils.LoggerImpl,
+	args []string,
+) int {
+	exitCode := runMainApp(ctx, runnerInstance, log, args)
+
+	stop()
+	runCleanup(ctx, runnerInstance, log)
+
+	return exitCode
+}
+
 func main() {
 	os.Exit(run())
 }
@@ -259,11 +274,5 @@ func run() int {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	go func() {
-		<-ctx.Done()
-
-		runCleanup(ctx, kubevirtRunner, log)
-	}()
-
-	return runMainApp(ctx, kubevirtRunner, log, os.Args[1:])
+	return runAndCleanup(ctx, stop, kubevirtRunner, log, os.Args[1:])
 }

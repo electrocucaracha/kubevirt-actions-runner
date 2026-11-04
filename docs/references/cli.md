@@ -44,6 +44,8 @@ Execution sequence:
 When interrupted by `SIGTERM` or `Ctrl-C`,
 the runner enters cleanup and attempts to remove created resources
 within the configured cleanup timeout.
+Before exiting, `kar` waits for the cleanup request to finish
+or for `KAR_CLEANUP_TIMEOUT` to expire.
 
 ## Exit status
 

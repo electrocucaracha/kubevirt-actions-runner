@@ -82,6 +82,33 @@ This confirms that:
 - KubeVirt is functioning
 - VM creation and teardown work correctly
 
+## Test cleanup after a timeout
+
+Use `scripts/test_cleanup.sh` to verify that `kar` waits for the cleanup request
+after a VMI wait timeout. This functional test requires a disposable namespace
+and a separate VM template whose node selector matches no node. Do not use the
+`testvm` template used by the demo.
+
+Set the namespace where runner VMIs are created and the name of the unschedulable
+template. The template namespace defaults to the runner namespace.
+
+```bash
+export KAR_CLEANUP_TEST_NAMESPACE=kar-cleanup-test
+export KAR_CLEANUP_TEST_TEMPLATE=cleanup-repro-template
+export KAR_CLEANUP_TEST_TEMPLATE_NAMESPACE=kar-templates
+bash scripts/test_cleanup.sh
+```
+
+The script builds `kar`, runs it with a short wait timeout, and verifies that the
+run failed at the VMI wait and that Kubernetes accepted the VMI deletion or the
+VMI was already removed. It uses a temporary copy of the active kubeconfig and
+does not modify the original kubeconfig, namespace, or VM template. If the test
+fails while the VMI remains, its unique runner name is printed for inspection.
+The end-to-end CI workflow runs this scenario on every push and pull request
+in a per-run namespace that it removes afterward. It enables the scenario
+through `KAR_CLEANUP_TEST=true` on the first `demo.sh` invocation; normal demo
+runs do not execute the timeout test.
+
 ## Centralize templates in a single namespace
 
 Use a dedicated namespace for your VM templates

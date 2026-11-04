@@ -47,6 +47,24 @@ function prepare_demo_namespaces {
     kubectl apply -f test-data/vm.yaml -n "${VM_TEMPLATE_NAMESPACE}"
 }
 
+function run_cleanup_timeout_test {
+    local template_name="cleanup-testvm"
+    local test_exit_code=0
+
+    kubectl apply \
+        -f test-data/cleanup-vm.yaml \
+        -n "${RUNNER_NAMESPACE}"
+    KAR_CLEANUP_TEST_NAMESPACE="${RUNNER_NAMESPACE}" \
+        KAR_CLEANUP_TEST_TEMPLATE="${template_name}" \
+        KAR_CLEANUP_TEST_TEMPLATE_NAMESPACE="${RUNNER_NAMESPACE}" \
+        bash ./test_cleanup.sh || test_exit_code=$?
+    kubectl delete vm "${template_name}" \
+        -n "${RUNNER_NAMESPACE}" \
+        --ignore-not-found
+
+    return "${test_exit_code}"
+}
+
 trap get_status ERR
 
 info "Running a alpine demo instance"
@@ -72,4 +90,9 @@ KUBECONFIG="${kar_kubeconfig}" timeout 5m "$kar_bin" \
 if [ "$KAR_TELEMETRY_EXPORT_TYPE" == "otlp" ]; then
     sudo docker logs rotel | grep -E 'Received traces' || true
 fi
+
+if [[ ${KAR_CLEANUP_TEST:-false} == "true" ]]; then
+    run_cleanup_timeout_test
+fi
+
 info "Demo completed"

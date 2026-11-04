@@ -13,12 +13,24 @@ on:
     paths:
       - "**.go"
       - "**.sh"
-      - "!.github/**"
+      - "go.mod"
+      - "go.sum"
+      - "bindep.txt"
+      - "scripts/test-data/**"
+      - ".github/workflows/on-demand_ci.yml"
   pull_request:
     types:
       - opened
       - synchronize
       - reopened
+    paths:
+      - "**.go"
+      - "**.sh"
+      - "go.mod"
+      - "go.sum"
+      - "bindep.txt"
+      - "scripts/test-data/**"
+      - ".github/workflows/on-demand_ci.yml"
   pull_request_review:
     types:
       - submitted
@@ -49,6 +61,8 @@ jobs:
     name: Run Functional Tests on Self-Hosted Runner
     needs: check-scripts-format
     runs-on: vm-self-hosted
+    env:
+      CLEANUP_TEST_NAMESPACE: kar-cleanup-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       contents: read
     steps:
@@ -67,6 +81,8 @@ jobs:
           DEBUG: true
           PROVISION_PHASES: "demo"
           KAR_TELEMETRY_EXPORT_TYPE: "stdout"
+          KAR_RUNNER_NAMESPACE: ${{ env.CLEANUP_TEST_NAMESPACE }}
+          KAR_CLEANUP_TEST: "true"
         run: ./main.sh
       - name: Run demo exporting traces to otel collector (rotel)
         working-directory: ./scripts
@@ -75,6 +91,9 @@ jobs:
           PROVISION_PHASES: "demo"
           KAR_TELEMETRY_EXPORT_TYPE: "otlp"
         run: ./main.sh
+      - name: Remove cleanup test namespace
+        if: always()
+        run: kubectl delete namespace "$CLEANUP_TEST_NAMESPACE" --ignore-not-found --wait=false
       - name: Export logs
         if: always()
         run: |
