@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "electrocucaracha-skills": {
+      "source": {
+        "source": "github",
+        "repo": "electrocucaracha/skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "technical-writer@electrocucaracha-skills": true,
+    "fix-gh-lint-issue@electrocucaracha-skills": true
+  }
+}

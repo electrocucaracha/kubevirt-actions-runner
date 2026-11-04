@@ -96,6 +96,24 @@ Use the Conventional Commits specification for commit messages:
 - Add new documents to the `docs/` folder.
 - Follow the [documentation-writer skill](.github/skills/documentation-writer/SKILL.md) for creating high-quality documentation.
 
+## Shared AI Skills
+
+GitHub Copilot imports `technical-writer` and `fix-gh-lint-issue` through
+[.github/copilot/settings.json](.github/copilot/settings.json).
+The publisher must release the marketplace catalog and plugin manifests
+before remote installation works.
+Sign in to GitHub with read access to
+[electrocucaracha/skills](https://github.com/electrocucaracha/skills).
+Inspect the installed plugins and skills with:
+
+```bash
+copilot plugin list
+copilot skill list
+```
+
+Other assistants can import the same underlying Agent Skills packages
+using the [publisher's installation guide](https://github.com/electrocucaracha/skills#portable-skill-imports).
+
 ## Reporting Issues
 
 When reporting bugs:
