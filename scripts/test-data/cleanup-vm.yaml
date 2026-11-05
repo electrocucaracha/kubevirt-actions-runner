@@ -20,7 +20,8 @@ spec:
     spec:
       nodeSelector:
         kar-cleanup-test: unavailable
-      domain:
+      # Keep hardware and bootstrap settings aligned with vm.yaml.
+      domain: # jscpd:ignore-start
         devices:
           disks:
             - name: containerdisk
@@ -46,7 +47,7 @@ spec:
             image: quay.io/kubevirt/alpine-with-test-tooling-container-disk:v1.7.0
         - name: cloudinitdrive
           cloudInitConfigDrive:
-            userData: |-
+            userData: |- # jscpd:ignore-end
               #cloud-config
               power_state:
                 delay: now
