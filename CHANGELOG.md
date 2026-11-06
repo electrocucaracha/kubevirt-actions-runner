@@ -9,6 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [28.2.1] - 2026-11-06
+
+### Changed
+
+- Optimized test cleanup logic to provide more precise verification results by consolidating multiple kubectl invocations and deletion state checks into a single go-template expression. [8d1958bb](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/8d1958bb462eb02bfc46e4d41571f26ee1b2f172)
+
+## [28.2.0] - 2026-11-06
+
+### Added
+
+- Enabled automated code review assignment for future pull requests by specifying @electrocucaracha as the default reviewer for all paths in a CODEOWNERS file. [77976121](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/779761210cbf048933e2e490768e79d65d6e6321)
+
+## [28.1.2] - 2026-11-06
+
+### Changed
+
+- Updated GitHub Actions workflows to use newer versions of several dependencies, including docker/login-action and gh-workflows, to ensure compatibility and security, potentially requiring re-running previously cached workflows for verification. [13213106](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/13213106644d4452ca969c545684612b8aa4f05a)
+
+## [28.1.1] - 2026-11-04
+
+### Changed
+
+- Modernized cleanup scripts to maintain consistency with other configuration files, ensuring hardware and bootstrap settings are aligned, and enabled test cleanup script execution. [d018ea69](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/d018ea69e8ace50353df22367e5f40f10df4dbd7)
+
+## [28.1.0] - 2026-11-04
+
+### Added
+
+- Enabled detailed changelog entries for versions 28.0.0 through 26.2.0, providing links to corresponding commits and accurately documenting recent project history for users and contributors. [5edc5f85](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5edc5f85ac578776abc52870c4f45d04591b80eb)
+
 ## [28.0.0] - 2026-11-04
 
 ### Removed
