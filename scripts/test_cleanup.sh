@@ -76,21 +76,20 @@ if [[ ${kar_exit_code} -ne 1 ]] || ! grep -Fq 'failed to wait for resources' "${
     exit 1
 fi
 
-if ! vmi_resource="$(kubectl -n "${test_namespace}" get vmi "${runner_name}" \
-    -o name --ignore-not-found)"; then
+if ! vmi_state="$(kubectl -n "${test_namespace}" get vmi "${runner_name}" \
+    --ignore-not-found \
+    -o 'go-template={{if .metadata.deletionTimestamp}}{{.metadata.deletionTimestamp}}{{else}}present{{end}}')"; then
     printf 'Could not verify VMI cleanup for %s.\n' \
         "${runner_name}" >&2
     exit 1
 fi
 
-if [[ -z ${vmi_resource} ]]; then
+if [[ -z ${vmi_state} ]]; then
     printf 'PASS: VMI %s was deleted before verification.\n' "${runner_name}"
     exit 0
 fi
 
-deletion_timestamp="$(kubectl -n "${test_namespace}" get vmi "${runner_name}" \
-    -o 'jsonpath={.metadata.deletionTimestamp}')"
-if [[ -z ${deletion_timestamp} ]]; then
+if [[ ${vmi_state} == "present" ]]; then
     printf 'VMI %s still exists without a deletion timestamp.\n' \
         "${runner_name}" >&2
     printf 'Inspect it with: kubectl -n %s get vmi %s -o yaml\n' \
@@ -99,4 +98,4 @@ if [[ -z ${deletion_timestamp} ]]; then
 fi
 
 printf 'PASS: Kubernetes accepted deletion of VMI %s at %s.\n' \
-    "${runner_name}" "${deletion_timestamp}"
+    "${runner_name}" "${vmi_state}"
