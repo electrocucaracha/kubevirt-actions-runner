@@ -20,6 +20,6 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-    uses: electrocucaracha/gh-workflows/.github/workflows/improvers.yml@8f0fa8c0acf90de07569a66d774498c3101d235f # v12.1.1
+    uses: electrocucaracha/gh-workflows/.github/workflows/improvers.yml@5459142baf98c47e96f454bb56e3e549c334a606 # v13.1.1
     secrets:
       COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
