@@ -3,7 +3,8 @@ FROM golang:1.27-alpine3.24 AS build
 
 WORKDIR /app
 
-RUN apk add --no-cache git=2.54.0-r0
+# hadolint ignore=DL3018
+RUN apk add --no-cache git
 
 COPY . .
 
