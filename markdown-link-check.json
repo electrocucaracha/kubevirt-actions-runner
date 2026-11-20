@@ -1,4 +1,12 @@
 {
+  "ignorePatterns": [
+    {
+      "pattern": "^https://www.youtube.com"
+    },
+    {
+      "pattern": "CONTRIBUTRING.md"
+    }
+  ],
   "retryOn429": true,
   "retryCount": 2
 }
