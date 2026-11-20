@@ -1,4 +1,6 @@
-<!-- Markdownlint-disable MD024 -->
+<!-- markdown-link-check-disable -->
+
+<!-- markdownlint-disable MD024 -->
 
 # Changelog
 
