@@ -11,6 +11,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [29.2.2] - 2026-11-20
+
+### Changed
+
+- Optimized Markdown link checking to prevent false positives for documentation links by refining the ignore pattern for YouTube links and disabling the checker within the changelog. [a2eac400](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/a2eac40051df278ef5ad9859d43254e3d925fcf2)
+
+## [29.2.1] - 2026-11-20
+
+### Changed
+
+- Upgraded dependencies and GitHub Actions to their latest versions, ensuring ongoing CI reliability and improved security and compatibility. [531f3267](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/531f326709016c66a01dc6425d1f2081bb918c40)
+
+## [29.2.0] - 2026-11-20
+
+### Added
+
+- Optimized the link checker to prevent noisy failures due to external rate limits or unintended files by ignoring YouTube links and the CONTRIBUTING.md file. [0edf5e4f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/0edf5e4f42d8c76fb99d353f9b523c63ecde840e)
+
+## [29.1.0] - 2026-11-16
+
+### Added
+
+- Optimized the link check job to be more resilient to transient rate limiting issues by enabling retries on HTTP 429 responses with a retry count of 2. [78c87bbd](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/78c87bbd811f15fab060d434e76ab10cf935bc99)
+
+## [29.0.1] - 2026-11-16
+
+### Changed
+
+- Updated GitHub Actions and pre-commit hooks to use the latest versions of corresponding actions and dependencies, improving reliability and compatibility with newer features and fixes in upstream dependencies. [187e4b4d](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/187e4b4d8205c40f501486276cd441820be56aa8)
+
+## [29.0.0] - 2026-11-13
+
+### Removed
+
+- The Docker build process now uses the latest available Git version, reducing maintenance and avoiding build failures due to outdated pinned versions. [4d36c3e3](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/4d36c3e37433f180cae1d172fb68044d652ce8c2)
+
+## [28.3.1] - 2026-11-13
+
+### Changed
+
+- Updated the repository to use the latest versions of various dependencies, including rtk 1.2.0 in the fixers workflow and pflag 1.1.0 in the go.mod file, as well as updating the versions of various workflows to v13.3.1. [5833a56f](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/5833a56fdd7376141c826599680a0a7b5fd4b951)
+
+## [28.3.0] - 2026-11-06
+
+### Added
+
+- Enabled automated code review assignment, updated GitHub Actions workflows, modernized cleanup scripts, and improved test cleanup logic, requiring re-running previously cached workflows for verification and ensuring compatibility and security. [23e7f3f6](https://github.com/electrocucaracha/kubevirt-actions-runner/commit/23e7f3f6d36de823251ace689d20dcc0d916949c)
+
 ## [28.2.1] - 2026-11-06
 
 ### Changed
