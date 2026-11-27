@@ -205,7 +205,7 @@ jobs:
 
             Goal:
             Produce a focused issue that enables a developer to fix the container failure without reviewing raw logs.
-      - uses: jayqi/failed-build-issue-action@940568ce50eeef3f31a920614cefcc6102d2f930 # v1.3.0
+      - uses: jayqi/failed-build-issue-action@20c082d7b8ad9e32464211b83fe07b1175164335 # v1.4.0
         if: failure()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
